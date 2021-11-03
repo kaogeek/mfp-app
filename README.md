@@ -1,1 +1,1 @@
-# mfp-mobile-app
+# mfp-app
