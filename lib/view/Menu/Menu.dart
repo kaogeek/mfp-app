@@ -30,7 +30,7 @@ class _MenuSCState extends State<MenuSC> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context),
+              primaryAppBar(context,""),
 
             
               SliverToBoxAdapter(

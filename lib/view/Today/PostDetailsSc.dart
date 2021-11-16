@@ -1,10 +1,20 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:mfp_app/Api/Api.dart';
+import 'package:mfp_app/allWidget/PostButton.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/allWidget/fontsize.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/model/commentlistmodel.dart';
 import 'package:mfp_app/model/searchpostlistModel.dart';
+import 'package:http/http.dart' as Http;
+import 'package:mfp_app/utils/timeutils.dart';
 
 class PostDetailsSC extends StatefulWidget {
   final String id;
@@ -17,6 +27,9 @@ class PostDetailsSC extends StatefulWidget {
   final int likeCount;
   final int commentCount;
   final int shareCoun;
+  final String userid;
+  final String token;
+
   const PostDetailsSC(
       {Key key,
       this.id,
@@ -28,7 +41,9 @@ class PostDetailsSC extends StatefulWidget {
       this.gallery,
       this.likeCount,
       this.commentCount,
-      this.shareCoun})
+      this.shareCoun,
+      this.userid,
+      this.token})
       : super(key: key);
 
   @override
@@ -45,74 +60,227 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
     super.dispose();
   }
 
+  var loading = false;
+  var dataht;
+  List<CommentlistModel> listModel = [];
+  TextEditingController _commentController = TextEditingController();
+  TextEditingController _commenteditController = TextEditingController();
+
+  bool idedit = false;
+  var jsonResponse;
+  bool onref = false;
+  StreamController _postsController;
+
+  @override
+  void didChangeDependencies() {
+    setState(() {
+      Api.getcommentlist(widget.id, widget.userid, widget.token);
+    });
+
+    super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      // Api.gettoke().then((value) => ({
+      //       setState(() {
+      //         mytoken = value;
+      //       }),
+      //       print('myuidhome$mytoken'),
+      //     }));
+      print(widget.id);
+      print(widget.userid);
+      print(widget.token);
+
+      Api.getcommentlist(widget.id, widget.userid, widget.token)
+          .then((responseData) => ({
+                setState(() {
+                  loading = true;
+                }),
+                print('getHashtagData'),
+                if (responseData.statusCode == 200)
+                  {
+                    dataht = jsonDecode(responseData.body),
+                    print("comlist${dataht["data"]}"),
+                    for (Map i in dataht["data"])
+                      {
+                        setState(() {
+                          listModel.add(CommentlistModel.fromJson(i));
+                          _postsController.add(responseData);
+                        }),
+                        print('listModel${listModel.length}'),
+                      },
+                    loading = false,
+                  }
+              }));
+      _postsController = new StreamController();
+    });
+
+    super.initState();
+  }
+
+  Future sendcomment(
+      String postid, String mytoken, String mag, String myuid) async {
+    print('sendcomment');
+
+    var url = "${Api.url}api/post/$postid/comment";
+    final headers = {
+      "userid": myuid,
+      "content-type": "application/json",
+      "accept": "application/json",
+      "authorization": "Bearer $mytoken",
+    };
+    Map data = {
+      "commentAsPage": myuid,
+      "comment": mag,
+      //      "mediaURL": "",
+      // "post": postid,
+      // "user": "60c9cc216923656607919f06",
+      // "likeCount": 0,
+      // "deleted": false,
+      // "id": "60f583d3ef898e1a0a05ed3d"
+    };
+    var body = jsonEncode(data);
+
+    final responseData = await Http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+    print('body$body');
+    print('responseDatacommentlist${responseData.body}');
+    final jsonResponse = jsonDecode(responseData.body);
+    if (responseData.statusCode == 200) {
+      print(jsonResponse['status']);
+      if (jsonResponse['status'] == 1) {
+        setState(() {
+          onref = true;
+        });
+      }
+    }
+  }
+
+  Future<Null> _handleRefresh() async {
+    new Future.delayed(const Duration(seconds: 2));
+    setState(() {
+      listModel.clear();
+    });
+    Api.getcommentlist(widget.id, widget.userid, widget.token)
+        .then((responseData) => ({
+              setState(() {
+                loading = true;
+              }),
+              print('getHashtagData'),
+              if (responseData.statusCode == 200)
+                {
+                  dataht = jsonDecode(responseData.body),
+                  print("comlist${dataht["data"]}"),
+                  for (Map i in dataht["data"])
+                    {
+                      setState(() {
+                        listModel.add(CommentlistModel.fromJson(i));
+                        _postsController.add(responseData);
+                      }),
+                      print('listModel${listModel.length}'),
+                    },
+                  setState(() {
+                    loading = false;
+                    onref = false;
+                  }),
+                }
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
-        final size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
+    if (onref == true) {
+      _handleRefresh();
+    }
+    print(onref);
 
     return Container(
       color: Colors.white,
       child: SafeArea(
         child: Scaffold(
-          body: CustomScrollView(
-            controller: _trackingScrollController,
-            slivers: [
-              primaryAppBar(context),
-              AppBardetail(context,"โพสของ", widget.authorposttext),
+          body: RefreshIndicator(
+            onRefresh: () => () async {
+              print('RefreshIndicator');
+              HapticFeedback.mediumImpact();
 
-              ///-----------APPBAR-----------------//
-              SliverToBoxAdapter(
-                child: PostList(
-                  widget.posttitle,
-                  widget.subtitle,
+              _handleRefresh();
+            }(),
+            child: CustomScrollView(
+              controller: _trackingScrollController,
+              slivers: [
+                primaryAppBar(context,""),
+                AppBardetail(
+                  context,
+                  "โพสของ",
                   widget.authorposttext,
-                  widget.dateTime,
-                  widget.gallery,
-                  widget.likeCount,
-                  widget.commentCount,
-                  widget.shareCoun,
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: MColors.primaryColor,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
                 ),
-              ),
 
-              ///-----------SliverListปิดไปก่อนได้----------------//
-               SliverToBoxAdapter(
-                 child: Expanded(
-                  child: Container(
-                    color:Color(0xffF8F8F8),
-                    child: _buildCommentList(size)),
-              ),
-               ),
-              // SliverList(
-              //   delegate: SliverChildBuilderDelegate((context, index) {
-              //     return Builder(
-              //       builder: (BuildContext context) {
-              //         return ListView.builder(
-              //             physics: ClampingScrollPhysics(),
-              //             shrinkWrap: true,
-              //             padding: const EdgeInsets.all(8.0),
-              //             scrollDirection: Axis.vertical,
-              //             itemCount: 5,
-              //             itemBuilder: (
-              //               BuildContext context,
-              //               int index,
-              //             ) {
-              //               return ListTile(
-                             
-              //                 leading:  new  CircleAvatar(
-              //             radius: 25.0,
-              //             backgroundImage:
-              //                 NetworkImage('https://via.placeholder.com/150'),
-              //             backgroundColor: Colors.transparent,
-              //           ),
-              //                 title: Text('I like icecream$index'),
-              //                 subtitle: Text('Icream is good for health'),
-              //                 trailing: Icon(Icons.food_bank),
-              //               );
-              //             });
-              //       },
-              //     );
-              //   }, childCount: 1),
-              // ),
-            ],
+                ///-----------APPBAR-----------------//
+                SliverToBoxAdapter(
+                  child: PostList(
+                    widget.posttitle,
+                    widget.subtitle,
+                    widget.authorposttext,
+                    widget.dateTime,
+                    widget.gallery,
+                    widget.likeCount,
+                    widget.commentCount,
+                    widget.shareCoun,
+                  ),
+                ),
+
+                ///-----------SliverListปิดไปก่อนได้----------------//
+                SliverToBoxAdapter(
+                  child: _buildCommentList(size),
+                ),
+                // SliverList(
+                //   delegate: SliverChildBuilderDelegate((context, index) {
+                //     return Builder(
+                //       builder: (BuildContext context) {
+                //         return ListView.builder(
+                //             physics: ClampingScrollPhysics(),
+                //             shrinkWrap: true,
+                //             padding: const EdgeInsets.all(8.0),
+                //             scrollDirection: Axis.vertical,
+                //             itemCount: 5,
+                //             itemBuilder: (
+                //               BuildContext context,
+                //               int index,
+                //             ) {
+                //               return ListTile(
+
+                //                 leading:  new  CircleAvatar(
+                //             radius: 25.0,
+                //             backgroundImage:
+                //                 NetworkImage('https://via.placeholder.com/150'),
+                //             backgroundColor: Colors.transparent,
+                //           ),
+                //                 title: Text('I like icecream$index'),
+                //                 subtitle: Text('Icream is good for health'),
+                //                 trailing: Icon(Icons.food_bank),
+                //               );
+                //             });
+                //       },
+                //     );
+                //   }, childCount: 1),
+                // ),
+              ],
+            ),
           ),
         ),
       ),
@@ -129,18 +297,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
       int commentCount,
       int shareCount) {
     return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) {
-              return PostDetailsSC(
-                authorposttext: authorposttext,
-              );
-            },
-          ),
-        );
-      },
+      onTap: () {},
       child: Container(
         width: 200,
         color: MColors.containerWhite,
@@ -186,7 +343,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                       fixtextauthor(),
                       Container(
                           width: 240,
-                        child: authorpost(authorposttext, context)),
+                          child: authorpost(authorposttext, context)),
                       texttimetimestamp(dateTime),
                     ],
                   ),
@@ -196,8 +353,71 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: UIlikecommentshear(
-                        context, likeCount, commentCount, shareCount),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            PostButton(
+                              icon: Icon(
+                                Icons.favorite_outline,
+                                color: MColors.primaryBlue,
+                                size: 20.0,
+                              ),
+                              label: '${likeCount.toString()} ถูกใจ',
+                              onTap: () async {
+                                //         HapticFeedback.lightImpact();
+
+                                // var jsonResponse;
+                                // await Api.islike(postid, userid, checktoken)
+                                //     .then((value) => ({
+                                //           jsonResponse = jsonDecode(value.body),
+                                //           print('message${jsonResponse['message']}'),
+                                //           if (value.statusCode == 200)
+                                //             {
+                                //               if (jsonResponse['message'] ==
+                                //                   "Like Post Success")
+                                //                 {
+                                //                   setState(() {
+                                //                     likeCount++;
+                                //                   }),
+                                //                 }
+                                //               else if (jsonResponse['message'] ==
+                                //                   "UnLike Post Success")
+                                //                 {
+                                //                   setState(() {
+                                //                    likeCount--;
+                                //                   }),
+                                //                 }
+                                //             }
+                                //         }));
+                                // print("กดlike");
+                              },
+                            ),
+                            PostButton(
+                              icon: Icon(
+                                MdiIcons.commentOutline,
+                                color: MColors.primaryBlue,
+                                size: 20.0,
+                              ),
+                              label: '$commentCount ความคิดเห็น',
+                              onTap: () => print('Comment'),
+                            ),
+                            PostButton(
+                              icon: Icon(
+                                Icons.share,
+                                color: MColors.primaryBlue,
+                                size: 25.0,
+                              ),
+                              label: '$shareCount แชร์',
+                              onTap: () => print('Share'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   Row(
                     children: [
@@ -216,19 +436,19 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                           width: 300,
                           height: 50,
                           decoration: BoxDecoration(
-                                border: Border.all(color: Color(0xffDEDEDE),),
-
-                                  color: MColors.primaryWhite,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15.0),
-                                      
-                                      ),
-                                ),
+                            border: Border.all(
+                              color: Color(0xffDEDEDE),
+                            ),
+                            color: MColors.primaryWhite,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(15.0),
+                            ),
+                          ),
                           child: TextFormField(
+                            controller: _commentController,
                             onSaved: (String value) {},
                             onChanged: (String value) {
-                              // _commenteditController.text =
-                              //     value;
+                              _commenteditController.text = value;
                               print(value);
                             },
                             // initialValue:
@@ -246,7 +466,23 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                       Icons.send,
                                       color: Colors.black,
                                     ),
-                                    onPressed: () async {},
+                                    onPressed: () async {
+                                      // print("sendcomment");
+                                      print("${widget.id}");
+
+                                      // setState(() {
+                                      //   onref = true;
+                                      // });
+                                      await sendcomment(
+                                          widget.id,
+                                          widget.token,
+                                          _commentController.text,
+                                          widget.userid);
+
+                                      setState(() {
+                                        _commentController.clear();
+                                      });
+                                    },
                                   ),
                                 ],
                               ),
@@ -268,137 +504,144 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
     );
   }
 
-
-
   Widget _buildCommentList(Size size) {
-    return ListView.builder(
+    return StreamBuilder(
+      stream: _postsController.stream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return ListView.builder(
           physics: ClampingScrollPhysics(),
           shrinkWrap: true,
           scrollDirection: Axis.vertical,
-          itemCount: 2,
+          itemCount: listModel.length,
           itemBuilder: (BuildContext context, int index) {
-            return new InkWell(        
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  // widget.data['toCommentID'] == null ? EdgeInsets.all(8.0) : EdgeInsets.fromLTRB(34.0,8.0,8.0,8.0),
-                  child: Stack(
-                    children: <Widget>[
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(6.0, 2.0, 10.0, 2.0),
-                            child: Container(
-                              width: 48,
-                              // widget.data['toCommentID'] == null ? 48 : 40,
-                              height: 48,
-                              // widget.data['toCommentID'] == null ? 48 : 40,
-                              child: CircleAvatar(
-                          radius: 25.0,
-                          backgroundImage:
-                              NetworkImage('https://via.placeholder.com/150'),
-                          backgroundColor: Colors.transparent,
-                        ),
+            var data = listModel[index];
+            var commentid = data.id;
+            _commenteditController.text = data.comment;
+            return new InkWell(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                // widget.data['toCommentID'] == null ? EdgeInsets.all(8.0) : EdgeInsets.fromLTRB(34.0,8.0,8.0,8.0),
+                child: Stack(
+                  children: <Widget>[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(6.0, 2.0, 10.0, 2.0),
+                          child: Container(
+                            width: 48,
+                            // widget.data['toCommentID'] == null ? 48 : 40,
+                            height: 48,
+                            // widget.data['toCommentID'] == null ? 48 : 40,
+                            child: CircleAvatar(
+                              radius: 25.0,
+                              backgroundImage: data.user.imageUrl != null
+                                  ? NetworkImage(
+                                      "https://today-api.moveforwardparty.org/api${data.user.imageUrl}/image")
+                                  : NetworkImage(
+                                      'https://via.placeholder.com/150'),
+                              backgroundColor: Colors.transparent,
                             ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(
-                                         'test',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,color: MColors.primaryBlue),
-                                        ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Text(
+                                        data.user.displayName,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: MColors.primaryBlue),
                                       ),
-                               Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 4.0),
-                                        child: Text(
-                                         'testttttt',
-                                          maxLines: null,
-                                          style: TextStyle(color: MColors.primaryBlue),
-                                        ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 4.0),
+                                      child: Text(
+                                        data.comment,
+                                        maxLines: null,
+                                        style: TextStyle(
+                                            color: MColors.primaryBlue),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                width: size.width - 90,
-                                // widget.size.width- (widget.data['toCommentID'] == null ? 90 : 110),
-                                decoration: BoxDecoration(
-                                border: Border.all(color: Color(0xffDEDEDE),),
-
-                                  color: MColors.primaryWhite,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15.0),
-                                      
-                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 10.0, top: 2.0),
-                                child: Container(
-                                  width: size.width * 0.38,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                           GestureDetector(          
-                                        child: Text(
-                                          'ถูกใจ',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: MColors.primaryBlue),
-
-                                          // style:TextStyle(fontWeight: FontWeight.bold,color:_currentMyData.myLikeCommnetList != null && _currentMyData.myLikeCommnetList.contains(widget.data['commentID']) ? Colors.blue[900] : Colors.grey[700])
-                                        ),
-                                      ),
-                                                      SizedBox(width: 8,),
-
-                                           GestureDetector(          
-                                        child: Text(
-                                          'ตอบกลับ',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: MColors.primaryBlue),
-
-                                          // style:TextStyle(fontWeight: FontWeight.bold,color:_currentMyData.myLikeCommnetList != null && _currentMyData.myLikeCommnetList.contains(widget.data['commentID']) ? Colors.blue[900] : Colors.grey[700])
-                                        ),
-                                      ),
-                                                      SizedBox(width: 8,),
-
-                                      Text('3วัน',style: TextStyle(color: MColors.primaryBlue),),
-                              
-                                    
-
-                             
-
-                                    ],
-                                  ),
+                              width: size.width - 90,
+                              // widget.size.width- (widget.data['toCommentID'] == null ? 90 : 110),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Color(0xffDEDEDE),
+                                ),
+                                color: MColors.primaryWhite,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(15.0),
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-
-                    ],
-                  ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10.0, top: 2.0),
+                              child: Container(
+                                width: size.width * 0.38,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    GestureDetector(
+                                      child: Text(
+                                        'ถูกใจ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: MColors.primaryBlue),
+                                        // style:TextStyle(fontWeight: FontWeight.bold,color:_currentMyData.myLikeCommnetList != null && _currentMyData.myLikeCommnetList.contains(widget.data['commentID']) ? Colors.blue[900] : Colors.grey[700])
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    GestureDetector(
+                                      child: Text(
+                                        'ตอบกลับ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: MColors.primaryBlue),
+                                        // style:TextStyle(fontWeight: FontWeight.bold,color:_currentMyData.myLikeCommnetList != null && _currentMyData.myLikeCommnetList.contains(widget.data['commentID']) ? Colors.blue[900] : Colors.grey[700])
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text(
+                                      TimeUtils.readTimestamp(data
+                                          .createdDate.millisecondsSinceEpoch),
+                                      style:
+                                          TextStyle(color: MColors.primaryBlue),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-               
-                );
+              ),
+            );
           },
         );
+      },
+    );
   }
 }

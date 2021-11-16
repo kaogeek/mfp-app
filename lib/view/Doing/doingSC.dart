@@ -28,7 +28,7 @@ class _DoingSCState extends State<DoingSC> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context),
+              primaryAppBar(context,""),
 
              
               SliverToBoxAdapter(

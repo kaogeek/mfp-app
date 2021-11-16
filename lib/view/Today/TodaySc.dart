@@ -44,14 +44,33 @@ class _TodayScState extends State<TodaySc> {
   List<RecomUserPageModel> listRecomUserPageModel = [];
 
   bool loading = true;
-  var dataht, datapostlist, myuid, dataht1;
+  var dataht, datapostlist, userid, dataht1;
   Future getDataPostListFuture;
   bool isLoading = true;
   bool isLoadingHastag = true;
+  bool fistload = true;
   int _page = 0;
   bool _isLoadMoreRunning = false;
   int _current = 0;
   final CarouselController _controller = CarouselController();
+
+  var checktoken;
+
+  var datagetuserprofile;
+
+  var displayName1;
+
+  var gender;
+
+  var firstName;
+
+  var lastName;
+
+  var id;
+
+  var email;
+
+  var image;
   @override
   void dispose() {
     _trackingScrollController.dispose();
@@ -64,6 +83,20 @@ class _TodayScState extends State<TodaySc> {
     super.initState();
     setState(() {
       _scrollController.addListener(_loadMore);
+      setState(() {
+        Api.gettoke().then((value) => value({
+              checktoken = value,
+              print('checktoken$checktoken'),
+            }));
+
+        Api.getmyuid().then((value) => ({
+              setState(() {
+                userid = value;
+              }),
+              print('myuidhome$userid'),
+            }));
+      });
+
       //   () async {
       //   if (_scrollController.position.pixels ==
       //       _scrollController.position.maxScrollExtent) {
@@ -98,6 +131,28 @@ class _TodayScState extends State<TodaySc> {
       //     });
       //   }
       // });
+      Api.getuserprofile("618e3785ff6acb2b1b2b35d8").then((responseData) => ({
+            if (responseData.statusCode == 200)
+              {
+                datagetuserprofile = jsonDecode(responseData.body),
+                setState(() {
+                  displayName1 = datagetuserprofile["data"]["displayName"];
+                  gender = datagetuserprofile["data"]["gender"];
+                  firstName = datagetuserprofile["data"]["firstName"];
+                  lastName = datagetuserprofile["data"]["lastName"];
+                  id = datagetuserprofile["data"]["id"];
+                  email = datagetuserprofile["data"]["email"];
+                  image = datagetuserprofile["data"]["imageURL"];
+                }),
+                print('displayName1$displayName1'),
+                print('gender$gender'),
+                print('firstName$firstName'),
+                print('lastName$lastName'),
+                print('id$id'),
+                print('email$email'),
+                print('${datagetuserprofile["data"]["username"]}'),
+              }
+          }));
       //-----------------------------//
       Api.getPostemergencyEventsList().then((responseData) => ({
             print('getPostList'),
@@ -128,6 +183,7 @@ class _TodayScState extends State<TodaySc> {
               {
                 setState(() {
                   isLoading = true;
+                  fistload = true;
                 }),
                 datapostlist = jsonDecode(value.body),
                 for (Map i in datapostlist["data"])
@@ -212,6 +268,7 @@ class _TodayScState extends State<TodaySc> {
       listemergencyEvents.clear();
       listModelPostClass.clear();
       listRecomUserPageModel.clear();
+      fistload = true;
     });
     try {
       await Api.getPostemergencyEventsList().then((responseData) => ({
@@ -267,6 +324,7 @@ class _TodayScState extends State<TodaySc> {
       print('AT end');
       setState(() {
         _currentMax = _currentMax + 5;
+        fistload = false;
 
         _isLoadMoreRunning = true; // Display a progress indicator at the bottom
       });
@@ -299,6 +357,7 @@ class _TodayScState extends State<TodaySc> {
 
   @override
   Widget build(BuildContext context) {
+    print('fistload$fistload');
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -323,7 +382,7 @@ class _TodayScState extends State<TodaySc> {
                 //         child: Container(),
                 //       ))
                 //     :
-                primaryAppBar(context),
+                primaryAppBar(context, checktoken),
 
                 ///-----------APPBAR-----------------//
                 isLoadingHastag
@@ -379,11 +438,21 @@ class _TodayScState extends State<TodaySc> {
                                       // }
                                       final nDataList1 =
                                           listModelPostClass[index];
+                                      //   if(fistload==true){
+                                      // if (index == listModelPostClass.length - 3) {
 
+                                      // return  BuildRecommendedUserPage();
+                                      //  }
+                                      // }else{
+                                      //   return SizedBox.shrink();
+                                      // }
                                       if (index ==
-                                          listModelPostClass.length - 2) {
-                                        return BuildRecommendedUserPage();
+                                          listModelPostClass.length - 3) {
+                                        return fistload == true
+                                            ? BuildRecommendedUserPage()
+                                            : SizedBox.shrink();
                                       }
+
                                       //  else {
                                       //   PostList(
                                       //     nDataList1.post.title,
@@ -419,9 +488,9 @@ class _TodayScState extends State<TodaySc> {
                 ///-----------ListViewPost-----------------//
 
                 // /-----------SliverListปิดไปก่อนได้----------------//
-                listModelPostClass.length == 0
-                    ? SliverToBoxAdapter(child: Container())
-                    : SliverToBoxAdapter(child: BuildRecommendedUserPage()),
+                // listModelPostClass.length == 0
+                //     ? SliverToBoxAdapter(child: Container())
+                //     : SliverToBoxAdapter(child: fistload==true? BuildRecommendedUserPage():SizedBox.shrink()),
 
                 if (_isLoadMoreRunning == true)
                   SliverToBoxAdapter(
@@ -633,6 +702,8 @@ class _TodayScState extends State<TodaySc> {
                 commentCount: commentCount,
                 shareCoun: shareCount,
                 id: postid,
+                userid: userid,
+                token: checktoken,
               );
             },
           ),
@@ -666,8 +737,8 @@ class _TodayScState extends State<TodaySc> {
                     children: [
                       fixtextauthor(),
                       Container(
-                        width: 240,
-                        child: authorpost(authorposttext, context)),
+                          width: 240,
+                          child: authorpost(authorposttext, context)),
                       texttimetimestamp(dateTime),
                     ],
                   ),
@@ -678,8 +749,11 @@ class _TodayScState extends State<TodaySc> {
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 10),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             PostButton(
                               icon: Icon(
@@ -687,18 +761,47 @@ class _TodayScState extends State<TodaySc> {
                                 color: MColors.primaryBlue,
                                 size: 20.0,
                               ),
-                              label: '$likeCount ถูกใจ',
-                              onTap: () => print('Like'),
+                              label: '${likeCount.toString()} ถูกใจ',
+                              onTap: () async {
+                                HapticFeedback.lightImpact();
+
+                                var jsonResponse;
+                                await Api.islike(postid, userid, checktoken)
+                                    .then((value) => ({
+                                          jsonResponse = jsonDecode(value.body),
+                                          print(
+                                              'message${jsonResponse['message']}'),
+                                          if (value.statusCode == 200)
+                                            {
+                                              if (jsonResponse['message'] ==
+                                                  "Like Post Success")
+                                                {
+                                                  setState(() {
+                                                    likeCount++;
+                                                  }),
+                                                }
+                                              else if (jsonResponse[
+                                                      'message'] ==
+                                                  "UnLike Post Success")
+                                                {
+                                                  setState(() {
+                                                    likeCount--;
+                                                  }),
+                                                }
+                                            }
+                                        }));
+                                print("กดlike");
+                              },
                             ),
                             PostButton(
-                                icon: Icon(
-                                  MdiIcons.commentOutline,
-                                  color: MColors.primaryBlue,
-                                  size: 20.0,
-                                ),
-                                label: '$commentCount ความคิดเห็น',
-                                onTap: () => print('Comment'),
+                              icon: Icon(
+                                MdiIcons.commentOutline,
+                                color: MColors.primaryBlue,
+                                size: 20.0,
                               ),
+                              label: '$commentCount ความคิดเห็น',
+                              onTap: () => print('Comment'),
+                            ),
                             PostButton(
                               icon: Icon(
                                 Icons.share,
@@ -707,12 +810,9 @@ class _TodayScState extends State<TodaySc> {
                               ),
                               label: '$shareCount แชร์',
                               onTap: () => print('Share'),
-                            )
+                            ),
                           ],
                         ),
-                        // SizedBox(
-                        //   height: 10,
-                        // ),
                       ],
                     ),
                   ),
@@ -795,10 +895,7 @@ class _TodayScState extends State<TodaySc> {
 
   Widget BuildRecommendedUserPage() {
     return InkWell(
-      onTap: (){
-        Navigate.pushPage(context, DTEmergenSc());
-
-      },
+      onTap: () {},
       child: Card(
         child: Container(
           width: double.infinity,
@@ -860,7 +957,8 @@ class _TodayScState extends State<TodaySc> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(25)),
-                                    side: BorderSide(color: MColors.primaryColor),
+                                    side:
+                                        BorderSide(color: MColors.primaryColor),
                                   ),
                                   onPressed: () {},
                                   color: Colors.white,
@@ -916,71 +1014,81 @@ class _TodayScState extends State<TodaySc> {
       items: emc.map((emcs) {
         return Builder(
           builder: (BuildContext context) {
-            return Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  child: Container(
-                    // borderRadius: BorderRadius.circular(10.0),
-                    child: Image.network(
-                      "https://today-api.moveforwardparty.org/api${emcs.coverPageUrl}/image",
-                      filterQuality: FilterQuality.medium,
-                    ),
-                  ),
-                ),
-                Stack(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      height: 50,
-                      color: MColors.primaryColor,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: texthashtags(emcs.title),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(
-                              'ดูเพิ่มเติม >',
-                              style: TextStyle(
-                                fontFamily: 'Anakotmai-Light',
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                color: MColors.primaryWhite,
-                              ),
-                            ),
-                          ),
-                        ],
+            return InkWell(
+              onTap: () {
+                Navigate.pushPage(
+                    context,
+                    DTEmergenSc(
+                      hashtagstitle: emcs.title,
+                      emergencyEventId: emcs.data.emergencyEventId,
+                    ));
+              },
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    child: Container(
+                      // borderRadius: BorderRadius.circular(10.0),
+                      child: Image.network(
+                        "https://today-api.moveforwardparty.org/api${emcs.coverPageUrl}/image",
+                        filterQuality: FilterQuality.medium,
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: emc.asMap().entries.map((entry) {
-                        return GestureDetector(
-                          onTap: () => _controller.animateToPage(entry.key),
-                          child: Container(
-                            width: 8.0,
-                            height: 8.0,
-                            margin: EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 4.0),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: (Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : Colors.black)
-                                    .withOpacity(
-                                        _current == entry.key ? 0.9 : 0.2)),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                  Stack(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 50,
+                        color: MColors.primaryColor,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: texthashtags(emcs.title),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                'ดูเพิ่มเติม >',
+                                style: TextStyle(
+                                  fontFamily: 'Anakotmai-Light',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: MColors.primaryWhite,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: emc.asMap().entries.map((entry) {
+                          return GestureDetector(
+                            onTap: () => _controller.animateToPage(entry.key),
+                            child: Container(
+                              width: 8.0,
+                              height: 8.0,
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 4.0),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: (Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black)
+                                      .withOpacity(
+                                          _current == entry.key ? 0.9 : 0.2)),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             );
           },
         );
