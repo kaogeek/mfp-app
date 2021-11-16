@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
-import 'package:mfp_app/allWidget/allWidget.dart';
 
-class ShopSC extends StatefulWidget {
-  // ShopSC({Key? key}) : super(key: key);
+
+class ProfileSc extends StatefulWidget {
+  ProfileSc({Key key}) : super(key: key);
 
   @override
-  _ShopSCState createState() => _ShopSCState();
+  _ProfileScState createState() => _ProfileScState();
 }
 
-class _ShopSCState extends State<ShopSC> {
+class _ProfileScState extends State<ProfileSc> {
   final TrackingScrollController _trackingScrollController =
       TrackingScrollController();
 

@@ -29,7 +29,7 @@ class _DetilmenuState extends State<Detilmenu> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context),
+              primaryAppBar(context,""),
 
               ///-----------APPBAR-----------------//
 

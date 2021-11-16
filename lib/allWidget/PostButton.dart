@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+
 class PostButton extends StatelessWidget {
   final Icon icon;
   final String label;
@@ -20,29 +21,28 @@ class PostButton extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: Container(
-            // padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            // padding: const EdgeInsets.symmetric(horizontal: 5.0),
             height: 50.0,
             width: double.infinity,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center ,//Center Row contents horizontally,
+crossAxisAlignment: CrossAxisAlignment.center ,//Center Row contents vertically,
               children: [
-                icon,
-                const SizedBox(width: 4.0),
+                Center(child: icon),
+                // const SizedBox(width: 4.0),
                 // Container(
                 //   width: 90,
                 //   child: Text(label, maxLines: 2, overflow: TextOverflow.ellipsis))
 
                 Container(
-                                    width: 90,
-
-                  child: Text(
-              label,
-              style: Theme.of(context).textTheme.subtitle1,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis
-            ),
+                  width: 90,
+                  child: Center(
+                    child: Text(label,
+                        style: Theme.of(context).textTheme.subtitle1,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis),
+                  ),
                 ),
-               
               ],
             ),
           ),
@@ -51,5 +51,3 @@ class PostButton extends StatelessWidget {
     );
   }
 }
-
-
