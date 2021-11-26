@@ -135,6 +135,8 @@ class Gallery {
         this.fileId,
         this.imageUrl,
         this.ordering,
+                this.signUrl,
+
     });
 
     String id;
@@ -142,6 +144,7 @@ class Gallery {
     String fileId;
     String imageUrl;
     int ordering;
+    String signUrl;
 
     factory Gallery.fromJson(Map<String, dynamic> json) => Gallery(
         id: json["_id"],
@@ -149,6 +152,8 @@ class Gallery {
         fileId: json["fileId"],
         imageUrl: json["imageURL"],
         ordering: json["ordering"],
+                signUrl: json["signURL"],
+
     );
 
     Map<String, dynamic> toJson() => {
@@ -157,6 +162,8 @@ class Gallery {
         "fileId": fileId,
         "imageURL": imageUrl,
         "ordering": ordering,
+                "signURL": signUrl,
+
     };
 }
 

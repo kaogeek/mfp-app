@@ -133,6 +133,8 @@ class EmergencyEventsContent {
         this.likeCount,
         this.viewCount,
         this.dateTime,
+                this.data,
+
     });
 
     String coverPageUrl;
@@ -146,6 +148,7 @@ class EmergencyEventsContent {
     int likeCount;
     int viewCount;
     DateTime dateTime;
+    PurpleData data;
 
     factory EmergencyEventsContent.fromJson(Map<String, dynamic> json) => EmergencyEventsContent(
         coverPageUrl: json["coverPageUrl"],
@@ -159,6 +162,8 @@ class EmergencyEventsContent {
         likeCount: json["likeCount"],
         viewCount: json["viewCount"],
         dateTime: DateTime.parse(json["dateTime"]),
+                data: PurpleData.fromJson(json["data"]),
+
     );
 
     Map<String, dynamic> toJson() => {
@@ -174,6 +179,23 @@ class EmergencyEventsContent {
         "likeCount": likeCount,
         "viewCount": viewCount,
         "dateTime": dateTime.toIso8601String(),
+                "data": data.toJson(),
+
+    };
+}
+class PurpleData {
+    PurpleData({
+        this.emergencyEventId,
+    });
+
+    String emergencyEventId;
+
+    factory PurpleData.fromJson(Map<String, dynamic> json) => PurpleData(
+        emergencyEventId: json["emergencyEventId"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "emergencyEventId": emergencyEventId,
     };
 }
 

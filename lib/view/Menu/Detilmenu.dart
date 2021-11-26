@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class Detilmenu extends StatefulWidget {
   // DoingSC({Key? key}) : super(key: key);
@@ -26,22 +27,20 @@ class _DetilmenuState extends State<Detilmenu> {
       color: Colors.white,
       child: SafeArea(
         child: Scaffold(
-          body: CustomScrollView(
-            controller: _trackingScrollController,
-            slivers: [
-              primaryAppBar(context),
+          appBar: AppBar(
 
-              ///-----------APPBAR-----------------//
-
-              ///-----------SliverListปิดไปก่อนได้----------------//
-               
-      //           WebView(
-      //   initialUrl: "https://donation.moveforwardparty.org/donation/",
-      //   javascriptMode: JavascriptMode.unrestricted,
-      // ),
-              
-            ],
+            backgroundColor:Colors.white,
+           iconTheme: IconThemeData(
+    color: Colors.black, //change your color here
+  ),
+            title:Text('บริจาค'),
+      
+        
           ),
+          body:WebView(
+        initialUrl: "https://donation.moveforwardparty.org/donation/",
+        javascriptMode: JavascriptMode.unrestricted,
+      ),
         ),
       ),
     );
