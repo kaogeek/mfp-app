@@ -14,7 +14,9 @@ import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/commentlistmodel.dart';
 import 'package:mfp_app/model/searchpostlistModel.dart';
 import 'package:http/http.dart' as Http;
+import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/utils/timeutils.dart';
+import 'package:mfp_app/view/Auth/login-register.dart';
 
 class PostDetailsSC extends StatefulWidget {
   final String id;
@@ -29,6 +31,7 @@ class PostDetailsSC extends StatefulWidget {
   final int shareCoun;
   final String userid;
   final String token;
+  final String userimage;
 
   const PostDetailsSC(
       {Key key,
@@ -43,7 +46,8 @@ class PostDetailsSC extends StatefulWidget {
       this.commentCount,
       this.shareCoun,
       this.userid,
-      this.token})
+      this.token,
+      this.userimage})
       : super(key: key);
 
   @override
@@ -65,7 +69,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
   List<CommentlistModel> listModel = [];
   TextEditingController _commentController = TextEditingController();
   TextEditingController _commenteditController = TextEditingController();
-
+  bool islike = false;
   bool idedit = false;
   var jsonResponse;
   bool onref = false;
@@ -198,7 +202,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
     if (onref == true) {
       _handleRefresh();
     }
-    print(onref);
+    print('token${widget.token}');
 
     return Container(
       color: Colors.white,
@@ -214,7 +218,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
             child: CustomScrollView(
               controller: _trackingScrollController,
               slivers: [
-                primaryAppBar(context,""),
+                primaryAppBar(context, widget.token, "", widget.userimage),
                 AppBardetail(
                   context,
                   "โพสของ",
@@ -302,20 +306,23 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
         width: 200,
         color: MColors.containerWhite,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             gallery[0].signUrl != null
-                ? CachedNetworkImage(
-                    imageUrl: gallery[0].signUrl,
-                    placeholder: (context, url) =>
-                        new CupertinoActivityIndicator(),
-                    errorWidget: (context, url, error) => Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      ),
-                      child: new Image.network(
-                        gallery[0].signUrl,
-                        filterQuality: FilterQuality.low,
+                ? Hero(
+                    tag: "image"+ gallery[0].signUrl,
+                    child: CachedNetworkImage(
+                      imageUrl: gallery[0].signUrl,
+                      placeholder: (context, url) =>
+                          new CupertinoActivityIndicator(),
+                      errorWidget: (context, url, error) => Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        child: new Image.network(
+                          gallery[0].signUrl,
+                          filterQuality: FilterQuality.low,
+                        ),
                       ),
                     ),
                   )
@@ -341,9 +348,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       fixtextauthor(),
-                      Container(
-                          width: 240,
-                          child: authorpost(authorposttext, context)),
+                      // authorpost(authorposttext, context, dateTime),
                       texttimetimestamp(dateTime),
                     ],
                   ),
@@ -360,42 +365,119 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            PostButton(
-                              icon: Icon(
-                                Icons.favorite_outline,
-                                color: MColors.primaryBlue,
-                                size: 20.0,
-                              ),
-                              label: '${likeCount.toString()} ถูกใจ',
-                              onTap: () async {
-                                //         HapticFeedback.lightImpact();
+                            islike == false
+                                ? PostButton(
+                                    icon: Icon(
+                                      Icons.favorite_outline,
+                                      color: MColors.primaryBlue,
+                                      size: 20.0,
+                                    ),
+                                    label: '$likeCount ถูกใจ',
+                                    onTap: () async {
+                                      HapticFeedback.lightImpact();
 
-                                // var jsonResponse;
-                                // await Api.islike(postid, userid, checktoken)
-                                //     .then((value) => ({
-                                //           jsonResponse = jsonDecode(value.body),
-                                //           print('message${jsonResponse['message']}'),
-                                //           if (value.statusCode == 200)
-                                //             {
-                                //               if (jsonResponse['message'] ==
-                                //                   "Like Post Success")
-                                //                 {
-                                //                   setState(() {
-                                //                     likeCount++;
-                                //                   }),
-                                //                 }
-                                //               else if (jsonResponse['message'] ==
-                                //                   "UnLike Post Success")
-                                //                 {
-                                //                   setState(() {
-                                //                    likeCount--;
-                                //                   }),
-                                //                 }
-                                //             }
-                                //         }));
-                                // print("กดlike");
-                              },
-                            ),
+                                      var jsonResponse;
+                                      widget.token == "" || widget.token == null
+                                          ? Navigate.pushPage(
+                                              context, Loginregister())
+                                          : await Api.islike(widget.id,
+                                                  widget.userid, widget.token)
+                                              .then((value) => ({
+                                                    jsonResponse =
+                                                        jsonDecode(value.body),
+                                                    print(
+                                                        'message${jsonResponse['message']}'),
+                                                    if (value.statusCode == 200)
+                                                      {
+                                                        if (jsonResponse[
+                                                                'message'] ==
+                                                            "Like Post Success")
+                                                          {
+                                                            setState(() {
+                                                              islike =
+                                                                  jsonResponse[
+                                                                          'data']
+                                                                      [
+                                                                      'isLike'];
+
+                                                              likeCount++;
+                                                            }),
+                                                          }
+                                                        else if (jsonResponse[
+                                                                'message'] ==
+                                                            "UnLike Post Success")
+                                                          {
+                                                            setState(() {
+                                                              islike =
+                                                                  jsonResponse[
+                                                                          'data']
+                                                                      [
+                                                                      'isLike'];
+
+                                                              likeCount--;
+                                                            }),
+                                                          }
+                                                      }
+                                                  }));
+                                      print("กดlike");
+                                    },
+                                  )
+                                : PostButton(
+                                    icon: Icon(
+                                      Icons.favorite,
+                                      color: MColors.primaryBlue,
+                                      size: 20.0,
+                                    ),
+                                    label: '$likeCount ถูกใจ',
+                                    onTap: () async {
+                                      HapticFeedback.lightImpact();
+
+                                      var jsonResponse;
+                                      widget.token == null
+                                          ? Navigate.pushPage(
+                                              context, Loginregister())
+                                          : await Api.islike(widget.id,
+                                                  widget.userid, widget.token)
+                                              .then((value) => ({
+                                                    jsonResponse =
+                                                        jsonDecode(value.body),
+                                                    print(
+                                                        'message${jsonResponse['message']}'),
+                                                    if (value.statusCode == 200)
+                                                      {
+                                                        if (jsonResponse[
+                                                                'message'] ==
+                                                            "Like Post Success")
+                                                          {
+                                                            setState(() {
+                                                              islike =
+                                                                  jsonResponse[
+                                                                          'data']
+                                                                      [
+                                                                      'isLike'];
+
+                                                              likeCount++;
+                                                            }),
+                                                          }
+                                                        else if (jsonResponse[
+                                                                'message'] ==
+                                                            "UnLike Post Success")
+                                                          {
+                                                            setState(() {
+                                                              islike =
+                                                                  jsonResponse[
+                                                                          'data']
+                                                                      [
+                                                                      'isLike'];
+
+                                                              likeCount--;
+                                                            }),
+                                                          }
+                                                      }
+                                                  }));
+                                      print("กดlike");
+                                    },
+                                  ),
                             PostButton(
                               icon: Icon(
                                 MdiIcons.commentOutline,
@@ -419,79 +501,85 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                       ],
                     ),
                   ),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: CircleAvatar(
-                          radius: 25.0,
-                          backgroundImage:
-                              NetworkImage('https://via.placeholder.com/150'),
-                          backgroundColor: Colors.transparent,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4.0),
-                        child: Container(
-                          width: 300,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Color(0xffDEDEDE),
-                            ),
-                            color: MColors.primaryWhite,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(15.0),
-                            ),
-                          ),
-                          child: TextFormField(
-                            controller: _commentController,
-                            onSaved: (String value) {},
-                            onChanged: (String value) {
-                              _commenteditController.text = value;
-                              print(value);
-                            },
-                            // initialValue:
-                            //     _commenteditController.text,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(20.0),
-                              hintText: "เขียนความคิดเห็น",
-                              suffixIcon: Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween, // added line
-                                mainAxisSize: MainAxisSize.min, // added line
-                                children: <Widget>[
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.send,
-                                      color: Colors.black,
-                                    ),
-                                    onPressed: () async {
-                                      // print("sendcomment");
-                                      print("${widget.id}");
-
-                                      // setState(() {
-                                      //   onref = true;
-                                      // });
-                                      await sendcomment(
-                                          widget.id,
-                                          widget.token,
-                                          _commentController.text,
-                                          widget.userid);
-
-                                      setState(() {
-                                        _commentController.clear();
-                                      });
-                                    },
-                                  ),
-                                ],
+                  widget.token == "" || widget.token == null
+                      ? Container()
+                      : Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: CircleAvatar(
+                                radius: 25.0,
+                                backgroundImage: widget.userimage != null
+                                    ? NetworkImage(
+                                        'https://today-api.moveforwardparty.org/api${widget.userimage}/image')
+                                    : NetworkImage(
+                                        'https://via.placeholder.com/150'),
+                                backgroundColor: Colors.transparent,
                               ),
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4.0),
+                              child: Container(
+                                width: 300,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Color(0xffDEDEDE),
+                                  ),
+                                  color: MColors.primaryWhite,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(15.0),
+                                  ),
+                                ),
+                                child: TextFormField(
+                                  controller: _commentController,
+                                  onSaved: (String value) {},
+                                  onChanged: (String value) {
+                                    _commenteditController.text = value;
+                                    print(value);
+                                  },
+                                  // initialValue:
+                                  //     _commenteditController.text,
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(20.0),
+                                    hintText: "เขียนความคิดเห็น",
+                                    suffixIcon: Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceBetween, // added line
+                                      mainAxisSize:
+                                          MainAxisSize.min, // added line
+                                      children: <Widget>[
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.send,
+                                            color: Colors.black,
+                                          ),
+                                          onPressed: () async {
+                                            // print("sendcomment");
+                                            print("${widget.id}");
+
+                                            // setState(() {
+                                            //   onref = true;
+                                            // });
+                                            await sendcomment(
+                                                widget.id,
+                                                widget.token,
+                                                _commentController.text,
+                                                widget.userid);
+
+                                            setState(() {
+                                              _commentController.clear();
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),

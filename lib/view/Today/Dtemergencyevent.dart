@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mfp_app/Api/Api.dart';
 
 import 'package:mfp_app/allWidget/allWidget.dart';
@@ -14,10 +15,14 @@ import 'package:mfp_app/model/searchpostlistModel.dart';
 class DTEmergenSc extends StatefulWidget {
   final String hashtagstitle;
   final String emergencyEventId;
+  final String userimage;
+  final String token;
   const DTEmergenSc({
     Key key,
     this.hashtagstitle,
     this.emergencyEventId,
+    this.userimage,
+    this.token,
   }) : super(key: key);
 
   @override
@@ -117,27 +122,28 @@ class _DTemergenScState extends State<DTEmergenSc> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context,""),
-              AppBardetail( context, 
-              "เหตุการณ์ด่วน ${widget.hashtagstitle}",
-               "",
-               IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: MColors.primaryColor,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),),
+              primaryAppBar(context, widget.token, "", widget.userimage),
+              AppBardetail(
+                context,
+                "เหตุการณ์ด่วน ${widget.hashtagstitle}",
+                "",
+                IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: MColors.primaryColor,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
               SliverToBoxAdapter(
                 child: FutureBuilder(
                   future: Future.wait([getDataList]),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(child: CupertinoActivityIndicator());
-                            }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CupertinoActivityIndicator());
+                    }
                     return Builder(
                       builder: (BuildContext context) {
                         return ListView.builder(
@@ -157,7 +163,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                                 nDataList1.hashTagName,
                                 nDataList1.coverPageUrl,
                                 nDataList1.title,
-                            
                               );
                             });
                       },
@@ -178,93 +183,158 @@ class _DTemergenScState extends State<DTEmergenSc> {
                       future: Future.wait([getDataList]),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         return GridView.builder(
-                                                  physics: NeverScrollableScrollPhysics(),
-
+                          physics: NeverScrollableScrollPhysics(),
                           itemCount: listeNeedModel.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2),
                           itemBuilder: (BuildContext context, int index) {
                             var e = listeNeedModel[index];
+
                             return Container(
                               color: Color(0xffF8F8F8),
-                              child: new Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, bottom: 15),
-                                child: Container(
-                                  color: Colors.white,
+                              child: Container(
+                                color: Colors.white,
+                                width: 170,
 
-                                  width: 170,
-                                  height: 200,
-                                  // alignment: Alignment.center,
-                                  child: Column(
-                                    children: [
-                                      e.standardItem.imageUrl != null
-                                          ? new CachedNetworkImage(
-                                              imageUrl:
-                                                  "https://today-api.moveforwardparty.org/api${e.standardItem.imageUrl}/image",
-                                              placeholder: (context, url) =>
-                                                  new CupertinoActivityIndicator(),
-                                              errorWidget: (context, url,
-                                                      error) =>
-                                                  Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    8)),
-                                                      ),
-                                                      child: new Image.asset(
-                                                          'images/placeholder.png')),
-                                            )
-                                          : new SizedBox.shrink(),
-                                      Container(
-                                        alignment: Alignment.topRight,
-                                        child: Text(
-                                            '${e.quantity}/ ${e.fulfillQuantity}'),
+                                // height: MediaQuery.of(context).size.height / 2.0,
+                                // alignment: Alignment.center,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      child: new SvgPicture.network(
+                                        'https://today.moveforwardparty.org/assets/img/customize_item.svg',
+                                        width: 70,
+                                        height: 70,
+                                        semanticsLabel: 'A shark?!',
+                                        placeholderBuilder:
+                                            (BuildContext context) => Container(
+                                                padding:
+                                                    const EdgeInsets.all(30.0),
+                                                child:
+                                                    const CupertinoActivityIndicator()),
                                       ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .spaceBetween, //Center Row contents horizontally,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 5),
-                                            child: Text(
-                                                '${e.name == null ? "" : e.name}'),
-                                          ),
-                                          Text('${e.unit}'),
-                                        ],
+                                    ),
+
+                                    // Image.network("https://today-api.moveforwardparty.org/api/file/6034a808e1e737658b221294/image"),
+                                    // e.standardItem.imageUrl != null
+                                    //     ? new Image.network("https://today.moveforwardparty.org/assets/img/customize_item.svg")
+                                    //     // CachedNetworkImage(
+                                    //     //     imageUrl:
+                                    //     //         "https://today-api.moveforwardparty.org/api/file/6034a808e1e737658b221294/image",
+                                    //     //     placeholder: (context, url) =>
+                                    //     //         new CupertinoActivityIndicator(),
+                                    //     //     errorWidget: (context, url,
+                                    //     //             error) =>
+                                    //     //         Container(
+                                    //     //             decoration: BoxDecoration(
+                                    //     //               borderRadius:
+                                    //     //                   BorderRadius.all(
+                                    //     //                       Radius.circular(
+                                    //     //                           8)),
+                                    //     //             ),
+                                    //     //             child: new Image.asset(
+                                    //     //                 'images/placeholder.png')),
+                                    //     //   )
+                                    //     : new Image.network(
+                                    //         'https://today.moveforwardparty.org/assets/img/customize_item.svg'),
+                                    Container(
+                                      alignment: Alignment.topRight,
+                                      child: Text(
+                                        '${e.quantity}/ ${e.fulfillQuantity}',
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 10),
-                                        child: Container(
-                                          width: 150,
-                                          height: 27,
-                                          // color: Colors.green,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(8)),
-                                          ),
-                                          child: TextButton(
-                                            style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all<
-                                                      Color>(Colors.green),
-                                            ),
-                                            child: Text(
-                                              'เติมเต็ม',
-                                              style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  color: MColors.primaryWhite),
-                                            ),
-                                            onPressed: () {},
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceBetween, //Center Row contents horizontally,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 5),
+                                          child: Text(
+                                            '${e.name == null ? "" : e.name}',
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                
+                                        Text(
+                                          '${e.unit}',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                        ),
+                                      ],
+                                    ),
+                                    e.active == true
+                                        ? Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 10),
+                                            child: Container(
+                                              width: 150,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  24.0,
+                                              // color: Colors.green,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(8)),
+                                              ),
+                                              child: TextButton(
+                                                style: ButtonStyle(
+                                                  padding: MaterialStateProperty
+                                                      .all<EdgeInsets>(
+                                                          EdgeInsets.only(
+                                                              bottom: 0)),
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                          Color>(Colors.green),
+                                                ),
+                                                child: Text(
+                                                  'เติมเต็ม',
+                                                  style: TextStyle(
+                                                      fontSize: 13.0,
+                                                      color:
+                                                          MColors.primaryWhite),
+                                                ),
+                                                onPressed: () {},
+                                              ),
+                                            ),
+                                          )
+                                        : Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 10),
+                                            child: Container(
+                                              width: 150,
+                                              height: 27,
+                                              // color: Colors.green,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(8)),
+                                              ),
+                                              child: TextButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                              Color>(
+                                                          Colors.green
+                                                              .withOpacity(
+                                                                  0.2)),
+                                                ),
+                                                child: Text(
+                                                  'เติมเต็ม',
+                                                  style: TextStyle(
+                                                      fontSize: 11.0,
+                                                      color:
+                                                          MColors.primaryWhite),
+                                                ),
+                                                onPressed: () {},
+                                              ),
+                                            ),
+                                          ),
+                                  ],
                                 ),
                               ),
                             );
@@ -276,8 +346,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                   childCount: 1,
                 ),
               ),
-
-
               SliverToBoxAdapter(
                   child: SizedBox(
                 height: 15,
@@ -301,7 +369,7 @@ class _DTemergenScState extends State<DTEmergenSc> {
                         style: TextStyle(
                             fontSize: 22.0, color: MColors.primaryColor),
                       ),
-                      onPressed: () {},
+                      onPressed: null,
                     ),
                   ),
                 ),
@@ -310,7 +378,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                   child: SizedBox(
                 height: 100,
               )),
-
             ],
           ),
         ),
@@ -410,7 +477,7 @@ class _DTemergenScState extends State<DTEmergenSc> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    nDataList1.fulfillmentCount.toString(),
+                                    nDataList1.followedCount.toString(),
                                     style: TextStyle(
                                         fontSize: 33,
                                         color: MColors.primaryBlue),
@@ -468,7 +535,7 @@ class _DTemergenScState extends State<DTEmergenSc> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'ติดตาม',
+                      'พูดถึง',
                       style: TextStyle(fontSize: 15),
                     ),
                   ),
@@ -482,7 +549,7 @@ class _DTemergenScState extends State<DTEmergenSc> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'ติดตาม',
+                      'แชร์',
                       style: TextStyle(fontSize: 15),
                     ),
                   ),

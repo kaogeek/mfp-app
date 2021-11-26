@@ -28,6 +28,10 @@ class AppTheme {
  static const LargeTextSize = 20.0;
 static const MediumTextSize = 20.0 ;
 static const BodyTextSize = 18.0 ;
+static const BodyTextSize16 = 16.0 ;
+static const BodyTextSize24 = 24.0 ;
+static const BodyTextSize20 = 20.0 ;
+
 static const SmallTextSize = 14.0 ;
 static const TitleTextSize= 23.0;
 

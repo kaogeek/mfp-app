@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mfp_app/constants/colors.dart';
 
 class CircleButton extends StatelessWidget {
   final IconData icon;
@@ -20,7 +21,10 @@ class CircleButton extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: IconButton(
-        icon: Icon(icon),
+        icon: Icon(
+          icon,
+          color: MColors.primaryBlue,
+        ),
         iconSize: iconSize,
         color: Colors.black,
         onPressed: onPressed,

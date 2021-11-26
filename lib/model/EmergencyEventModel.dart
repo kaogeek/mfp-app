@@ -369,7 +369,7 @@ class StandardItem {
         id: json["_id"],
         name: json["name"],
         unit: json["unit"],
-        imageUrl: json["imageURL"]??"",
+        imageUrl: json["imageURL"],
         category: json["category"],
         createdDate: DateTime.parse(json["createdDate"]),
     );

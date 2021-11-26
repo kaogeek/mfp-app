@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/utils/app_theme.dart';
 
 class CustomTabBar extends StatelessWidget {
   final List<IconData> icons;
+  final List<String> iconsimage;
+
   final int selectedIndex;
   final Function(int) onTap;
   final bool isBottomIndicator;
-  final String lable;
+  final List lable;
 
   CustomTabBar({
     Key key,
@@ -15,6 +18,7 @@ class CustomTabBar extends StatelessWidget {
     @required this.onTap,
     this.isBottomIndicator = false,
     @required this.lable,
+    this.iconsimage,
   }) : super(key: key);
 
   final List<Tab> _tabs = [
@@ -56,9 +60,9 @@ class CustomTabBar extends StatelessWidget {
                 ),
               ),
       ),
-      labelStyle: TextStyle(
-        fontSize: 14,
-      ),
+      labelStyle:
+          TextStyle(fontSize: 12, fontFamily: AppTheme.FontAnakotmaiMedium),
+      labelColor: Colors.black,
       tabs:
           // _tabs,
           icons
@@ -66,15 +70,24 @@ class CustomTabBar extends StatelessWidget {
               .map((i, e) => MapEntry(
                     i,
                     Tab(
-                      iconMargin: EdgeInsets.only(bottom: 2.0),
+                      iconMargin: EdgeInsets.only(bottom: 10.0),
                       // text: "data",
-                      icon: Icon(
-                        e,
+                      icon: Image.asset(
+                        iconsimage[i],
                         color: i == selectedIndex
                             ? MColors.primaryColor
                             : Colors.grey[500],
-                        size: 30.0,
+                        width: 21,
+                        height: 21,
                       ),
+                      // Icon(
+                      //   e,
+                      //   color: i == selectedIndex
+                      //       ? MColors.primaryColor
+                      //       : Colors.grey[500],
+                      //   size: 30.0,
+                      // ),
+                      text: lable[i],
                     ),
                   ))
               .values
