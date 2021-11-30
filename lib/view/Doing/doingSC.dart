@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/view/Profile/Profile.dart';
+import 'package:mfp_app/view/Search/Search.dart';
 
 class DoingSC extends StatefulWidget {
   // DoingSC({Key? key}) : super(key: key);
@@ -13,6 +16,12 @@ class _DoingSCState extends State<DoingSC> {
   final TrackingScrollController _trackingScrollController =
       TrackingScrollController();
 
+  var token;
+
+  var userid;
+
+  var userimageUrl;
+
   @override
   void dispose() {
     _trackingScrollController.dispose();
@@ -20,7 +29,35 @@ class _DoingSCState extends State<DoingSC> {
   }
 
   @override
+  void initState() {
+    print('initState');
+    super.initState();
+    setState(() {
+      Api.gettoke().then((value) => value({
+            token = value,
+            print('token$token'),
+          }));
+
+      Api.getmyuid().then((value) => ({
+            setState(() {
+              userid = value;
+            }),
+            print('userid$userid'),
+          }));
+      Api.getimageURL().then((value) => ({
+            setState(() {
+              userimageUrl = value;
+            }),
+            print('userimageUrl$userimageUrl'),
+          }));
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var hight = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -28,9 +65,14 @@ class _DoingSCState extends State<DoingSC> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context),
-
-             
+              primaryAppBar(context, token, userid, userimageUrl,Search(
+              userid: userid,
+            ),
+            true,
+                    ProfileSc(
+                      userid:userid,
+                      token:   token,
+                    )),
               SliverToBoxAdapter(
                 child: Container(
                   color: primaryColor,
@@ -39,6 +81,7 @@ class _DoingSCState extends State<DoingSC> {
                     padding: const EdgeInsets.all(15.0),
                     child: Text(
                       'สิ่งที่ "พรรคก้าวไกล" กำลังทำอยู่',
+                      maxLines: 2,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.white,
@@ -49,13 +92,14 @@ class _DoingSCState extends State<DoingSC> {
                   ),
                 ),
               ),
-
               SliverToBoxAdapter(
-                child: Container(color: Colors.white,
+                child: Container(
+                  color: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: Text(
                       'สิ่งที่กำลังทำใน 1 เดือนที่ผ่านมา',
+                      maxLines: 2,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                           color: MColors.primaryBlue,
@@ -66,19 +110,19 @@ class _DoingSCState extends State<DoingSC> {
                   ),
                 ),
               ),
-
               SliverToBoxAdapter(
                 child: Center(
-                  child: Container(color: Colors.white,
+                  child: Container(
+                    color: Colors.white,
                     child: Padding(
-                      padding: const EdgeInsets.all(18.0),
+                      padding: const EdgeInsets.only(left: 19, top: 8),
                       child: Column(
                         children: [
                           Row(
                             children: [
                               Container(
-                                width: 170,
-                                height: 145,
+                                width: width / 2.3,
+                                height: hight / 5.4,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     color: Colors.grey[100],
@@ -90,25 +134,24 @@ class _DoingSCState extends State<DoingSC> {
                                       ),
                                     ]),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
+                                  padding: const EdgeInsets.only(top: 15.0),
                                   child: Column(
                                     children: [
                                       CircleAvatar(
-                                radius: 40.0,
-                                backgroundImage: NetworkImage(
-                                    'https://via.placeholder.com/150'),
-                                backgroundColor: Colors.transparent,
-                              ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 10),
-                                        child: Text(
-                                          '#WaterBank',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Anakotmai-Bold',
-                                              fontSize: 14),
-                                        ),
+                                        radius: 40.0,
+                                        backgroundImage: NetworkImage(
+                                            'https://via.placeholder.com/150'),
+                                        backgroundColor: Colors.transparent,
+                                      ),
+                                      Text(
+                                        '#WaterBank',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.clip,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Anakotmai-Bold',
+                                            fontSize: 14),
                                       ),
                                     ],
                                   ),
@@ -118,8 +161,8 @@ class _DoingSCState extends State<DoingSC> {
                                 width: 12.0,
                               ),
                               Container(
-                                width: 170,
-                                height: 145,
+                                width: width / 2.3,
+                                height: hight / 5.4,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     color: Colors.grey[100],
@@ -131,25 +174,23 @@ class _DoingSCState extends State<DoingSC> {
                                       ),
                                     ]),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
+                                  padding: const EdgeInsets.only(top: 15.0),
                                   child: Column(
                                     children: [
-                                       CircleAvatar(
-                                radius: 40.0,
-                                backgroundImage: NetworkImage(
-                                    'https://via.placeholder.com/150'),
-                                backgroundColor: Colors.transparent,
-                              ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 10),
-                                        child: Text(
-                                          '# WALKTODAY',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Anakotmai-Bold',
-                                              fontSize: 14),
-                                        ),
+                                      CircleAvatar(
+                                        radius: 40.0,
+                                        backgroundImage: NetworkImage(
+                                            'https://via.placeholder.com/150'),
+                                        backgroundColor: Colors.transparent,
+                                      ),
+                                      Text(
+                                        '# WALKTODAY',
+                                        maxLines: 2,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Anakotmai-Bold',
+                                            fontSize: 14),
                                       ),
                                     ],
                                   ),
@@ -163,8 +204,8 @@ class _DoingSCState extends State<DoingSC> {
                           Row(
                             children: [
                               Container(
-                                width: 170,
-                                height: 145,
+                                width: width / 2.3,
+                                height: hight / 5.4,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     color: Colors.grey[100],
@@ -176,25 +217,24 @@ class _DoingSCState extends State<DoingSC> {
                                       ),
                                     ]),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
+                                  padding: const EdgeInsets.only(top: 15.0),
                                   child: Column(
                                     children: [
                                       CircleAvatar(
-                                radius: 40.0,
-                                backgroundImage: NetworkImage(
-                                    'https://via.placeholder.com/150'),
-                                backgroundColor: Colors.transparent,
-                              ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 10),
-                                        child: Text(
-                                          'มอบแรงใจสู้แรงงาน',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Anakotmai-Bold',
-                                              fontSize: 14),
-                                        ),
+                                        radius: 40.0,
+                                        backgroundImage: NetworkImage(
+                                            'https://via.placeholder.com/150'),
+                                        backgroundColor: Colors.transparent,
+                                      ),
+                                      Text(
+                                        'มอบแรงใจสู้แรงงาน',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.clip,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Anakotmai-Bold',
+                                            fontSize: 14),
                                       ),
                                     ],
                                   ),
@@ -204,8 +244,8 @@ class _DoingSCState extends State<DoingSC> {
                                 width: 12.0,
                               ),
                               Container(
-                                width: 170,
-                                height: 145,
+                                width: width / 2.3,
+                                height: hight / 5.4,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     color: Colors.grey[100],
@@ -217,25 +257,23 @@ class _DoingSCState extends State<DoingSC> {
                                       ),
                                     ]),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
+                                  padding: const EdgeInsets.only(top: 15.0),
                                   child: Column(
                                     children: [
                                       CircleAvatar(
-                                radius: 40.0,
-                                backgroundImage: NetworkImage(
-                                    'https://via.placeholder.com/150'),
-                                backgroundColor: Colors.transparent,
-                              ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 10),
-                                        child: Text(
-                                          'ชุดยังชีพ',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Anakotmai-Bold',
-                                              fontSize: 14),
-                                        ),
+                                        radius: 40.0,
+                                        backgroundImage: NetworkImage(
+                                            'https://via.placeholder.com/150'),
+                                        backgroundColor: Colors.transparent,
+                                      ),
+                                      Text(
+                                        'ชุดยังชีพ',
+                                        maxLines: 2,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Anakotmai-Bold',
+                                            fontSize: 14),
                                       ),
                                     ],
                                   ),
@@ -258,13 +296,14 @@ class _DoingSCState extends State<DoingSC> {
                 height: 10,
                 thickness: 6,
               )),
-
-               SliverToBoxAdapter(
-                   child: Container(color: Colors.white,
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.white,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 20,left: 20),
+                    padding: const EdgeInsets.only(top: 20, left: 20),
                     child: Text(
                       'สิ่งที่ทำที่เคยทำมา',
+                      maxLines: 2,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                           color: MColors.primaryBlue,
@@ -273,17 +312,17 @@ class _DoingSCState extends State<DoingSC> {
                           fontSize: 17),
                     ),
                   ),
-                ),),
-
+                ),
+              ),
               SliverToBoxAdapter(
-                child: Container(color: Colors.white,
+                child: Container(
+                  color: Colors.white,
                   child: Column(
                     children: <Widget>[
-                     
                       Container(
                         margin: EdgeInsets.all(16),
-                        width: 350,
-                        height: 110,
+                        width: width,
+                        height: hight / 7.0,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: Colors.grey[50],
@@ -312,6 +351,7 @@ class _DoingSCState extends State<DoingSC> {
                                 children: <Widget>[
                                   Text(
                                     '#พรบจัดสรร',
+                                    maxLines: 2,
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold,
@@ -323,13 +363,13 @@ class _DoingSCState extends State<DoingSC> {
                                   ),
                                   Text(
                                     '#ร่างพระราชบัญญัการจัดสรรที่ดิน\n(ฉบับที่..) พ.ศ. ....',
+                                    maxLines: 2,
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 12,
                                       fontFamily: 'Anakotmai',
                                     ),
                                   ),
-                                 
                                 ],
                               ),
                             )
@@ -340,13 +380,12 @@ class _DoingSCState extends State<DoingSC> {
                   ),
                 ),
               ),
- SliverToBoxAdapter(
+              SliverToBoxAdapter(
                   child: Divider(
                 color: Colors.transparent,
                 height: 10,
                 thickness: 6.0,
               )),
-           
             ],
           ),
         ),
