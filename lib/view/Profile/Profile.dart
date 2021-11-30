@@ -7,6 +7,7 @@ import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
+import 'package:mfp_app/view/Search/Search.dart';
 
 class ProfileSc extends StatefulWidget {
   final String userid;
@@ -88,7 +89,16 @@ class _ProfileScState extends State<ProfileSc> {
               body: CustomScrollView(
                 controller: _trackingScrollController,
                 slivers: [
-                  primaryAppBar(context, widget.token, widget.userid, image),
+                  primaryAppBar(
+                      context,
+                      widget.token,
+                      widget.userid,
+                      image,
+                      Search(
+                        userid: id,
+                      ),
+                      true,
+                    null),
                   SliverToBoxAdapter(
                       child: Divider(
                     color: Colors.transparent,
@@ -288,6 +298,8 @@ class _ProfileScState extends State<ProfileSc> {
                               children: <Widget>[
                                 Text(
                                   'ยังไม่ได้เป็นสมาชิก',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     color: primaryColor,
                                     fontSize: AppTheme.BodyTextSize,

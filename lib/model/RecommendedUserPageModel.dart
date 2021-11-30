@@ -22,6 +22,7 @@ class RecomUserPageModel {
         this.name,
         this.pageUsername,
         this.isOfficial,
+         this.isFollow,
     });
 
     String id;
@@ -35,6 +36,7 @@ class RecomUserPageModel {
     String name;
     String pageUsername;
     bool isOfficial;
+    bool isFollow;
 
     factory RecomUserPageModel.fromJson(Map<String, dynamic> json) => RecomUserPageModel(
         id: json["_id"],
@@ -48,6 +50,8 @@ class RecomUserPageModel {
         name: json["name"] == null ? null : json["name"],
         pageUsername: json["pageUsername"] == null ? null : json["pageUsername"],
         isOfficial: json["isOfficial"] == null ? null : json["isOfficial"],
+                isFollow: json["isFollow"] == null ? null : json["isFollow"],
+
     );
 
     Map<String, dynamic> toJson() => {
@@ -62,5 +66,7 @@ class RecomUserPageModel {
         "name": name == null ? null : name,
         "pageUsername": pageUsername == null ? null : pageUsername,
         "isOfficial": isOfficial == null ? null : isOfficial,
+                "isFollow": isFollow == null ? null : isFollow,
+
     };
 }

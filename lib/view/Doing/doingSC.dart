@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/view/Profile/Profile.dart';
+import 'package:mfp_app/view/Search/Search.dart';
 
 class DoingSC extends StatefulWidget {
   // DoingSC({Key? key}) : super(key: key);
@@ -63,7 +65,14 @@ class _DoingSCState extends State<DoingSC> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context, token, userid, userimageUrl),
+              primaryAppBar(context, token, userid, userimageUrl,Search(
+              userid: userid,
+            ),
+            true,
+                    ProfileSc(
+                      userid:userid,
+                      token:   token,
+                    )),
               SliverToBoxAdapter(
                 child: Container(
                   color: primaryColor,

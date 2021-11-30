@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfp_app/utils/app_theme.dart';
+import 'package:mfp_app/view/Auth/register-pass.dart';
 
 class Register extends StatefulWidget {
   Register({Key key}) : super(key: key);
@@ -135,7 +136,10 @@ class _RegisterState extends State<Register> {
                         textColor: Colors.white,
                         color: Colors.orange[400],
                         onPressed: () {
-                          print('กด');
+                            Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Registerpassword()),
+                );
                         },
                       ),
                     )

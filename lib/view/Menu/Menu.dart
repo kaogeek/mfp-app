@@ -5,6 +5,8 @@ import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/view/Menu/Detilmenu.dart';
+import 'package:mfp_app/view/Profile/Profile.dart';
+import 'package:mfp_app/view/Search/Search.dart';
 
 class MenuSC extends StatefulWidget {
   // MenuSC({Key? key}) : super(key: key);
@@ -63,7 +65,13 @@ class _MenuSCState extends State<MenuSC> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context, token, userid, userimageUrl),
+              primaryAppBar(context, token, userid, userimageUrl,Search(
+              userid: userid,
+            ),true,
+                    ProfileSc(
+                      userid:  userid,
+                      token:   token,
+                    )),
               SliverToBoxAdapter(
                 child: Container(
                   child: Padding(

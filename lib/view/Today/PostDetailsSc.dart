@@ -17,6 +17,8 @@ import 'package:http/http.dart' as Http;
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/utils/timeutils.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
+import 'package:mfp_app/view/Profile/Profile.dart';
+import 'package:mfp_app/view/Search/Search.dart';
 
 class PostDetailsSC extends StatefulWidget {
   final String id;
@@ -26,14 +28,20 @@ class PostDetailsSC extends StatefulWidget {
   final String subtitle;
   final DateTime dateTime;
   final List<Gallery> gallery;
-  final int likeCount;
+ int likeCount;
   final int commentCount;
   final int shareCoun;
   final String userid;
   final String token;
   final String userimage;
+final String pageid;
+ final    String pageimage;
+ final   String pagename;
+  final   bool isFollow;
+ final   String pageUsername;
+  final  bool isOfficial;
 
-  const PostDetailsSC(
+   PostDetailsSC(
       {Key key,
       this.id,
       this.image,
@@ -47,7 +55,7 @@ class PostDetailsSC extends StatefulWidget {
       this.shareCoun,
       this.userid,
       this.token,
-      this.userimage})
+      this.userimage, this.pageid, this.pageimage, this.pagename, this.isFollow, this.pageUsername, this.isOfficial})
       : super(key: key);
 
   @override
@@ -218,7 +226,13 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
             child: CustomScrollView(
               controller: _trackingScrollController,
               slivers: [
-                primaryAppBar(context, widget.token, "", widget.userimage),
+                primaryAppBar(context, widget.token, "", widget.userimage, Search(
+              userid: widget.userid,
+            ),true,
+                    ProfileSc(
+                      userid:  widget.userid,
+                      token:   widget.token,
+                    )),
                 AppBardetail(
                   context,
                   "โพสของ",
@@ -245,6 +259,13 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     widget.likeCount,
                     widget.commentCount,
                     widget.shareCoun,
+                   widget.id,
+                     widget     .pageimage,
+                    widget      .pagename,
+                     widget     .isFollow,
+                     widget     .pageUsername,
+                     widget     .isOfficial,
+                     
                   ),
                 ),
 
@@ -299,7 +320,13 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
       List<Gallery> gallery,
       int likeCount,
       int commentCount,
-      int shareCount) {
+      int shareCount,
+       String pageid,
+    String pageimage,
+    String pagename,
+    bool isFollow,
+    String pageUsername,
+    bool isOfficial) {
     return InkWell(
       onTap: () {},
       child: Container(
@@ -348,8 +375,21 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       fixtextauthor(),
-                      // authorpost(authorposttext, context, dateTime),
+                    authorpost(
+                          authorposttext,
+                          context,
+                          dateTime,
+                          pageid,
+                          pageimage,
+                          pagename,
+                          isFollow,
+                          pageUsername,
+                          isOfficial,widget.userid),
+                      SizedBox(
+                        width: 2,
+                      ),
                       texttimetimestamp(dateTime),
+                      // texttimetimestamp(dateTime),
                     ],
                   ),
                   Padding(
@@ -372,7 +412,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                       color: MColors.primaryBlue,
                                       size: 20.0,
                                     ),
-                                    label: '$likeCount ถูกใจ',
+                                    label: '${ widget.likeCount} ถูกใจ',
                                     onTap: () async {
                                       HapticFeedback.lightImpact();
 
@@ -400,7 +440,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                                       [
                                                                       'isLike'];
 
-                                                              likeCount++;
+                                                               widget.likeCount++;
                                                             }),
                                                           }
                                                         else if (jsonResponse[
@@ -414,7 +454,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                                       [
                                                                       'isLike'];
 
-                                                              likeCount--;
+                                                              --widget.likeCount;
                                                             }),
                                                           }
                                                       }

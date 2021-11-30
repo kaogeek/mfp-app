@@ -73,6 +73,7 @@ Widget authorpost(
   bool isOfficial,
   String pageUsername,
   bool isFollow,
+  String userid,
 ) =>
     InkWell(
       onTap: () => Navigate.pushPage(
@@ -83,7 +84,6 @@ Widget authorpost(
             name: name,
             isOfficial: isOfficial,
             pageUsername: pageUsername,
-            isFollow: isFollow,
           )),
       child: Text(
         '$string',
