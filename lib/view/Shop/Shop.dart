@@ -7,6 +7,8 @@ import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
+import 'package:mfp_app/view/Profile/Profile.dart';
+import 'package:mfp_app/view/Search/Search.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ShopSC extends StatefulWidget {
@@ -69,7 +71,13 @@ class _ShopSCState extends State<ShopSC> {
                 child: CustomScrollView(
                   controller: _trackingScrollController,
                   slivers: [
-                    primaryAppBar(context, token, userid, userimageUrl),
+                    primaryAppBar(context, token, userid, userimageUrl,Search(
+              userid: userid,
+            ),true,
+                    ProfileSc(
+                      userid:  userid,
+                      token:   token,
+                    )),
 
                     ///-----------APPBAR-----------------//
                     SliverToBoxAdapter(

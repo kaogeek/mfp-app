@@ -665,20 +665,19 @@ class Api {
   // }
 
   static Future<Http.Response> getpagess(
-      String uid, String token, String pageid) async {
-    print('getpagess');
+      String userid, String token, String pageid) async {
+    print('getpagess$userid');
     final headers = {
-      "authorization": "Bearer $token",
-      "userid": uid,
-      "content-type": "application/json",
+      // "Authorization": "Bearer $token",
+      "userId":userid,
+      "Content-Type": "application/json",
       // "accept": "application/json"
       // "whereConditions": {"isHideStory": false},
     };
-    print('getPostDetailSS');
 
     final responseData = await Http.get(
-        "https://today-api.moveforwardparty.org/api/page/$pageid",
-        headers: headers);
+        "https://today-api.moveforwardparty.org/api/page/$pageid",headers: headers);
+    print('responseDatagetpagess${responseData.body}');
 
     return responseData;
   }

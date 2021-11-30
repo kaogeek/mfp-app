@@ -11,18 +11,21 @@ import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/EmergencyEventModel.dart';
 import 'package:mfp_app/model/searchpostlistModel.dart';
+import 'package:mfp_app/view/Profile/Profile.dart';
+import 'package:mfp_app/view/Search/Search.dart';
 
 class DTEmergenSc extends StatefulWidget {
   final String hashtagstitle;
   final String emergencyEventId;
   final String userimage;
   final String token;
+  final String userid;
   const DTEmergenSc({
     Key key,
     this.hashtagstitle,
     this.emergencyEventId,
     this.userimage,
-    this.token,
+    this.token, this.userid,
   }) : super(key: key);
 
   @override
@@ -122,7 +125,13 @@ class _DTemergenScState extends State<DTEmergenSc> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context, widget.token, "", widget.userimage),
+              primaryAppBar(context, widget.token, "", widget.userimage,Search(
+              userid: widget.userid,
+            ),true,
+                    ProfileSc(
+                      userid:  widget.userid,
+                      token:   widget.token,
+                    )),
               AppBardetail(
                 context,
                 "เหตุการณ์ด่วน ${widget.hashtagstitle}",

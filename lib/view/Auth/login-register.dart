@@ -6,7 +6,7 @@ import 'package:mfp_app/allWidget/sizeconfig.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/view/Auth/login.dart';
-import 'package:mfp_app/view/Auth/register.dart';
+import 'package:mfp_app/view/Auth/register-email.dart';
 
 class Loginregister extends StatefulWidget {
   Loginregister({Key key}) : super(key: key);

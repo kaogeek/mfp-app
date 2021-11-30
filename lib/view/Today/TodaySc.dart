@@ -23,6 +23,8 @@ import 'dart:io' show Platform;
 import 'package:mfp_app/allWidget/PostButton.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
+import 'package:mfp_app/view/Profile/Profile.dart';
+import 'package:mfp_app/view/Search/Search.dart';
 import 'package:mfp_app/view/Today/Dtemergencyevent.dart';
 
 import 'package:mfp_app/view/Today/PostDetailsSc.dart';
@@ -61,7 +63,7 @@ class _TodayScState extends State<TodaySc> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
   bool islike = false;
-  var checktoken;
+  var token;
 
   var datagetuserprofile;
 
@@ -105,7 +107,7 @@ class _TodayScState extends State<TodaySc> {
       _scrollController.addListener(_loadMore);
       setState(() {
         Api.gettoke().then((value) => value({
-              checktoken = value,
+              token = value,
               // print('checktoken$checktoken'),
             }));
         Api.getmyuid().then((value) => ({
@@ -177,6 +179,8 @@ class _TodayScState extends State<TodaySc> {
                 print('${datagetuserprofile["data"]["username"]}'),
               }
           }));
+    
+
       //-----------------------------//
       Api.getPostemergencyEventsList().then((responseData) => ({
             print('getPostList'),
@@ -410,7 +414,13 @@ class _TodayScState extends State<TodaySc> {
                 //         child: Container(),
                 //       ))
                 //     :
-                primaryAppBar(context, checktoken, userid, userimageUrl),
+                primaryAppBar(context, token, userid, userimageUrl, Search(
+              userid: userid,
+            ),true,
+                    ProfileSc(
+                      userid:  widget.userid,
+                      token:   token,
+                    )),
 
                 ///-----------APPBAR-----------------//
                 isLoadingHastag
@@ -519,6 +529,7 @@ class _TodayScState extends State<TodaySc> {
                                           false,
                                           nDataList1.page.pageUsername,
                                           nDataList1.page.isOfficial,
+                                          nDataList1,
                                         ));
                                       }),
                                 );
@@ -641,6 +652,7 @@ class _TodayScState extends State<TodaySc> {
     bool isFollow,
     String pageUsername,
     bool isOfficial,
+    nDataList1,
   ) {
     return InkWell(
       onTap: () {
@@ -659,8 +671,14 @@ class _TodayScState extends State<TodaySc> {
                 shareCoun: shareCount,
                 id: postid,
                 userid: userid,
-                token: checktoken,
+                token: token,
                 userimage: userimageUrl,
+               pageid:  pageid,
+pageimage:pageimage,
+                pagename:          pagename,
+              isFollow:            isFollow,
+                   pageUsername:       pageUsername,
+               isOfficial     :      isOfficial
               );
             },
           ),
@@ -703,7 +721,8 @@ class _TodayScState extends State<TodaySc> {
                           pagename,
                           isFollow,
                           pageUsername,
-                          isOfficial),
+                          isOfficial,
+                          userid),
                       SizedBox(
                         width: 2,
                       ),
@@ -728,15 +747,15 @@ class _TodayScState extends State<TodaySc> {
                                       size: 20.0,
                                     ),
                                     width: 100,
-                                    label: '$likeCount ถูกใจ',
+                                    label: '${   nDataList1.post.likeCount} ถูกใจ',
                                     onTap: () async {
                                       HapticFeedback.lightImpact();
                                       var jsonResponse;
-                                      checktoken == null || checktoken == ""
+                                      token == null || token == ""
                                           ? Navigate.pushPage(
                                               context, Loginregister())
                                           : await Api.islike(
-                                                  postid, userid, checktoken)
+                                                  postid, userid, token)
                                               .then((value) => ({
                                                     jsonResponse =
                                                         jsonDecode(value.body),
@@ -749,13 +768,12 @@ class _TodayScState extends State<TodaySc> {
                                                             "Like Post Success")
                                                           {
                                                             setState(() {
-                                                              ++likeCount;
                                                               islike =
                                                                   jsonResponse[
                                                                           'data']
                                                                       [
                                                                       'isLike'];
-                                                              likeCount++;
+  nDataList1.post.likeCount++;
                                                             }),
                                                           }
                                                         else if (jsonResponse[
@@ -768,9 +786,8 @@ class _TodayScState extends State<TodaySc> {
                                                                           'data']
                                                                       [
                                                                       'isLike'];
-                                                              likeCount++;
 
-                                                              likeCount--;
+                                                           nDataList1.post.likeCount--;
                                                             }),
                                                           }
                                                       }
@@ -784,17 +801,17 @@ class _TodayScState extends State<TodaySc> {
                                       color: MColors.primaryBlue,
                                       size: 20.0,
                                     ),
-                                    label: '$likeCount ถูกใจ',
+                                    label: '${  nDataList1.post.likeCount} ถูกใจ',
                                     width: 100,
                                     onTap: () async {
                                       HapticFeedback.lightImpact();
 
                                       var jsonResponse;
-                                      checktoken == null
+                                      token == null
                                           ? Navigate.pushPage(
                                               context, Loginregister())
                                           : await Api.islike(
-                                                  postid, userid, checktoken)
+                                                  postid, userid, token)
                                               .then((value) => ({
                                                     jsonResponse =
                                                         jsonDecode(value.body),
@@ -807,14 +824,14 @@ class _TodayScState extends State<TodaySc> {
                                                             "Like Post Success")
                                                           {
                                                             setState(() {
-                                                              ++likeCount;
+                                                           
 
                                                               islike =
                                                                   jsonResponse[
                                                                           'data']
                                                                       [
                                                                       'isLike'];
-                                                              likeCount++;
+                                                           nDataList1.post.likeCount++;
                                                             }),
                                                           }
                                                         else if (jsonResponse[
@@ -827,9 +844,8 @@ class _TodayScState extends State<TodaySc> {
                                                                           'data']
                                                                       [
                                                                       'isLike'];
-                                                              likeCount++;
 
-                                                              likeCount--;
+                                                           nDataList1.post.likeCount--;
                                                             }),
                                                           }
                                                       }
@@ -1003,11 +1019,11 @@ class _TodayScState extends State<TodaySc> {
                                 onPressed: () async {
                                   var jsonResponse;
 
-                                  checktoken == "" || checktoken == null
+                                  token == "" || token == null
                                       ? Navigate.pushPage(
                                           context, Loginregister())
-                                      : await Api.sendfollowPage(data.id,
-                                              checktoken, widget.userid)
+                                      :  await Api.sendfollowPage(data.id,
+                                              token, userid)
                                           .then((value) => ({
                                                 jsonResponse =
                                                     jsonDecode(value.body),
@@ -1127,10 +1143,11 @@ class _TodayScState extends State<TodaySc> {
                 Navigate.pushPage(
                     context,
                     DTEmergenSc(
-                      token: checktoken,
+                      token: token,
                       hashtagstitle: emcs.title,
                       emergencyEventId: emcs.data.emergencyEventId,
                       userimage: userimage,
+                      userid: userid,
                     ));
               },
               child: Column(

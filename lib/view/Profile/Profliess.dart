@@ -15,9 +15,12 @@ import 'package:mfp_app/allWidget/fontsize.dart';
 import 'package:mfp_app/allWidget/sizeconfig.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/postlistSSmodel.dart';
+import 'package:mfp_app/model/usermodel.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
 import 'package:http/http.dart' as Http;
+import 'package:mfp_app/view/Profile/Profile.dart';
+import 'package:mfp_app/view/Search/Search.dart';
 
 class Profliess extends StatefulWidget {
   final String id;
@@ -29,7 +32,7 @@ class Profliess extends StatefulWidget {
   final String twitterUrl;
   final bool isOfficial;
   final String pageUsername;
-  final bool isFollow;
+  final String userid;
   const Profliess({
     Key key,
     this.id,
@@ -40,8 +43,7 @@ class Profliess extends StatefulWidget {
     this.facebookUrl,
     this.twitterUrl,
     this.isOfficial,
-    this.pageUsername,
-    this.isFollow,
+    this.pageUsername, this.userid,
   }) : super(key: key);
 
   // ShopSC({Key? key}) : super(key: key);
@@ -56,9 +58,7 @@ class _ProfliessState extends State<Profliess> {
 
   var token;
 
-  var userid;
   StreamController _postsController;
-  bool isFollow = false;
   var userimageUrl;
   List<PostListSS> listpostss = [];
   Future getPostss;
@@ -66,10 +66,9 @@ class _ProfliessState extends State<Profliess> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   ScrollController _scrollController = ScrollController();
   int _currentMax = 5;
-  var myuid;
   bool islike = false;
 
-  bool isLoading = false;
+  bool isLoading = true;
   var story;
   TextEditingController _detailController = TextEditingController();
   bool _isLoadMoreRunning = false;
@@ -78,11 +77,13 @@ class _ProfliessState extends State<Profliess> {
   GlobalKey _contentKey = GlobalKey();
   GlobalKey _refresherKey = GlobalKey();
 
-  @override
-  void dispose() {
-    _trackingScrollController.dispose();
-    super.dispose();
-  }
+
+  var followers=0;
+
+  var coverURL;
+  bool isFollow =false;
+
+  String userid;
 
   @override
   void initState() {
@@ -96,28 +97,54 @@ class _ProfliessState extends State<Profliess> {
             print('token$token'),
           }));
 
-      Api.getmyuid().then((value) => ({
-            setState(() {
-              userid = value;
-            }),
-            print('userid$userid'),
-          }));
+
       Api.getimageURL().then((value) => ({
             setState(() {
               userimageUrl = value;
             }),
             print('userimageUrl$userimageUrl'),
           }));
-      Api.getpagess(userid, token, widget.id).then((responseData) => ({
-            print('getpagess${responseData.body}'),
-            if (responseData.statusCode == 200)
-              {
-                dataht = jsonDecode(responseData.body),
-              }
-          }));
+             Api.getmyuid().then((value) => ({
+              setState(() {
+                userid = value;
+              }),
+              print('myuidhome$userid'),
+            }));
+
+             Api.getpagess("${userid.toString()}", token, widget.id)
+                        .then((responseData) => ({
+                              if (responseData.statusCode == 200){
+                             dataht = jsonDecode(responseData.body),
+                                 setState(() {
+                                  followers= dataht["data"]["followers"];
+                                  if(dataht["data"]["isFollow"]==true){
+                                    setState(() {
+                                      isFollow=true;
+                                    });
+                                  }
+                                   if(dataht["data"]["isFollow"]==false){
+                                    setState(() {
+                                      isFollow=false;
+                                    });
+                                  }
+                                 coverURL= dataht["data"]["coverURL"];
+
+                                  
+                                  print('isFollow$isFollow');
+                                 }),
+                                
+                                }
+                            }));
+     
       _getPostListSS(widget.id, _currentMax);
     });
     _postsController = new StreamController();
+  }
+
+  @override
+  void dispose() {
+    _trackingScrollController.dispose();
+    super.dispose();
   }
 
   Future _getPostListSS(String idss, int offset) async {
@@ -126,8 +153,10 @@ class _ProfliessState extends State<Profliess> {
 
     print('getPostListSS');
     if (responseData.statusCode == 200) {
+      setState(() {
+        isLoading=true;
+      });
       dataht = jsonDecode(responseData.body);
-      print(dataht);
       for (var i in dataht["data"]) {
         // i["story"] = '',
 
@@ -137,6 +166,9 @@ class _ProfliessState extends State<Profliess> {
         _postsController.add(dataht);
         print(listpostss.length);
       }
+        setState(() {
+        isLoading=false;
+      });
 
       // loading = false,
     }
@@ -164,14 +196,25 @@ class _ProfliessState extends State<Profliess> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+ 
+    return  isLoading == true
+        ? Container(
+            color: Colors.white,
+            child: Center(child: CupertinoActivityIndicator()))
+        :Container(
       color: Colors.white,
       child: SafeArea(
         child: Scaffold(
           body: CustomScrollView(
             controller: _scrollController,
             slivers: [
-              primaryAppBar(context, token, userid, userimageUrl),
+              primaryAppBar(context, token, widget.userid,userimageUrl,Search(
+              userid: widget.userid,
+            ),true,
+                    ProfileSc(
+                      userid:  widget.userid,
+                      token: token,
+                    )),
               SliverToBoxAdapter(
                   child: Divider(
                 color: Colors.grey[100],
@@ -203,13 +246,15 @@ class _ProfliessState extends State<Profliess> {
                               backgroundColor: Colors.transparent,
                             ),
                           ),
+                                                SizedBox(height: 2,),
+
                           Padding(
                             padding: EdgeInsets.only(left: 5),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  widget.name,
+                                 widget.name,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
@@ -234,16 +279,16 @@ class _ProfliessState extends State<Profliess> {
                       overflow: Overflow.visible,
                       alignment: Alignment.center,
                       children: <Widget>[
-                        Image.asset(
-                          "images/Group 11904.png",
+                        FadeInImage.assetNetwork(placeholder: 'images/placeholder.png',
+                         image: "https://today-api.moveforwardparty.org/api$coverURL/image",
                           height: 180,
-                          fit: BoxFit.cover,
-                        ),
+                          fit: BoxFit.cover,),
+      
                         Positioned(
                           bottom: -80.0,
                           child: CircleAvatar(
                             radius: 70.0,
-                            backgroundImage: NetworkImage(
+                            backgroundImage:  NetworkImage(
                                 "https://today-api.moveforwardparty.org/api${widget.image}/image"),
                             backgroundColor: Colors.black,
                           ),
@@ -303,8 +348,7 @@ class _ProfliessState extends State<Profliess> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Spacer(),
-                      isFollow == true
-                          ? InkWell(
+           InkWell(
                               onTap: () async {
                                 HapticFeedback.lightImpact();
                                 var jsonResponse;
@@ -312,7 +356,7 @@ class _ProfliessState extends State<Profliess> {
                                     ? Navigate.pushPage(
                                         context, Loginregister())
                                     : await Api.isfollowpage(
-                                            widget.id, userid, token)
+                                            widget.id, widget.userid, token)
                                         .then((value) => ({
                                               jsonResponse =
                                                   jsonDecode(value.body),
@@ -324,10 +368,12 @@ class _ProfliessState extends State<Profliess> {
                                                       "Followed Page Success")
                                                     {
                                                       setState(() {
-                                                        isFollow = true;
-                                                        islike =
+                                                        // isFollow = true;
+                                                        isFollow =
                                                             jsonResponse['data']
-                                                                ['isLike'];
+                                                                ['isFollow'];
+                                                                isFollow=true;
+                                                                
                                                       }),
                                                     }
                                                   else if (jsonResponse[
@@ -335,9 +381,9 @@ class _ProfliessState extends State<Profliess> {
                                                       "Unfollow Page Success")
                                                     {
                                                       setState(() {
-                                                        islike =
+                                                        isFollow =
                                                             jsonResponse['data']
-                                                                ['isLike'];
+                                                                ['isFollow'];
                                                         isFollow = false;
                                                       }),
                                                     }
@@ -350,70 +396,9 @@ class _ProfliessState extends State<Profliess> {
                                 height: 40.0,
                                 child: Center(
                                   child: Text(
-                                    'กำลังติดตาม',
+                                    '${isFollow==true?"$isFollow":"$isFollow"}',
                                     style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14.0,
-                                      fontFamily: 'Anakotmai',
-                                    ),
-                                  ),
-                                ),
-                                decoration: BoxDecoration(
-                                    color: primaryColor,
-                                    border: Border.all(color: primaryColor),
-                                    borderRadius: const BorderRadius.all(
-                                        const Radius.circular(20))),
-                              ),
-                            )
-                          : InkWell(
-                              onTap: () async {
-                                HapticFeedback.lightImpact();
-                                var jsonResponse;
-                                token == null || token == ""
-                                    ? Navigate.pushPage(
-                                        context, Loginregister())
-                                    : await Api.isfollowpage(
-                                            widget.id, userid, token)
-                                        .then((value) => ({
-                                              jsonResponse =
-                                                  jsonDecode(value.body),
-                                              print(
-                                                  'message${jsonResponse['message']}'),
-                                              if (value.statusCode == 200)
-                                                {
-                                                  if (jsonResponse['message'] ==
-                                                      "Followed Page Success")
-                                                    {
-                                                      setState(() {
-                                                        isFollow = true;
-                                                        islike =
-                                                            jsonResponse['data']
-                                                                ['isLike'];
-                                                      }),
-                                                    }
-                                                  else if (jsonResponse[
-                                                          'message'] ==
-                                                      "Unfollow Page Success")
-                                                    {
-                                                      setState(() {
-                                                        islike =
-                                                            jsonResponse['data']
-                                                                ['isLike'];
-                                                        isFollow = false;
-                                                      }),
-                                                    }
-                                                }
-                                            }));
-                                print("กดlike");
-                              },
-                              child: Container(
-                                width: 110.0,
-                                height: 40.0,
-                                child: Center(
-                                  child: Text(
-                                    'ติดตาม',
-                                    style: TextStyle(
-                                      color: MColors.textDark,
+                                      color: Colors.black,
                                       fontSize: 14.0,
                                       fontFamily: 'Anakotmai',
                                     ),
@@ -426,10 +411,11 @@ class _ProfliessState extends State<Profliess> {
                                         const Radius.circular(20))),
                               ),
                             ),
+                          
                       Spacer(),
                       Icon(Icons.person),
                       Text(
-                        '4 พัน',
+                        '$followers พัน',
                         style: TextStyle(
                             color: Colors.grey[700],
                             fontSize: 16.0,
@@ -651,6 +637,8 @@ class _ProfliessState extends State<Profliess> {
                                   nDataList1.commentCount,
                                   nDataList1.shareCount,
                                   nDataList1.coverImage,
+                                  nDataList1.id,
+
                                 );
                               }),
                         );
@@ -686,6 +674,8 @@ class _ProfliessState extends State<Profliess> {
     int commentCount,
     int shareCount,
     String coverimage,
+    String postid
+
   ) {
     return InkWell(
       onTap: () {},
@@ -766,7 +756,7 @@ class _ProfliessState extends State<Profliess> {
                                           ? Navigate.pushPage(
                                               context, Loginregister())
                                           : await Api.islike(
-                                                  widget.id, userid, token)
+                                                  postid, userid, token)
                                               .then((value) => ({
                                                     jsonResponse =
                                                         jsonDecode(value.body),
@@ -822,7 +812,7 @@ class _ProfliessState extends State<Profliess> {
                                           ? Navigate.pushPage(
                                               context, Loginregister())
                                           : await Api.islike(
-                                                  widget.id, userid, token)
+                                                  postid, userid, token)
                                               .then((value) => ({
                                                     jsonResponse =
                                                         jsonDecode(value.body),

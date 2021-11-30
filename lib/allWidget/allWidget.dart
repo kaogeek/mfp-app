@@ -17,7 +17,6 @@ import 'package:mfp_app/utils/style.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
 import 'package:mfp_app/view/Profile/Profile.dart';
-import 'package:mfp_app/view/Profile/ProfileUITEST.dart';
 import 'package:mfp_app/view/Search/Search.dart';
 
 //APPBARS-------------------------------------
@@ -209,8 +208,8 @@ Widget myAlbumCard(List<Gallery> list) {
     );
   }
 
-Widget primaryAppBar(context, var token, var userid, var imageurl) {
-  bool isopen = false;
+Widget primaryAppBar(context, var token, var userid, var imageurl,Widget widgetsearch,bool isOpen,Widget widgetprofile,) {
+  print('isOpen$isOpen');
   return SliverAppBar(
     brightness: Brightness.light,
     backgroundColor: Colors.white,
@@ -229,28 +228,24 @@ Widget primaryAppBar(context, var token, var userid, var imageurl) {
     actions: [
       CircleButton(
         icon: Icons.search,
-        iconSize: 30.0,
-        onPressed: () => Navigate.pushPage(
-            context,
-            Search(
-              userid: userid,
-            )),
+        color:MColors.primaryBlue,
+        iconSize: 27.0,
+        onPressed: () => widgetsearch==null?null: Navigate.pushPage(
+            context,widgetsearch
+           ),
       ),
       CircleButton(
         icon: MdiIcons.bellOutline,
-        iconSize: 30.0,
+        iconSize: 27.0,
+                color:MColors.primaryBlue,
+
         onPressed: () => print('Messenger'),
       ),
       token != "" && token != null
           ? InkWell(
-              onTap: () {
-                Navigate.pushPage(
-                    context,
-                    ProfileSc(
-                      userid: userid,
-                      token: token,
-                    ));
-              },
+              onTap: ()=>widgetprofile==null?null: Navigate.pushPage(
+            context,widgetprofile
+           ),
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: CircleAvatar(

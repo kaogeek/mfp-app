@@ -2,18 +2,29 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
+import 'package:mfp_app/allWidget/circle_button.dart';
 import 'package:mfp_app/animation/FadeAnimation.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/pagemodel.dart';
 import 'package:mfp_app/model/searchhastag.dart';
-import 'package:http/http.dart' as http;
+import 'package:mfp_app/utils/router.dart';
+import 'package:mfp_app/view/Auth/login-register.dart';
+import 'package:mfp_app/view/Profile/Profile.dart';
 
 class Search extends StatefulWidget {
   final String userid;
+  bool isOpen;
 
-  const Search({Key key, this.userid}) : super(key: key);
+  Search({
+    Key key,
+    this.userid,
+    this.isOpen,
+  }) : super(key: key);
   // ShopSC({Key? key}) : super(key: key);
 
   @override
@@ -50,7 +61,7 @@ class _SearchState extends State<Search> {
   var keyword, isType, isvalue;
 
   var myuid;
-
+  bool isOpen = false;
   @override
   void initState() {
     print('initState');
@@ -189,7 +200,73 @@ class _SearchState extends State<Search> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context, token, userid, userimageUrl),
+              SliverAppBar(
+                brightness: Brightness.light,
+                backgroundColor: Colors.white,
+                title: InkWell(
+                  onTap: null,
+                  //  () => Navigator.pop(context),
+                  child: Image.asset(
+                    'images/Group 10673.png',
+                    width: 150,
+                    height: 150,
+                  ),
+                ),
+                automaticallyImplyLeading: false,
+                centerTitle: false,
+                floating: true,
+                actions: [
+                  CircleButton(
+                    icon: Icons.search,
+                    color: MColors.primaryColor,
+                    iconSize: 27.0,
+                    onPressed: () => null,
+                  ),
+                  CircleButton(
+                    icon: MdiIcons.bellOutline,
+                          color:MColors.primaryBlue,
+        iconSize: 27.0,
+                    onPressed: () => print('Messenger'),
+                  ),
+                  token != "" && token != null
+                      ? InkWell(
+                          onTap: () {
+                            Navigate.pushPage(
+                                context,
+                                ProfileSc(
+                                  userid: userid,
+                                  token: token,
+                                ));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: CircleAvatar(
+                              radius: 25.0,
+                              backgroundImage: NetworkImage(
+                                  'https://today-api.moveforwardparty.org/api$userimageUrl/image'),
+                              backgroundColor: Colors.transparent,
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: CircleAvatar(
+                            radius: 25.0,
+                            backgroundColor: Colors.white70,
+                            child: IconButton(
+                              iconSize: 30,
+                              icon: (Icon(
+                                CupertinoIcons.person_crop_circle,
+                                color: MColors.primaryBlue,
+                              )),
+                              onPressed: () {
+                                Navigate.pushPage(context, Loginregister());
+                              },
+                            ),
+                          ),
+                        )
+                ],
+              ),
               SliverToBoxAdapter(
                   child: Divider(
                 color: Colors.transparent,
@@ -197,93 +274,99 @@ class _SearchState extends State<Search> {
                 thickness: 6.0,
               )),
               SliverToBoxAdapter(
-                child: Container(
-                  color: Colors.white,
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Container(
-                              height: 60.0,
-                              width: double.infinity,
-                              padding: EdgeInsets.all(8),
-                              color: Colors.white,
-                              child: TextField(
-                                controller: controller,
-                                autofocus: false,
-                                decoration: InputDecoration(
-                                  // labelText: 'Search Something',
-                                  prefixIcon: Icon(
-                                    Icons.search,
-                                    color: MColors.textDark,
-                                  ),
-
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                ),
-                                onChanged: (text) {
-                                  if (controller.text.isEmpty) {
-                                    print("controllerวางจริง");
-                                    setState(() {
-                                      controller.clear();
-                                      listSearchHastag.clear();
-                                      _listPageModel.clear();
-
-                                      _searchResult.clear();
-                                    });
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: InkWell(
-                              onTap: () async {
-                                setState(() {
-                                  loading = true;
-                                });
-                                if (listSearchHastag.length != 0 ||
-                                    _listPageModel.length != 0) {
-                                  listSearchHastag.clear();
-                                  _listPageModel.clear();
-                                }
-                                await getdate(controller.text.toLowerCase(),
-                                    widget.userid);
-                                await getpage(isvalue);
-                              },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5, right: 5),
+                  child: Container(
+                    color: Colors.white,
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Expanded(
                               child: Container(
-                                height: 40,
-                                width: 60,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: primaryColor,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(1),
-                                        blurRadius: 0.5,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ]),
-                                child: Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: Colors.white,
+                                height: 60.0,
+                                width: double.infinity,
+                                padding: EdgeInsets.all(8),
+                                color: Colors.white,
+                                child: TextField(
+                                  controller: controller,
+                                  autofocus: false,
+                                  decoration: InputDecoration(
+                                    // labelText: 'Search Something',
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                      color: MColors.textDark,
+                                    ),
+
+                                    filled: true,
+                                    fillColor: Colors.grey[200],
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                    ),
+                                  ),
+                                  onChanged: (text) {
+                                    if (controller.text.isEmpty) {
+                                      print("controllerวางจริง");
+                                      setState(() {
+                                        controller.clear();
+                                        listSearchHastag.clear();
+                                        _listPageModel.clear();
+
+                                        _searchResult.clear();
+                                      });
+                                    }
+                                  },
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                            Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: InkWell(
+                                onTap: () async {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  if (listSearchHastag.length != 0 ||
+                                      _listPageModel.length != 0) {
+                                    listSearchHastag.clear();
+                                    _listPageModel.clear();
+                                  }
+                                  await getdate(controller.text.toLowerCase(),
+                                      widget.userid);
+                                  await getpage(isvalue);
+                                },
+                                child: Container(
+                                  height: 38,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: primaryColor,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(1),
+                                          blurRadius: 0.5,
+                                          spreadRadius: 0.5,
+                                        ),
+                                      ]),
+                                  child: Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    size: 18,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -314,51 +397,53 @@ class _SearchState extends State<Search> {
                                 }
                                 print('isty$isType');
                                 print("isva$isvalue");
-                                return  FadeAnimation((1.0 + i) / 4, new InkWell(
-                                  onTap: () {
-                                    if (istype == "HASHTAG") {
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //       builder: (context) => SearchList(
-                                      //             type: istype,
-                                      //             label: islabel,
-                                      //           )),
-                                      // );
-                                    }
-                                    if (istype == "PAGE") {
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //       builder: (context) => SearchList(
-                                      //             type: istype,
-                                      //             label: islabel,
-                                      //           )),
-                                      // );
-                                    }
-                                  },
-                                  child: Card(
-                                    // shape: RoundedRectangleBorder(
-                                    //     borderRadius: const BorderRadius.all(
-                                    //   Radius.circular(15.0),
-                                    // )),
-                                    child: new ListTile(
-                                      // leading: new CircleAvatar(
-                                      //   backgroundImage: new NetworkImage(
-                                      //     _userDetails[index].profileUrl,
-                                      //   ),
-                                      // ),
-                                      title: new Text('${data.label}'),
-                                      trailing: Icon(
-                                        Icons.arrow_forward_ios_sharp,
-                                        size: 28.0,
-                                        color: MColors.textDark,
+                                return FadeAnimation(
+                                    (1.0 + i) / 4,
+                                    new InkWell(
+                                      onTap: () {
+                                        if (istype == "HASHTAG") {
+                                          // Navigator.push(
+                                          //   context,
+                                          //   MaterialPageRoute(
+                                          //       builder: (context) => SearchList(
+                                          //             type: istype,
+                                          //             label: islabel,
+                                          //           )),
+                                          // );
+                                        }
+                                        if (istype == "PAGE") {
+                                          // Navigator.push(
+                                          //   context,
+                                          //   MaterialPageRoute(
+                                          //       builder: (context) => SearchList(
+                                          //             type: istype,
+                                          //             label: islabel,
+                                          //           )),
+                                          // );
+                                        }
+                                      },
+                                      child: Card(
+                                        // shape: RoundedRectangleBorder(
+                                        //     borderRadius: const BorderRadius.all(
+                                        //   Radius.circular(15.0),
+                                        // )),
+                                        child: new ListTile(
+                                          // leading: new CircleAvatar(
+                                          //   backgroundImage: new NetworkImage(
+                                          //     _userDetails[index].profileUrl,
+                                          //   ),
+                                          // ),
+                                          title: new Text('${data.label}'),
+                                          trailing: Icon(
+                                            Icons.arrow_forward_ios_rounded,
+                                            size: 18,
+                                            color: MColors.textDark,
+                                          ),
+                                          // subtitle: new Text('>>>${data.type}'),
+                                        ),
+                                        margin: const EdgeInsets.all(2.0),
                                       ),
-                                      // subtitle: new Text('>>>${data.type}'),
-                                    ),
-                                    margin: const EdgeInsets.all(2.0),
-                                  ),
-                            ));
+                                    ));
                               },
                             );
                           }),
@@ -375,42 +460,44 @@ class _SearchState extends State<Search> {
                         itemCount: _listPageModel.length,
                         itemBuilder: (BuildContext context, int index) {
                           var data = _listPageModel[index];
-                          return  FadeAnimation((1.0 + index) / 4, new InkWell(
-                            onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (context) => ProfilessScreen(
-                              //             id: data.id,
-                              //             image: data.imageUrl,
-                              //             name: data.name,
-                              //           )),
-                              // );
-                            },
-                            child: Card(
-                              child: new ListTile(
-                                leading: new CircleAvatar(
-                                  radius: 48,
-                                  backgroundColor: Colors.transparent,
-                                  child: Container(
-                                    color: Colors.white,
-                                    child: Image.network(
-                                        "https://today-api.moveforwardparty.org/api${data.imageUrl}/image",
-                                        width: 50,
-                                        height: 50),
+                          return FadeAnimation(
+                              (1.0 + index) / 4,
+                              new InkWell(
+                                onTap: () {
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => ProfilessScreen(
+                                  //             id: data.id,
+                                  //             image: data.imageUrl,
+                                  //             name: data.name,
+                                  //           )),
+                                  // );
+                                },
+                                child: Card(
+                                  child: new ListTile(
+                                    leading: new CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: Colors.transparent,
+                                      child: Container(
+                                        color: Colors.white,
+                                        child: Image.network(
+                                            "https://today-api.moveforwardparty.org/api${data.imageUrl}/image",
+                                            width: 50,
+                                            height: 50),
+                                      ),
+                                    ),
+                                    title: new Text('${data.name}'),
+                                    subtitle: new Text('@${data.pageUsername}'),
+                                    trailing: Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      size: 18,
+                                      color: MColors.textDark,
+                                    ),
                                   ),
+                                  margin: const EdgeInsets.all(0.0),
                                 ),
-                                title: new Text('${data.name}'),
-                                subtitle: new Text('@${data.pageUsername}'),
-                                trailing: Icon(
-                                  Icons.arrow_forward_ios_sharp,
-                                  size: 28.0,
-                                  color: MColors.textDark,
-                                ),
-                              ),
-                              margin: const EdgeInsets.all(0.0),
-                            ),
-                          ));
+                              ));
                         },
                       ),
                     )
