@@ -30,7 +30,7 @@ Widget texttitle(String string, context) => Text(
       style: Theme.of(context).textTheme.headline4,
     );
 Widget subtexttitlepost(String string, context) => Text(
-      string,
+      '$string อ่านต่อ..',
       style: Theme.of(context).textTheme.bodyText1,
     );
 Widget texttitleVideorecommend(String string, context) => Text(
@@ -74,9 +74,10 @@ Widget authorpost(
   String pageUsername,
   bool isFollow,
   String userid,
+  bool isenable,
 ) =>
     InkWell(
-      onTap: () => Navigate.pushPage(
+      onTap:isenable==false?null: () => Navigate.pushPage(
           context,
           Profliess(
             id: id,

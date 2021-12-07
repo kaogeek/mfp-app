@@ -7,6 +7,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:full_screen_image/full_screen_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mfp_app/Api/Api.dart';
@@ -21,13 +22,18 @@ import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/allWidget/fontsize.dart';
 import 'dart:io' show Platform;
 import 'package:mfp_app/allWidget/PostButton.dart';
+import 'package:mfp_app/utils/internetConnectivity.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
+import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
 import 'package:mfp_app/view/Profile/Profile.dart';
 import 'package:mfp_app/view/Search/Search.dart';
 import 'package:mfp_app/view/Today/Dtemergencyevent.dart';
 
 import 'package:mfp_app/view/Today/PostDetailsSc.dart';
+import 'package:mfp_app/view/Today/StoryPage.dart';
+import 'package:mfp_app/view/Today/test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TodaySc extends StatefulWidget {
   final String userid;
@@ -64,6 +70,7 @@ class _TodayScState extends State<TodaySc> {
   final CarouselController _controller = CarouselController();
   bool islike = false;
   var token;
+  bool isConnected;
 
   var datagetuserprofile;
 
@@ -82,12 +89,9 @@ class _TodayScState extends State<TodaySc> {
   var image;
 
   var userimageUrl;
-  @override
-  void dispose() {
-    _trackingScrollController.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  StreamSubscription subscription;
 
   void _goToElement(int index) {
     _scrollController.animateTo(
@@ -103,139 +107,167 @@ class _TodayScState extends State<TodaySc> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _scrollController.addListener(_loadMore);
-      setState(() {
-        Api.gettoke().then((value) => value({
-              token = value,
-              // print('checktoken$checktoken'),
-            }));
-        Api.getmyuid().then((value) => ({
+    checkInternetConnectivity().then((value) {
+      value == true
+          ? () {
               setState(() {
-                userid = value;
-              }),
-              // print('myuidhome$userid'),
-            }));
-        Api.getimageURL().then((value) => ({
-              setState(() {
-                userimageUrl = value;
-              }),
-              // print('myuidhome$userid'),
-            }));
-      });
-      //   () async {
-      //   if (_scrollController.position.pixels ==
-      //       _scrollController.position.maxScrollExtent) {
-      //     print('At the End');
-      //     setState(() {
-      //       _currentMax = _currentMax + 5;
-      //       Api.getPostList(_currentMax).then((value) => {
-      //             if (value.statusCode == 200)
-      //               {
-      //                 datapostlist = jsonDecode(value.body),
-      //                 for (Map i in datapostlist["data"])
-      //                   {
-      //                     listModelPostClass.add(PostSearchModel.fromJson(i)),
-      //                     _postsController.add(value),
-      //                   },
-      //               }
-      //           });
-
-      //       //-------------------------------
-      //       Api.getRecommendedUserPage().then((value) => {
-      //             listRecomUserPageModel.clear(),
-      //             if (value.statusCode == 200)
-      //               {
-      //                 datapostlist = jsonDecode(value.body),
-      //                 for (Map i in datapostlist["data"])
-      //                   {
-      //                     listRecomUserPageModel
-      //                         .add(RecomUserPageModel.fromJson(i)),
-      //                   },
-      //               }
-      //           });
-      //     });
-      //   }
-      // });
-      Api.getuserprofile("$userid").then((responseData) => ({
-            if (responseData.statusCode == 200)
-              {
-                datagetuserprofile = jsonDecode(responseData.body),
+                _scrollController.addListener(_loadMore);
                 setState(() {
-                  displayName1 = datagetuserprofile["data"]["displayName"];
-                  gender = datagetuserprofile["data"]["gender"];
-                  firstName = datagetuserprofile["data"]["firstName"];
-                  lastName = datagetuserprofile["data"]["lastName"];
-                  id = datagetuserprofile["data"]["id"];
-                  email = datagetuserprofile["data"]["email"];
-                  image = datagetuserprofile["data"]["imageURL"];
-                }),
-                print('displayName1$displayName1'),
-                print('gender$gender'),
-                print('firstName$firstName'),
-                print('lastName$lastName'),
-                print('id$id'),
-                print('email$email'),
-                print('${datagetuserprofile["data"]["username"]}'),
-              }
-          }));
-    
+                  Api.gettoke().then((value) => value({
+                        token = value,
+                        // print('checktoken$checktoken'),
+                      }));
+                  Api.getmyuid().then((value) => ({
+                        setState(() {
+                          userid = value;
+                        }),
+                        Api.getuserprofile("$userid")
+                            .then((responseData) async => ({
+                                  if (responseData.statusCode == 200)
+                                    {
+                                      datagetuserprofile =
+                                          jsonDecode(responseData.body),
+                                      setState(() {
+                                        displayName1 =
+                                            datagetuserprofile["data"]
+                                                ["displayName"];
+                                        gender = datagetuserprofile["data"]
+                                            ["gender"];
+                                        firstName = datagetuserprofile["data"]
+                                            ["firstName"];
+                                        lastName = datagetuserprofile["data"]
+                                            ["lastName"];
+                                        id = datagetuserprofile["data"]["id"];
+                                        email =
+                                            datagetuserprofile["data"]["email"];
+                                        image = datagetuserprofile["data"]
+                                            ["imageURL"];
+                                      }),
+                                      print('displayName1$displayName1'),
+                                      print('gender$gender'),
+                                      print('firstName$firstName'),
+                                      print('lastName$lastName'),
+                                      print('id$id'),
+                                      print('email$email'),
+                                      print('image$image'),
+                                    }
+                                })),
+                        // print('myuidhome$userid'),
+                      }));
+                  Api.getimageURL().then((value) => ({
+                        setState(() {
+                          userimageUrl = value;
+                        }),
+                        // print('myuidhome$userid'),
+                      }));
+                });
+                //   () async {
+                //   if (_scrollController.position.pixels ==
+                //       _scrollController.position.maxScrollExtent) {
+                //     print('At the End');
+                //     setState(() {
+                //       _currentMax = _currentMax + 5;
+                //       Api.getPostList(_currentMax).then((value) => {
+                //             if (value.statusCode == 200)
+                //               {
+                //                 datapostlist = jsonDecode(value.body),
+                //                 for (Map i in datapostlist["data"])
+                //                   {
+                //                     listModelPostClass.add(PostSearchModel.fromJson(i)),
+                //                     _postsController.add(value),
+                //                   },
+                //               }
+                //           });
 
-      //-----------------------------//
-      Api.getPostemergencyEventsList().then((responseData) => ({
-            print('getPostList'),
-            setState(() {
-              isLoadingHastag = true;
-            }),
-            if (responseData.statusCode == 200)
-              {
-                datapostlist = jsonDecode(responseData.body),
-                for (Map i in datapostlist["data"]["emergencyEvents"]
-                    ["contents"])
-                  {
-                    setState(() {
-                      listemergencyEvents
-                          .add(EmergencyEventsContent.fromJson(i));
-                    }),
-                  },
-                setState(() {
-                  isLoadingHastag = false;
-                }),
-              }
-            else if (responseData.statusCode == 400)
-              {}
-          }));
+                //       //-------------------------------
+                //       Api.getRecommendedUserPage().then((value) => {
+                //             listRecomUserPageModel.clear(),
+                //             if (value.statusCode == 200)
+                //               {
+                //                 datapostlist = jsonDecode(value.body),
+                //                 for (Map i in datapostlist["data"])
+                //                   {
+                //                     listRecomUserPageModel
+                //                         .add(RecomUserPageModel.fromJson(i)),
+                //                   },
+                //               }
+                //           });
+                //     });
+                //   }
+                // });
 
-      refpost = Api.getPostList(_currentMax).then((value) => {
-            if (value.statusCode == 200)
-              {
-                setState(() {
-                  isLoading = true;
-                  fistload = true;
-                }),
-                datapostlist = jsonDecode(value.body),
-                for (Map i in datapostlist["data"])
-                  {
-                    listModelPostClass.add(PostSearchModel.fromJson(i)),
-                    _postsController.add(value),
-                  },
-                setState(() {
-                  isLoading = false;
-                }),
-              }
-          });
-      //-------------//
-      Api.getRecommendedUserPage().then((value) => {
-            if (value.statusCode == 200)
-              {
-                datapostlist = jsonDecode(value.body),
-                for (Map i in datapostlist["data"])
-                  {
-                    listRecomUserPageModel.add(RecomUserPageModel.fromJson(i)),
-                  },
-              }
-          });
+                //-----------------------------//
+                Api.getPostemergencyEventsList().then((responseData) => ({
+                      print('getPostList'),
+                      setState(() {
+                        isLoadingHastag = true;
+                      }),
+                      if (responseData.statusCode == 200)
+                        {
+                          datapostlist = jsonDecode(responseData.body),
+                          for (Map i in datapostlist["data"]["emergencyEvents"]
+                              ["contents"])
+                            {
+                              setState(() {
+                                listemergencyEvents
+                                    .add(EmergencyEventsContent.fromJson(i));
+                              }),
+                            },
+                          setState(() {
+                            isLoadingHastag = false;
+                          }),
+                        }
+                      else if (responseData.statusCode == 400)
+                        {}
+                    }));
 
+                refpost = Api.getPostList(5).then((value) => {
+                      if (value.statusCode == 200)
+                        {
+                          setState(() {
+                            isLoading = true;
+                            fistload = true;
+                          }),
+                          datapostlist = jsonDecode(value.body),
+                          for (Map i in datapostlist["data"])
+                            {
+                              listModelPostClass
+                                  .add(PostSearchModel.fromJson(i)),
+                              _postsController.add(value),
+                            },
+                          setState(() {
+                            isLoading = false;
+                          }),
+                        }
+                      else if (value.statusCode == 400)
+                        {
+                          setState(() {
+                            isLoading = false;
+                          }),
+                        }
+                    });
+                //-------------//
+                Api.getRecommendedUserPage().then((value) => {
+                      if (value.statusCode == 200)
+                        {
+                          datapostlist = jsonDecode(value.body),
+                          for (Map i in datapostlist["data"])
+                            {
+                              listRecomUserPageModel
+                                  .add(RecomUserPageModel.fromJson(i)),
+                            },
+                        }
+                    });
+              });
+            }()
+          : Navigate.pushPageDialog(context, nonet(context));
+
+      if (value == false) {
+        setState(() {
+          isLoading = false;
+          isLoadingHastag = false;
+        });
+      }
       _postsController = new StreamController();
     });
   }
@@ -385,6 +417,24 @@ class _TodayScState extends State<TodaySc> {
   }
 
   @override
+  void dispose() {
+    subscription.cancel();
+
+    _trackingScrollController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // checkInternetConnectivity().then((value) {
+    //               value == true
+    //                   ? Navigate.pushPageReplacement(context, NavScreen())
+    //                   : Navigate.pushPageReplacement(context, nonet(context));
+    //    });
+  }
+  
+  @override
   Widget build(BuildContext context) {
     print('taptoload${widget.taptoload}');
     if (widget.taptoload == true) {
@@ -394,6 +444,7 @@ class _TodayScState extends State<TodaySc> {
       color: Colors.white,
       child: SafeArea(
         child: Scaffold(
+          key: _scaffoldKey,
           body: RefreshIndicator(
             onRefresh: () => () async {
               HapticFeedback.mediumImpact();
@@ -401,6 +452,7 @@ class _TodayScState extends State<TodaySc> {
               await _handleRefresh();
               await Api.getRecommendedUserPage();
               await Api.getPostList(_currentMax);
+            
             }(),
             child: CustomScrollView(
               controller: _scrollController,
@@ -414,12 +466,18 @@ class _TodayScState extends State<TodaySc> {
                 //         child: Container(),
                 //       ))
                 //     :
-                primaryAppBar(context, token, userid, userimageUrl, Search(
-              userid: userid,
-            ),true,
+                primaryAppBar(
+                    context,
+                    token,
+                    userid,
+                    image,
+                    Search(
+                      userid: userid,
+                    ),
+                    
                     ProfileSc(
-                      userid:  widget.userid,
-                      token:   token,
+                      userid: widget.userid,
+                      token: token,
                     )),
 
                 ///-----------APPBAR-----------------//
@@ -435,7 +493,7 @@ class _TodayScState extends State<TodaySc> {
                     : SliverToBoxAdapter(
                         child: Container(
                           width: double.infinity,
-                          // height: 40,
+                          height: 50,
                           color: MColors.primaryGrey,
                           child: Center(
                             child: titletimeline("ไทม์ไลน์"),
@@ -452,10 +510,6 @@ class _TodayScState extends State<TodaySc> {
                           stream: _postsController.stream,
                           builder:
                               (BuildContext context, AsyncSnapshot snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(child: CarouselLoading());
-                            }
                             // if (snapshot.connectionState == ConnectionState.none) {
                             //   return Center(child: Text(messger));
                             // }
@@ -489,16 +543,19 @@ class _TodayScState extends State<TodaySc> {
                                         // }else{
                                         //   return SizedBox.shrink();
                                         // }
+
+                                        print(
+                                            'length${listModelPostClass.length}');
                                         if (index ==
                                             listModelPostClass.length - 3) {
                                           return fistload == true
                                               ? BuildRecommendedUserPage()
                                               : SizedBox.shrink();
                                         }
-                                        if (index ==
-                                            listModelPostClass.length) {
-                                          print('เท่ากัน');
-                                        }
+                                        // if (index ==
+                                        //     listModelPostClass.length) {
+                                        //   print('เท่ากัน');
+                                        // }
 
                                         //  else {
                                         //   PostList(
@@ -513,24 +570,30 @@ class _TodayScState extends State<TodaySc> {
                                         //   );
                                         // }
 
-                                        return  FadeAnimation((1.0 + index) / 4, PostList(
-                                          nDataList1.post.title,
-                                          nDataList1.post.detail,
-                                          nDataList1.page.name,
-                                          nDataList1.post.createdDate,
-                                          nDataList1.post.gallery,
-                                          nDataList1.post.likeCount,
-                                          nDataList1.post.commentCount,
-                                          nDataList1.post.shareCount,
-                                          nDataList1.post.id,
-                                          nDataList1.page.id,
-                                          nDataList1.page.imageUrl,
-                                          nDataList1.page.name,
-                                          false,
-                                          nDataList1.page.pageUsername,
-                                          nDataList1.page.isOfficial,
-                                          nDataList1,
-                                        ));
+                                        return FadeAnimation(
+                                            (1.0 + index / 4),
+                                            PostList(
+                                              nDataList1.post.title,
+                                              nDataList1.post.detail,
+                                              nDataList1.page.name,
+                                              nDataList1.post.createdDate,
+                                              nDataList1.post.gallery,
+                                              nDataList1.post.likeCount,
+                                              nDataList1.post.commentCount,
+                                              nDataList1.post.shareCount,
+                                              nDataList1.post.repostCount,
+
+                                              nDataList1.post.id,
+                                              nDataList1.page.id,
+                                              nDataList1.page.imageUrl,
+                                              nDataList1.page.name,
+                                              false,
+                                              nDataList1.page.pageUsername,
+                                              nDataList1.page.isOfficial,
+                                              nDataList1,
+                                           nDataList1.post.type,
+
+                                            ));
                                       }),
                                 );
                               },
@@ -641,10 +704,11 @@ class _TodayScState extends State<TodaySc> {
     String subtitle,
     String authorposttext,
     DateTime dateTime,
-    List<Gallery> gallery,
+    List<GalleryPostSearchModel> gallery,
     int likeCount,
     int commentCount,
     int shareCount,
+    int repostCount,
     String postid,
     String pageid,
     String pageimage,
@@ -653,6 +717,7 @@ class _TodayScState extends State<TodaySc> {
     String pageUsername,
     bool isOfficial,
     nDataList1,
+    String type,
   ) {
     return InkWell(
       onTap: () {
@@ -661,25 +726,24 @@ class _TodayScState extends State<TodaySc> {
           MaterialPageRoute(
             builder: (BuildContext context) {
               return PostDetailsSC(
-                posttitle: posttitle,
-                subtitle: subtitle,
-                authorposttext: authorposttext,
-                dateTime: dateTime,
-                gallery: gallery,
-                likeCount: likeCount,
-                commentCount: commentCount,
-                shareCoun: shareCount,
-                id: postid,
-                userid: userid,
-                token: token,
-                userimage: userimageUrl,
-               pageid:  pageid,
-pageimage:pageimage,
-                pagename:          pagename,
-              isFollow:            isFollow,
-                   pageUsername:       pageUsername,
-               isOfficial     :      isOfficial
-              );
+                  posttitle: posttitle,
+                  subtitle: subtitle,
+                  authorposttext: authorposttext,
+                  dateTime: dateTime,
+                  gallery: gallery,
+                  likeCount: likeCount,
+                  commentCount: commentCount,
+                  shareCoun: shareCount,
+                  id: postid,
+                  userid: userid,
+                  token: token,
+                  userimage: userimageUrl,
+                  pageid: pageid,
+                  pageimage: pageimage,
+                  pagename: pagename,
+                  isFollow: isFollow,
+                  pageUsername: pageUsername,
+                  isOfficial: isOfficial);
             },
           ),
         );
@@ -690,7 +754,7 @@ pageimage:pageimage,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            gallery.length != 0 ? myAlbumCard(gallery) : SizedBox.shrink(),
+            gallery.length != 0 ? myAlbumCard(gallery,context) : SizedBox.shrink(),
             // Image.network(gallery[0].signUrl),
             Card(
               child: Column(
@@ -705,7 +769,24 @@ pageimage:pageimage,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: subtexttitlepost(subtitle, context),
+                    child: InkWell(
+                      onTap: ()async{
+                           Navigate.pushPage(context, StroyPageSc(postid: postid,
+                        titalpost: posttitle,
+                        imagUrl: gallery,
+                        type: type,
+                        createdDate:dateTime,
+                        postby:pagename,
+                        imagepage: pageimage,
+                          likeCount: likeCount,
+                  commentCount: commentCount,
+                  shareCount: shareCount,
+                  repostCount:repostCount,
+                        ));
+
+
+                      },
+                      child: subtexttitlepost(subtitle, context)),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -722,7 +803,7 @@ pageimage:pageimage,
                           isFollow,
                           pageUsername,
                           isOfficial,
-                          userid),
+                          id,true),
                       SizedBox(
                         width: 2,
                       ),
@@ -747,7 +828,7 @@ pageimage:pageimage,
                                       size: 20.0,
                                     ),
                                     width: 100,
-                                    label: '${   nDataList1.post.likeCount} ถูกใจ',
+                                    label: '${nDataList1.post.likeCount} ถูกใจ',
                                     onTap: () async {
                                       HapticFeedback.lightImpact();
                                       var jsonResponse;
@@ -773,7 +854,8 @@ pageimage:pageimage,
                                                                           'data']
                                                                       [
                                                                       'isLike'];
-  nDataList1.post.likeCount++;
+                                                              nDataList1.post
+                                                                  .likeCount++;
                                                             }),
                                                           }
                                                         else if (jsonResponse[
@@ -787,7 +869,8 @@ pageimage:pageimage,
                                                                       [
                                                                       'isLike'];
 
-                                                           nDataList1.post.likeCount--;
+                                                              nDataList1.post
+                                                                  .likeCount--;
                                                             }),
                                                           }
                                                       }
@@ -801,7 +884,7 @@ pageimage:pageimage,
                                       color: MColors.primaryBlue,
                                       size: 20.0,
                                     ),
-                                    label: '${  nDataList1.post.likeCount} ถูกใจ',
+                                    label: '${nDataList1.post.likeCount} ถูกใจ',
                                     width: 100,
                                     onTap: () async {
                                       HapticFeedback.lightImpact();
@@ -824,14 +907,13 @@ pageimage:pageimage,
                                                             "Like Post Success")
                                                           {
                                                             setState(() {
-                                                           
-
                                                               islike =
                                                                   jsonResponse[
                                                                           'data']
                                                                       [
                                                                       'isLike'];
-                                                           nDataList1.post.likeCount++;
+                                                              nDataList1.post
+                                                                  .likeCount++;
                                                             }),
                                                           }
                                                         else if (jsonResponse[
@@ -845,7 +927,8 @@ pageimage:pageimage,
                                                                       [
                                                                       'isLike'];
 
-                                                           nDataList1.post.likeCount--;
+                                                              nDataList1.post
+                                                                  .likeCount--;
                                                             }),
                                                           }
                                                       }
@@ -1022,8 +1105,8 @@ pageimage:pageimage,
                                   token == "" || token == null
                                       ? Navigate.pushPage(
                                           context, Loginregister())
-                                      :  await Api.sendfollowPage(data.id,
-                                              token, userid)
+                                      : await Api.sendfollowPage(
+                                              data.id, token, userid)
                                           .then((value) => ({
                                                 jsonResponse =
                                                     jsonDecode(value.body),

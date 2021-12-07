@@ -97,7 +97,6 @@ class _ProfileScState extends State<ProfileSc> {
                       Search(
                         userid: id,
                       ),
-                      true,
                     null),
                   SliverToBoxAdapter(
                       child: Divider(

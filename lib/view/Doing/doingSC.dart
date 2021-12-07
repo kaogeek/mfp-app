@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/utils/internetConnectivity.dart';
+import 'package:mfp_app/utils/router.dart';
+import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
 import 'package:mfp_app/view/Profile/Profile.dart';
 import 'package:mfp_app/view/Search/Search.dart';
 
@@ -21,6 +26,10 @@ class _DoingSCState extends State<DoingSC> {
   var userid;
 
   var userimageUrl;
+
+  var datagetuserprofile;
+
+  var image;
 
   @override
   void dispose() {
@@ -42,6 +51,37 @@ class _DoingSCState extends State<DoingSC> {
             setState(() {
               userid = value;
             }),
+            Api.getuserprofile("$userid")
+                            .then((responseData) async => ({
+                                  if (responseData.statusCode == 200)
+                                    {
+                                      datagetuserprofile =
+                                          jsonDecode(responseData.body),
+                                      setState(() {
+                                        // displayName1 =
+                                        //     datagetuserprofile["data"]
+                                        //         ["displayName"];
+                                        // gender = datagetuserprofile["data"]
+                                        //     ["gender"];
+                                        // firstName = datagetuserprofile["data"]
+                                        //     ["firstName"];
+                                        // lastName = datagetuserprofile["data"]
+                                        //     ["lastName"];
+                                        // id = datagetuserprofile["data"]["id"];
+                                        // email =
+                                        //     datagetuserprofile["data"]["email"];
+                                        image = datagetuserprofile["data"]
+                                            ["imageURL"];
+                                      }),
+                                      // print('displayName1$displayName1'),
+                                      // print('gender$gender'),
+                                      // print('firstName$firstName'),
+                                      // print('lastName$lastName'),
+                                      // print('id$id'),
+                                      // print('email$email'),
+                                      print('image$image'),
+                                    }
+                                })),
             print('userid$userid'),
           }));
       Api.getimageURL().then((value) => ({
@@ -57,7 +97,7 @@ class _DoingSCState extends State<DoingSC> {
   Widget build(BuildContext context) {
     var hight = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-
+    
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -65,10 +105,9 @@ class _DoingSCState extends State<DoingSC> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context, token, userid, userimageUrl,Search(
+              primaryAppBar(context, token, userid, image,Search(
               userid: userid,
             ),
-            true,
                     ProfileSc(
                       userid:userid,
                       token:   token,
@@ -139,8 +178,8 @@ class _DoingSCState extends State<DoingSC> {
                                     children: [
                                       CircleAvatar(
                                         radius: 40.0,
-                                        backgroundImage: NetworkImage(
-                                            'https://via.placeholder.com/150'),
+                                        backgroundImage: AssetImage(
+                                            'images/morkimage1.png'),
                                         backgroundColor: Colors.transparent,
                                       ),
                                       Text(
@@ -179,8 +218,8 @@ class _DoingSCState extends State<DoingSC> {
                                     children: [
                                       CircleAvatar(
                                         radius: 40.0,
-                                        backgroundImage: NetworkImage(
-                                            'https://via.placeholder.com/150'),
+                                        backgroundImage: AssetImage(
+                                            'images/morkimage2.png'),
                                         backgroundColor: Colors.transparent,
                                       ),
                                       Text(
@@ -222,8 +261,8 @@ class _DoingSCState extends State<DoingSC> {
                                     children: [
                                       CircleAvatar(
                                         radius: 40.0,
-                                        backgroundImage: NetworkImage(
-                                            'https://via.placeholder.com/150'),
+                                        backgroundImage:  AssetImage(
+                                            'images/morkimage3.png'),
                                         backgroundColor: Colors.transparent,
                                       ),
                                       Text(
@@ -262,8 +301,8 @@ class _DoingSCState extends State<DoingSC> {
                                     children: [
                                       CircleAvatar(
                                         radius: 40.0,
-                                        backgroundImage: NetworkImage(
-                                            'https://via.placeholder.com/150'),
+                                        backgroundImage:  AssetImage(
+                                            'images/morkimage4.png'),
                                         backgroundColor: Colors.transparent,
                                       ),
                                       Text(
@@ -339,8 +378,8 @@ class _DoingSCState extends State<DoingSC> {
                               padding: EdgeInsets.only(top: 16.0, left: 14.0),
                               child: CircleAvatar(
                                 radius: 36.0,
-                                backgroundImage: NetworkImage(
-                                    'https://via.placeholder.com/150'),
+                                backgroundImage: AssetImage(
+                                            'images/morkimage6.png'),
                                 backgroundColor: Colors.transparent,
                               ),
                             ),

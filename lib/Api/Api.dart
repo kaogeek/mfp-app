@@ -31,6 +31,13 @@ class Api {
     return responseData;
   }
   /*--------------------ดึงค่าuserprofile--------------------------------------*/
+  static Future<Http.Response> getPage(String pageid) async {
+    print('getPage');
+
+    final responseData = await Http.get("${Api.url}api/page/$pageid");
+
+    return responseData;
+  }
 
   static Future gettoke() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -58,6 +65,7 @@ class Api {
     String url = "${Api.url}api/main/content/search";
     final headers = {
       // "mode": "EMAIL",
+      "authority":"today-api.moveforwardparty.org",
       "content-type": "application/json",
     };
     Map data = {
@@ -69,7 +77,7 @@ class Api {
       "endActionCount": 6,
       "pageCategories": [],
       "sortBy": "LASTEST_DATE",
-      "filter": {"limit": 15, "offset": offset}
+      "filter": {"limit": 5, "offset": offset}
     };
     var body = jsonEncode(data);
 
