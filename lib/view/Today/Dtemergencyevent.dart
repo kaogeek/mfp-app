@@ -55,6 +55,12 @@ class _DTemergenScState extends State<DTEmergenSc> {
   Future getDataList;
   bool isLoading = false;
 
+  var image;
+
+  var datagetuserprofile;
+
+  var userid;
+
   @override
   void initState() {
     setState(() {
@@ -99,6 +105,39 @@ class _DTemergenScState extends State<DTEmergenSc> {
                       }),
                     }
                 });
+
+                 Api.getmyuid().then((value) => ({
+            setState(() {
+              userid = value;
+            }),
+             Api.getuserprofile("$userid")
+                            .then((responseData) async => ({
+                                  if (responseData.statusCode == 200)
+                                    {
+                                      datagetuserprofile =
+                                          jsonDecode(responseData.body),
+                                      setState(() {
+                                        // displayName1 =
+                                        //     datagetuserprofile["data"]
+                                        //         ["displayName"];
+                                        // gender = datagetuserprofile["data"]
+                                        //     ["gender"];
+                                        // firstName = datagetuserprofile["data"]
+                                        //     ["firstName"];
+                                        // lastName = datagetuserprofile["data"]
+                                        //     ["lastName"];
+                                        // id = datagetuserprofile["data"]["id"];
+                                        // email =
+                                        //     datagetuserprofile["data"]["email"];
+                                        image = datagetuserprofile["data"]
+                                            ["imageURL"];
+                                      }),
+                
+                                      print('image$image'),
+                                    }
+                                })),
+            print('userid$userid'),
+          }));
       } finally {
         // TODO
       }
@@ -125,9 +164,9 @@ class _DTemergenScState extends State<DTEmergenSc> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context, widget.token, "", widget.userimage,Search(
+              primaryAppBar(context, widget.token, "", image,Search(
               userid: widget.userid,
-            ),true,
+            ),
                     ProfileSc(
                       userid:  widget.userid,
                       token:   widget.token,
@@ -262,7 +301,7 @@ class _DTemergenScState extends State<DTEmergenSc> {
                                       children: [
                                         Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 5),
+                                              const EdgeInsets.only(left: 25),
                                           child: Text(
                                             '${e.name == null ? "" : e.name}',
                                             overflow: TextOverflow.ellipsis,
@@ -301,14 +340,8 @@ class _DTemergenScState extends State<DTEmergenSc> {
                                                       MaterialStateProperty.all<
                                                           Color>(Colors.green),
                                                 ),
-                                                child: Text(
-                                                  'เติมเต็ม',
-                                                  style: TextStyle(
-                                                      fontSize: 13.0,
-                                                      color:
-                                                          MColors.primaryWhite),
-                                                ),
-                                                onPressed: () {},
+                                                child: Icon(Icons.check,color: MColors.primaryWhite,),
+                                                onPressed:null,
                                               ),
                                             ),
                                           )

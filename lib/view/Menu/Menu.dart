@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mfp_app/Api/Api.dart';
@@ -25,6 +27,10 @@ class _MenuSCState extends State<MenuSC> {
 
   var userimageUrl;
 
+  var datagetuserprofile;
+
+  var image;
+
   @override
   void initState() {
     print('initState');
@@ -39,6 +45,32 @@ class _MenuSCState extends State<MenuSC> {
             setState(() {
               userid = value;
             }),
+             Api.getuserprofile("$userid")
+                            .then((responseData) async => ({
+                                  if (responseData.statusCode == 200)
+                                    {
+                                      datagetuserprofile =
+                                          jsonDecode(responseData.body),
+                                      setState(() {
+                                        // displayName1 =
+                                        //     datagetuserprofile["data"]
+                                        //         ["displayName"];
+                                        // gender = datagetuserprofile["data"]
+                                        //     ["gender"];
+                                        // firstName = datagetuserprofile["data"]
+                                        //     ["firstName"];
+                                        // lastName = datagetuserprofile["data"]
+                                        //     ["lastName"];
+                                        // id = datagetuserprofile["data"]["id"];
+                                        // email =
+                                        //     datagetuserprofile["data"]["email"];
+                                        image = datagetuserprofile["data"]
+                                            ["imageURL"];
+                                      }),
+                
+                                      print('image$image'),
+                                    }
+                                })),
             print('userid$userid'),
           }));
       Api.getimageURL().then((value) => ({
@@ -65,9 +97,9 @@ class _MenuSCState extends State<MenuSC> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context, token, userid, userimageUrl,Search(
+              primaryAppBar(context, token, userid, image,Search(
               userid: userid,
-            ),true,
+            ),
                     ProfileSc(
                       userid:  userid,
                       token:   token,

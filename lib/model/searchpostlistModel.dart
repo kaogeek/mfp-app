@@ -187,7 +187,7 @@ class Post {
     String referencePost;
     String rootReferencePost;
     DateTime updateDate;
-    List<Gallery> gallery;
+    List<GalleryPostSearchModel> gallery;
     List<dynamic> needs;
     List<dynamic> fulfillment;
     List<HashTag> hashTags;
@@ -220,7 +220,7 @@ class Post {
         referencePost: json["referencePost"] == null ? null : json["referencePost"],
         rootReferencePost: json["rootReferencePost"] == null ? null : json["rootReferencePost"],
         updateDate: DateTime.parse(json["updateDate"]),
-        gallery: List<Gallery>.from(json["gallery"].map((x) => Gallery.fromJson(x))),
+        gallery: List<GalleryPostSearchModel>.from(json["gallery"].map((x) => GalleryPostSearchModel.fromJson(x))),
         needs: List<dynamic>.from(json["needs"].map((x) => x)),
         fulfillment: List<dynamic>.from(json["fulfillment"].map((x) => x)),
         hashTags: List<HashTag>.from(json["hashTags"].map((x) => HashTag.fromJson(x))),
@@ -264,8 +264,8 @@ class Post {
     };
 }
 
-class Gallery {
-    Gallery({
+class GalleryPostSearchModel {
+    GalleryPostSearchModel({
         this.id,
         this.post,
         this.fileId,
@@ -281,7 +281,7 @@ class Gallery {
     int ordering;
     String signUrl;
 
-    factory Gallery.fromJson(Map<String, dynamic> json) => Gallery(
+    factory GalleryPostSearchModel.fromJson(Map<String, dynamic> json) => GalleryPostSearchModel(
         id: json["_id"],
         post: json["post"],
         fileId: json["fileId"],
