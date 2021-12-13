@@ -124,7 +124,7 @@ class _SearchState extends State<Search> {
   }
 
   getdate(String quer, String userid) async {
-    var url =Uri.parse("${Api.url}api/main/search");
+    var url = Uri.parse("${Api.url}api/main/search");
     final headers = {
       // "mode": "EMAIL",
       "content-type": "application/json",
@@ -176,9 +176,8 @@ class _SearchState extends State<Search> {
     // print('getData');
 
     try {
-      final responseData = await http.get(
-         Uri.parse ("${Api.url}api/page/$pageid"),
-          headers: headers);
+      final responseData = await http
+          .get(Uri.parse("${Api.url}api/page/$pageid"), headers: headers);
       if (responseData.statusCode == 200) {
         setState(() {
           loading = true;
@@ -192,7 +191,7 @@ class _SearchState extends State<Search> {
             });
             print('listPageModellength${_listPageModel.length}');
           }
-      
+
           loading = false;
           print('body$dataht1');
           print('responseDatagetpage${responseData.body}');
@@ -335,7 +334,7 @@ class _SearchState extends State<Search> {
                                     ),
                                   ),
                                   onChanged: (text) async {
-                                                    if (text == "") {
+                                    if (text == "") {
                                       print("controllerวางจริง");
                                       setState(() {
                                         _listPageModel.clear();
@@ -351,7 +350,7 @@ class _SearchState extends State<Search> {
                                     if (text.isEmpty) {
                                       print("onChangedวางจริง");
                                       setState(() {
-                                      _listPageModel.clear();
+                                        _listPageModel.clear();
 
                                         isvalue = "";
 
@@ -360,10 +359,9 @@ class _SearchState extends State<Search> {
                                         _searchResult.clear();
                                       });
                                     }
-                                       setState(() {
-                                                                              _searchResult.clear();
-                                        _listPageModel.clear();
-
+                                    setState(() {
+                                      _searchResult.clear();
+                                      _listPageModel.clear();
                                     });
                                     Future.delayed(
                                         const Duration(milliseconds: 1000), () {
@@ -371,7 +369,6 @@ class _SearchState extends State<Search> {
                                         text = text.toLowerCase();
                                       });
                                     });
-                                 
 
                                     if (controller.text != "") {
                                       setState(() {
@@ -386,20 +383,18 @@ class _SearchState extends State<Search> {
                                       });
                                       setState(() {
                                         listSearchHastag.clear();
-                                            _listPageModel.clear();
+                                        _listPageModel.clear();
                                         // isvalue = "";
                                         //  _listPageModel.clear();
                                       });
-                                        Future.delayed(
-                                        const Duration(milliseconds: 2000), () async {
-                                    await   getdate(text.toLowerCase(),
-                                          widget.userid);
-                                    await  getpage(isvalue);
-                                    });
-
-                                   
+                                      Future.delayed(
+                                          const Duration(milliseconds: 2000),
+                                          () async {
+                                        await getdate(
+                                            text.toLowerCase(), widget.userid);
+                                        await getpage(isvalue);
+                                      });
                                     }
-                    
                                   },
                                 ),
                               ),
@@ -408,8 +403,8 @@ class _SearchState extends State<Search> {
                               padding: const EdgeInsets.all(6.0),
                               child: InkWell(
                                 onTap: () async {
-                                    listSearchHastag.clear();
-                                    _listPageModel.clear();
+                                  listSearchHastag.clear();
+                                  _listPageModel.clear();
                                   setState(() {
                                     loading = true;
                                   });
@@ -580,77 +575,8 @@ class _SearchState extends State<Search> {
                           );
                         },
                       ),
-                    )
-              // : SliverToBoxAdapter(child: Container()),
-              // SliverToBoxAdapter(
-              //   child: Container(
-              //     color: Colors.white,
-              //     child: Row(
-              //       children: <Widget>[
-              //         Row(
-              //           children: <Widget>[
-              //             Padding(
-              //               padding: EdgeInsets.all(12.0),
-              //               child: CircleAvatar(
-              //                 radius: 30.0,
-              //                 backgroundImage: NetworkImage(
-              //                     'https://via.placeholder.com/150'),
-              //                 backgroundColor: Colors.transparent,
-              //               ),
-              //             ),
-              //             SizedBox(
-              //               width: 12.0,
-              //             ),
-              //             Padding(
-              //               padding: EdgeInsets.only(
-              //                   //top: 6.0,
-              //                   ),
-              //               child: Column(
-              //                 crossAxisAlignment: CrossAxisAlignment.start,
-              //                 children: <Widget>[
-              //                   Text(
-              //                     'ณัฐพงษ์  เรืองปัญญาวุฒิ',
-              //                     style: TextStyle(
-              //                         color: Colors.grey[700],
-              //                         fontSize: 16.0,
-              //                         fontFamily: 'Anakotmai',
-              //                         fontWeight: FontWeight.bold),
-              //                   ),
-              //                   SizedBox(
-              //                     height: 5,
-              //                   ),
-              //                   Text(
-              //                     'กำลังทำสิ่งๆนี้อยู่',
-              //                     style: TextStyle(
-              //                         color: primaryColor,
-              //                         fontSize: 14.0,
-              //                         fontFamily: 'Anakotmai',
-              //                         fontWeight: FontWeight.bold),
-              //                   ),
-              //                 ],
-              //               ),
-              //             ),
-              //             Padding(
-              //               padding: EdgeInsets.only(top: 14, left: 4.0),
-              //               child: Container(
-              //                 margin: EdgeInsets.only(left: 90),
-              //                 child: Center(
-              //                   child: Icon(Icons.arrow_forward_ios),
-              //                 ),
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              // SliverToBoxAdapter(
-              //     child: Divider(
-              //   color: Colors.transparent,
-              //   height: 3,
-              //   thickness: 6.0,
-              // )),
+                    ),
+
             ],
           ),
         ),

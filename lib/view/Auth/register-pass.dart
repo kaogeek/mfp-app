@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfp_app/constants/colors.dart';
-import 'package:mfp_app/view/Auth/register-pic.dart';
+import 'package:mfp_app/view/Auth/register_pic.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Registerpassword extends StatefulWidget {
@@ -163,32 +163,44 @@ class _RegisterpasswordState extends State<Registerpassword> {
                       ],
                     ),
                   ),
-                Container(
-                  //color: Colors.black,
-                  height: MediaQuery.of(context).size.height * 0.16,
-                  width: MediaQuery.of(context).size.width * 0.85,
-                  child: Row(
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          text: 'สวัสดี,\n',
-                          style: TextStyle(
-                              fontSize: 35,
+                 Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10),
+                   child: Container(
+                    // color: Colors.black,
+                    height: MediaQuery.of(context).size.height / 5.5,
+                    width: MediaQuery.of(context).size.width / 1,
+                    child: Column(
+                      children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text('สวัสดี,', 
+                        style: TextStyle(
+                            
+                              fontSize: 30,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                          children: [
-                            TextSpan(
-                                text: 'ยินดีต้อนรับเข้าสู่ แพลตฟอร์ม\n',
-                                style: TextStyle(fontSize: 25)),
-                            TextSpan(
-                                text: 'ก้าวไกลทูเดย์',
-                                style: TextStyle(fontSize: 25)),
-                          ],
-                        ),
+                              color: Colors.white),),
                       ),
-                    ],
-                  ),
+                            Align(
+                alignment: Alignment.centerLeft,
+
+                              child: Text('ยินดีต้อนรับเข้าสู่ แพลตฟอร์ม', style: TextStyle(
+                                                    
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),),
+                            ),
+                             Align(
+                                               alignment: Alignment.centerLeft,
+
+                               child: Text( 'ก้าวไกลทูเดย์', style: TextStyle(
+                                                     
+                                                       fontSize: 25,
+                                                       fontWeight: FontWeight.bold,
+                                                       color: Colors.white),),
+                             ),
+                    ],),
                 ),
+                 ),
                 Container(
                   //color: Colors.black,
                   height: MediaQuery.of(context).size.height * 0.09,

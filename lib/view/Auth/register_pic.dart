@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mfp_app/constants/colors.dart';
-import 'package:mfp_app/view/Auth/register-ginfo.dart';
+import 'package:mfp_app/view/Auth/register_ginfo.dart';
 
 class PicProfile extends StatefulWidget {
   final String email;

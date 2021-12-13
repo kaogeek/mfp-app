@@ -123,29 +123,39 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                 Container(
-                  //color: Colors.black,
+                  // color: Colors.black,
                   height: MediaQuery.of(context).size.height / 5.5,
-                  child: Row(
+                  width: MediaQuery.of(context).size.width / 1,
+                  child: Column(
                     children: [
-                      RichText(
-                        text: TextSpan(
-                          text: 'สวัสดี,\n',
-                          style: TextStyle(
-                              fontSize: 35,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                          children: [
-                            TextSpan(
-                                text: 'ยินดีต้อนรับเข้าสู่ แพลตฟอร์ม\n',
-                                style: TextStyle(fontSize: 25)),
-                            TextSpan(
-                                text: 'ก้าวไกลทูเดย์',
-                                style: TextStyle(fontSize: 25)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('สวัสดี,', 
+                      style: TextStyle(
+                          
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),),
+                    ),
+                          Align(
+                alignment: Alignment.centerLeft,
+
+                            child: Text('ยินดีต้อนรับเข้าสู่ แพลตฟอร์ม', style: TextStyle(
+                                                  
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),),
+                          ),
+                           Align(
+                                             alignment: Alignment.centerLeft,
+
+                             child: Text( 'ก้าวไกลทูเดย์', style: TextStyle(
+                                                   
+                                                     fontSize: 25,
+                                                     fontWeight: FontWeight.bold,
+                                                     color: Colors.white),),
+                           ),
+                  ],),
                 ),
                 Container(
                   //color: Colors.black,

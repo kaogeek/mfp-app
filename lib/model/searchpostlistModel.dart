@@ -5,10 +5,33 @@
 
 import 'dart:convert';
 
-PostSearchModel welcomeFromJson(String str) => PostSearchModel.fromJson(json.decode(str));
+Postslist welcomeFromJson(String str) => Postslist.fromJson(json.decode(str));
 
-String welcomeToJson(PostSearchModel data) => json.encode(data.toJson());
+String welcomeToJson(Postslist data) => json.encode(data.toJson());
 
+class Postslist {
+    Postslist({
+        this.status,
+        this.message,
+        this.data,
+    });
+
+    int status;
+    String message;
+    List<PostSearchModel> data;
+
+    factory Postslist.fromJson(Map<String, dynamic> json) => Postslist(
+        status: json["status"],
+        message: json["message"],
+        data: List<PostSearchModel>.from(json["data"].map((x) => PostSearchModel.fromJson(x))),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "status": status,
+        "message": message,
+        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+    };
+}
 
 
 
