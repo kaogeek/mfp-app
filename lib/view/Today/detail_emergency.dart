@@ -11,8 +11,8 @@ import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/EmergencyEventModel.dart';
 import 'package:mfp_app/model/searchpostlistModel.dart';
-import 'package:mfp_app/view/Profile/Profile.dart';
-import 'package:mfp_app/view/Search/Search.dart';
+import 'package:mfp_app/view/Profile/profile.dart';
+import 'package:mfp_app/view/Search/search.dart';
 
 class DTEmergenSc extends StatefulWidget {
   final String hashtagstitle;
@@ -25,7 +25,8 @@ class DTEmergenSc extends StatefulWidget {
     this.hashtagstitle,
     this.emergencyEventId,
     this.userimage,
-    this.token, this.userid,
+    this.token,
+    this.userid,
   }) : super(key: key);
 
   @override
@@ -54,6 +55,12 @@ class _DTemergenScState extends State<DTEmergenSc> {
       newicon;
   Future getDataList;
   bool isLoading = false;
+
+  var image;
+
+  var datagetuserprofile;
+
+  var userid;
 
   @override
   void initState() {
@@ -99,6 +106,35 @@ class _DTemergenScState extends State<DTEmergenSc> {
                       }),
                     }
                 });
+
+        Api.getmyuid().then((value) => ({
+              setState(() {
+                userid = value;
+              }),
+              Api.getuserprofile("$userid").then((responseData) async => ({
+                    if (responseData.statusCode == 200)
+                      {
+                        datagetuserprofile = jsonDecode(responseData.body),
+                        setState(() {
+                          // displayName1 =
+                          //     datagetuserprofile["data"]
+                          //         ["displayName"];
+                          // gender = datagetuserprofile["data"]
+                          //     ["gender"];
+                          // firstName = datagetuserprofile["data"]
+                          //     ["firstName"];
+                          // lastName = datagetuserprofile["data"]
+                          //     ["lastName"];
+                          // id = datagetuserprofile["data"]["id"];
+                          // email =
+                          //     datagetuserprofile["data"]["email"];
+                          image = datagetuserprofile["data"]["imageURL"];
+                        }),
+                        print('image$image'),
+                      }
+                  })),
+              print('userid$userid'),
+            }));
       } finally {
         // TODO
       }
@@ -125,13 +161,18 @@ class _DTemergenScState extends State<DTEmergenSc> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context, widget.token, "", widget.userimage,Search(
-              userid: widget.userid,
-            ),true,
-                    ProfileSc(
-                      userid:  widget.userid,
-                      token:   widget.token,
-                    )),
+              primaryAppBar(
+                  context,
+                  widget.token,
+                  "",
+                  image,
+                  Search(
+                    userid: widget.userid,
+                  ),
+                  ProfileSc(
+                    userid: widget.userid,
+                    token: widget.token,
+                  )),
               AppBardetail(
                 context,
                 "เหตุการณ์ด่วน ${widget.hashtagstitle}",
@@ -262,7 +303,7 @@ class _DTemergenScState extends State<DTEmergenSc> {
                                       children: [
                                         Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 5),
+                                              const EdgeInsets.only(left: 25),
                                           child: Text(
                                             '${e.name == null ? "" : e.name}',
                                             overflow: TextOverflow.ellipsis,
@@ -301,14 +342,11 @@ class _DTemergenScState extends State<DTEmergenSc> {
                                                       MaterialStateProperty.all<
                                                           Color>(Colors.green),
                                                 ),
-                                                child: Text(
-                                                  'เติมเต็ม',
-                                                  style: TextStyle(
-                                                      fontSize: 13.0,
-                                                      color:
-                                                          MColors.primaryWhite),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: MColors.primaryWhite,
                                                 ),
-                                                onPressed: () {},
+                                                onPressed: null,
                                               ),
                                             ),
                                           )

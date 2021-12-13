@@ -17,8 +17,8 @@ import 'package:http/http.dart' as Http;
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/utils/timeutils.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
-import 'package:mfp_app/view/Profile/Profile.dart';
-import 'package:mfp_app/view/Search/Search.dart';
+import 'package:mfp_app/view/Profile/profile.dart';
+import 'package:mfp_app/view/Search/search.dart';
 
 class PostDetailsSC extends StatefulWidget {
   final String id;
@@ -27,21 +27,21 @@ class PostDetailsSC extends StatefulWidget {
   final String posttitle;
   final String subtitle;
   final DateTime dateTime;
-  final List<Gallery> gallery;
- int likeCount;
+  final List<GalleryPostSearchModel> gallery;
+  int likeCount;
   final int commentCount;
   final int shareCoun;
   final String userid;
   final String token;
   final String userimage;
-final String pageid;
- final    String pageimage;
- final   String pagename;
-  final   bool isFollow;
- final   String pageUsername;
-  final  bool isOfficial;
+  final String pageid;
+  final String pageimage;
+  final String pagename;
+  final bool isFollow;
+  final String pageUsername;
+  final bool isOfficial;
 
-   PostDetailsSC(
+  PostDetailsSC(
       {Key key,
       this.id,
       this.image,
@@ -55,7 +55,13 @@ final String pageid;
       this.shareCoun,
       this.userid,
       this.token,
-      this.userimage, this.pageid, this.pageimage, this.pagename, this.isFollow, this.pageUsername, this.isOfficial})
+      this.userimage,
+      this.pageid,
+      this.pageimage,
+      this.pagename,
+      this.isFollow,
+      this.pageUsername,
+      this.isOfficial})
       : super(key: key);
 
   @override
@@ -65,6 +71,12 @@ final String pageid;
 class _PostDetailsSCState extends State<PostDetailsSC> {
   final TrackingScrollController _trackingScrollController =
       TrackingScrollController();
+
+  var image;
+
+  var datagetuserprofile;
+
+  var userid;
 
   @override
   void dispose() {
@@ -102,8 +114,36 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
       //       print('myuidhome$mytoken'),
       //     }));
       print(widget.id);
-      print(widget.userid);
+      print('widget.userid${widget.userid}');
       print(widget.token);
+      Api.getmyuid().then((value) => ({
+            setState(() {
+              userid = value;
+            }),
+            Api.getuserprofile("$userid").then((responseData) async => ({
+                  if (responseData.statusCode == 200)
+                    {
+                      datagetuserprofile = jsonDecode(responseData.body),
+                      setState(() {
+                        // displayName1 =
+                        //     datagetuserprofile["data"]
+                        //         ["displayName"];
+                        // gender = datagetuserprofile["data"]
+                        //     ["gender"];
+                        // firstName = datagetuserprofile["data"]
+                        //     ["firstName"];
+                        // lastName = datagetuserprofile["data"]
+                        //     ["lastName"];
+                        // id = datagetuserprofile["data"]["id"];
+                        // email =
+                        //     datagetuserprofile["data"]["email"];
+                        image = datagetuserprofile["data"]["imageURL"];
+                      }),
+                      print('image$image'),
+                    }
+                })),
+            print('userid$userid'),
+          }));
 
       Api.getcommentlist(widget.id, widget.userid, widget.token)
           .then((responseData) => ({
@@ -136,7 +176,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
       String postid, String mytoken, String mag, String myuid) async {
     print('sendcomment');
 
-    var url = "${Api.url}api/post/$postid/comment";
+    var url = Uri.parse("${Api.url}api/post/$postid/comment");
     final headers = {
       "userid": myuid,
       "content-type": "application/json",
@@ -226,12 +266,17 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
             child: CustomScrollView(
               controller: _trackingScrollController,
               slivers: [
-                primaryAppBar(context, widget.token, "", widget.userimage, Search(
-              userid: widget.userid,
-            ),true,
+                primaryAppBar(
+                    context,
+                    widget.token,
+                    "",
+                    image,
+                    Search(
+                      userid: widget.userid,
+                    ),
                     ProfileSc(
-                      userid:  widget.userid,
-                      token:   widget.token,
+                      userid: widget.userid,
+                      token: widget.token,
                     )),
                 AppBardetail(
                   context,
@@ -259,13 +304,12 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     widget.likeCount,
                     widget.commentCount,
                     widget.shareCoun,
-                   widget.id,
-                     widget     .pageimage,
-                    widget      .pagename,
-                     widget     .isFollow,
-                     widget     .pageUsername,
-                     widget     .isOfficial,
-                     
+                    widget.id,
+                    widget.pageimage,
+                    widget.pagename,
+                    widget.isFollow,
+                    widget.pageUsername,
+                    widget.isOfficial,
                   ),
                 ),
 
@@ -317,16 +361,16 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
       String subtitle,
       String authorposttext,
       DateTime dateTime,
-      List<Gallery> gallery,
+      List<GalleryPostSearchModel> gallery,
       int likeCount,
       int commentCount,
       int shareCount,
-       String pageid,
-    String pageimage,
-    String pagename,
-    bool isFollow,
-    String pageUsername,
-    bool isOfficial) {
+      String pageid,
+      String pageimage,
+      String pagename,
+      bool isFollow,
+      String pageUsername,
+      bool isOfficial) {
     return InkWell(
       onTap: () {},
       child: Container(
@@ -337,7 +381,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
           children: [
             gallery[0].signUrl != null
                 ? Hero(
-                    tag: "image"+ gallery[0].signUrl,
+                    tag: "image" + gallery[0].signUrl,
                     child: CachedNetworkImage(
                       imageUrl: gallery[0].signUrl,
                       placeholder: (context, url) =>
@@ -375,7 +419,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       fixtextauthor(),
-                    authorpost(
+                      authorpost(
                           authorposttext,
                           context,
                           dateTime,
@@ -384,7 +428,9 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                           pagename,
                           isFollow,
                           pageUsername,
-                          isOfficial,widget.userid),
+                          isOfficial,
+                          widget.userid,
+                          true),
                       SizedBox(
                         width: 2,
                       ),
@@ -410,9 +456,9 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                     icon: Icon(
                                       Icons.favorite_outline,
                                       color: MColors.primaryBlue,
-                                      size: 20.0,
                                     ),
-                                    label: '${ widget.likeCount} ถูกใจ',
+                                    label: '${widget.likeCount} ถูกใจ',
+                                    width: 8.0,
                                     onTap: () async {
                                       HapticFeedback.lightImpact();
 
@@ -420,8 +466,11 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                       widget.token == "" || widget.token == null
                                           ? Navigate.pushPage(
                                               context, Loginregister())
-                                          : await Api.islike(widget.id,
-                                                  widget.userid, widget.token)
+                                          : await Api.islike(
+                                                  widget.id,
+                                                  widget.userid,
+                                                  widget.token,
+                                                  "")
                                               .then((value) => ({
                                                     jsonResponse =
                                                         jsonDecode(value.body),
@@ -440,7 +489,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                                       [
                                                                       'isLike'];
 
-                                                               widget.likeCount++;
+                                                              widget
+                                                                  .likeCount++;
                                                             }),
                                                           }
                                                         else if (jsonResponse[
@@ -454,7 +504,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                                       [
                                                                       'isLike'];
 
-                                                              --widget.likeCount;
+                                                              --widget
+                                                                  .likeCount;
                                                             }),
                                                           }
                                                       }
@@ -466,8 +517,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                     icon: Icon(
                                       Icons.favorite,
                                       color: MColors.primaryBlue,
-                                      size: 20.0,
                                     ),
+                                    width: 8.0,
                                     label: '$likeCount ถูกใจ',
                                     onTap: () async {
                                       HapticFeedback.lightImpact();
@@ -476,8 +527,11 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                       widget.token == null
                                           ? Navigate.pushPage(
                                               context, Loginregister())
-                                          : await Api.islike(widget.id,
-                                                  widget.userid, widget.token)
+                                          : await Api.islike(
+                                                  widget.id,
+                                                  widget.userid,
+                                                  widget.token,
+                                                  "")
                                               .then((value) => ({
                                                     jsonResponse =
                                                         jsonDecode(value.body),
@@ -522,8 +576,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                               icon: Icon(
                                 MdiIcons.commentOutline,
                                 color: MColors.primaryBlue,
-                                size: 20.0,
                               ),
+                              width: 4.1,
                               label: '$commentCount ความคิดเห็น',
                               onTap: () => print('Comment'),
                             ),
@@ -531,8 +585,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                               icon: Icon(
                                 Icons.share,
                                 color: MColors.primaryBlue,
-                                size: 25.0,
                               ),
+                              width: 8.0,
                               label: '$shareCount แชร์',
                               onTap: () => print('Share'),
                             ),

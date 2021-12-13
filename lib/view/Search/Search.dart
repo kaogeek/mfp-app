@@ -15,6 +15,7 @@ import 'package:mfp_app/model/searchhastag.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
 import 'package:mfp_app/view/Profile/Profile.dart';
+import 'package:mfp_app/view/Profile/Profliess.dart';
 
 class Search extends StatefulWidget {
   final String userid;
@@ -62,6 +63,12 @@ class _SearchState extends State<Search> {
 
   var myuid;
   bool isOpen = false;
+
+  var image;
+
+  var datagetuserprofile;
+
+  var userid1;
   @override
   void initState() {
     print('initState');
@@ -76,6 +83,28 @@ class _SearchState extends State<Search> {
             setState(() {
               userid = value;
             }),
+            Api.getuserprofile("$userid").then((responseData) async => ({
+                  if (responseData.statusCode == 200)
+                    {
+                      datagetuserprofile = jsonDecode(responseData.body),
+                      setState(() {
+                        // displayName1 =
+                        //     datagetuserprofile["data"]
+                        //         ["displayName"];
+                        // gender = datagetuserprofile["data"]
+                        //     ["gender"];
+                        // firstName = datagetuserprofile["data"]
+                        //     ["firstName"];
+                        // lastName = datagetuserprofile["data"]
+                        //     ["lastName"];
+                        userid1 = datagetuserprofile["data"]["id"];
+                        // email =
+                        //     datagetuserprofile["data"]["email"];
+                        image = datagetuserprofile["data"]["imageURL"];
+                      }),
+                      print('image$image'),
+                    }
+                })),
             print('userid$userid'),
           }));
       Api.getimageURL().then((value) => ({
@@ -95,8 +124,7 @@ class _SearchState extends State<Search> {
   }
 
   getdate(String quer, String userid) async {
-    Future.delayed(Duration(seconds: 2));
-    var url = "https://today-api.moveforwardparty.org/api/main/search";
+    var url = Uri.parse("${Api.url}api/main/search");
     final headers = {
       // "mode": "EMAIL",
       "content-type": "application/json",
@@ -106,7 +134,6 @@ class _SearchState extends State<Search> {
       "user": userid,
     };
     var body = jsonEncode(data);
-
     final responseData = await http.post(
       url,
       headers: headers,
@@ -126,22 +153,11 @@ class _SearchState extends State<Search> {
         print('ispage${dataht["data"]["type"]}');
 
         print('isUser$isType');
-
-        listSearchHastag.add(SearchHastag.fromJson(i));
-
-        // if (listSearchHastag.indexOf(SearchHastag.fromJson(i)) <= -1) {
-        // }
-        // if (listSearchHastag.indexOf(SearchHastag.fromJson(i)) <= 0) {
-        //   listSearchHastag.remove(listSearchHastag);
-        // }
-
+        setState(() {
+          listSearchHastag.add(SearchHastag.fromJson(i));
+        });
         print('listSearchHastagจำนวน${listSearchHastag.length}');
         print('_searchResult${_searchResult.length}');
-
-        if (controller.text.isEmpty) {
-          print("controllerวางจริง");
-          listSearchHastag.clear();
-        }
       }
 
       loading = false;
@@ -149,6 +165,7 @@ class _SearchState extends State<Search> {
   }
 
   getpage(String pageid) async {
+    Future.delayed(Duration(seconds: 10));
     print('getPageisvalue$pageid');
     final headers = {
       // "limit": 1,
@@ -158,27 +175,32 @@ class _SearchState extends State<Search> {
     };
     // print('getData');
 
-    final responseData = await http.get(
-        "https://today-api.moveforwardparty.org/api/page/$pageid",
-        headers: headers);
-    if (responseData.statusCode == 200) {
-      setState(() {
-        loading = true;
-      });
+    try {
+      final responseData = await http
+          .get(Uri.parse("${Api.url}api/page/$pageid"), headers: headers);
       if (responseData.statusCode == 200) {
-        var dataht1 = jsonDecode(responseData.body);
-        print('listPageModel${dataht1["data"]}');
-        if (isType == "PAGE") {
-          _listPageModel.add(PageModel.fromJson(dataht1["data"]));
-          print('listPageModellength${_listPageModel.length}');
-        }
+        setState(() {
+          loading = true;
+        });
+        if (responseData.statusCode == 200) {
+          var dataht1 = jsonDecode(responseData.body);
+          print('listPageModel${dataht1["data"]}');
+          if (isType == "PAGE") {
+            setState(() {
+              _listPageModel.add(PageModel.fromJson(dataht1["data"]));
+            });
+            print('listPageModellength${_listPageModel.length}');
+          }
 
-        loading = false;
-        print('body$dataht1');
-        print('responseDatagetpage${responseData.body}');
+          loading = false;
+          print('body$dataht1');
+          print('responseDatagetpage${responseData.body}');
+        }
+      } else if (responseData.statusCode == 404) {
+        throw Exception('Not Found');
       }
-    } else if (responseData.statusCode == 404) {
-      throw Exception('Not Found');
+    } on Exception catch (e) {
+      // TODO
     }
   }
 
@@ -224,8 +246,8 @@ class _SearchState extends State<Search> {
                   ),
                   CircleButton(
                     icon: MdiIcons.bellOutline,
-                          color:MColors.primaryBlue,
-        iconSize: 27.0,
+                    color: MColors.primaryBlue,
+                    iconSize: 27.0,
                     onPressed: () => print('Messenger'),
                   ),
                   token != "" && token != null
@@ -243,7 +265,7 @@ class _SearchState extends State<Search> {
                             child: CircleAvatar(
                               radius: 25.0,
                               backgroundImage: NetworkImage(
-                                  'https://today-api.moveforwardparty.org/api$userimageUrl/image'),
+                                  'https://today-api.moveforwardparty.org/api$image/image'),
                               backgroundColor: Colors.transparent,
                             ),
                           ),
@@ -311,15 +333,66 @@ class _SearchState extends State<Search> {
                                           BorderSide(color: Colors.white),
                                     ),
                                   ),
-                                  onChanged: (text) {
-                                    if (controller.text.isEmpty) {
+                                  onChanged: (text) async {
+                                    if (text == "") {
                                       print("controllerวางจริง");
                                       setState(() {
-                                        controller.clear();
-                                        listSearchHastag.clear();
                                         _listPageModel.clear();
 
+                                        isvalue = "";
+
+                                        controller.clear();
+                                        listSearchHastag.clear();
                                         _searchResult.clear();
+                                      });
+                                    }
+
+                                    if (text.isEmpty) {
+                                      print("onChangedวางจริง");
+                                      setState(() {
+                                        _listPageModel.clear();
+
+                                        isvalue = "";
+
+                                        controller.clear();
+                                        listSearchHastag.clear();
+                                        _searchResult.clear();
+                                      });
+                                    }
+                                    setState(() {
+                                      _searchResult.clear();
+                                      _listPageModel.clear();
+                                    });
+                                    Future.delayed(
+                                        const Duration(milliseconds: 1000), () {
+                                      setState(() {
+                                        text = text.toLowerCase();
+                                      });
+                                    });
+
+                                    if (controller.text != "") {
+                                      setState(() {
+                                        _searchResult =
+                                            listSearchHastag.where((ht) {
+                                          // distinctIds = _searchResult.toSet().toList();
+                                          // print('distinctIds${distinctIds.length}');
+                                          var htlable = ht.label.toLowerCase();
+                                          return htlable.contains(
+                                              controller.text.toLowerCase());
+                                        }).toList();
+                                      });
+                                      setState(() {
+                                        listSearchHastag.clear();
+                                        _listPageModel.clear();
+                                        // isvalue = "";
+                                        //  _listPageModel.clear();
+                                      });
+                                      Future.delayed(
+                                          const Duration(milliseconds: 2000),
+                                          () async {
+                                        await getdate(
+                                            text.toLowerCase(), widget.userid);
+                                        await getpage(isvalue);
                                       });
                                     }
                                   },
@@ -330,9 +403,17 @@ class _SearchState extends State<Search> {
                               padding: const EdgeInsets.all(6.0),
                               child: InkWell(
                                 onTap: () async {
+                                  listSearchHastag.clear();
+                                  _listPageModel.clear();
                                   setState(() {
                                     loading = true;
                                   });
+                                  if (controller.text.isEmpty) {
+                                    listSearchHastag.clear();
+                                    _listPageModel.clear();
+                                    isvalue = "";
+                                  }
+
                                   if (listSearchHastag.length != 0 ||
                                       _listPageModel.length != 0) {
                                     listSearchHastag.clear();
@@ -376,79 +457,79 @@ class _SearchState extends State<Search> {
                 height: 3,
                 thickness: 6.0,
               )),
-              loading == true
+              // loading == true
+              //     ? SliverToBoxAdapter(
+              //         child: Center(child: CupertinoActivityIndicator()))
+              //     :
+              listSearchHastag.length != 0 || controller.text != ""
                   ? SliverToBoxAdapter(
-                      child: Center(child: CupertinoActivityIndicator()))
-                  : listSearchHastag.length != 0 || controller.text != ""
-                      ? SliverToBoxAdapter(
-                          child: new Builder(builder: (BuildContext context) {
-                            return ListView.builder(
-                              physics: ClampingScrollPhysics(),
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: listSearchHastag.length,
-                              itemBuilder: (context, i) {
-                                var data = listSearchHastag[i];
-                                var istype = data.type;
-                                var islabel = data.label;
-                                isType = data.type;
-                                if (isType == "PAGE") {
-                                  isvalue = data.value;
+                      child: new Builder(builder: (BuildContext context) {
+                        return ListView.builder(
+                          physics: ClampingScrollPhysics(),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: listSearchHastag.length,
+                          itemBuilder: (context, i) {
+                            var data = listSearchHastag[i];
+                            var istype = data.type;
+                            var islabel = data.label;
+                            isType = data.type;
+
+                            if (isType == "PAGE") {
+                              isvalue = data.value;
+                            }
+                            print('isty$isType');
+                            print("isva$isvalue");
+                            return InkWell(
+                              onTap: () {
+                                if (istype == "HASHTAG") {
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => SearchList(
+                                  //             type: istype,
+                                  //             label: islabel,
+                                  //           )),
+                                  // );
                                 }
-                                print('isty$isType');
-                                print("isva$isvalue");
-                                return FadeAnimation(
-                                    (1.0 + i) / 4,
-                                    new InkWell(
-                                      onTap: () {
-                                        if (istype == "HASHTAG") {
-                                          // Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(
-                                          //       builder: (context) => SearchList(
-                                          //             type: istype,
-                                          //             label: islabel,
-                                          //           )),
-                                          // );
-                                        }
-                                        if (istype == "PAGE") {
-                                          // Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(
-                                          //       builder: (context) => SearchList(
-                                          //             type: istype,
-                                          //             label: islabel,
-                                          //           )),
-                                          // );
-                                        }
-                                      },
-                                      child: Card(
-                                        // shape: RoundedRectangleBorder(
-                                        //     borderRadius: const BorderRadius.all(
-                                        //   Radius.circular(15.0),
-                                        // )),
-                                        child: new ListTile(
-                                          // leading: new CircleAvatar(
-                                          //   backgroundImage: new NetworkImage(
-                                          //     _userDetails[index].profileUrl,
-                                          //   ),
-                                          // ),
-                                          title: new Text('${data.label}'),
-                                          trailing: Icon(
-                                            Icons.arrow_forward_ios_rounded,
-                                            size: 18,
-                                            color: MColors.textDark,
-                                          ),
-                                          // subtitle: new Text('>>>${data.type}'),
-                                        ),
-                                        margin: const EdgeInsets.all(2.0),
-                                      ),
-                                    ));
+                                if (istype == "PAGE") {
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => SearchList(
+                                  //             type: istype,
+                                  //             label: islabel,
+                                  //           )),
+                                  // );
+                                }
                               },
+                              child: Card(
+                                // shape: RoundedRectangleBorder(
+                                //     borderRadius: const BorderRadius.all(
+                                //   Radius.circular(15.0),
+                                // )),
+                                child: new ListTile(
+                                  // leading: new CircleAvatar(
+                                  //   backgroundImage: new NetworkImage(
+                                  //     _userDetails[index].profileUrl,
+                                  //   ),
+                                  // ),
+                                  title: new Text('${data.label}'),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    size: 18,
+                                    color: MColors.textDark,
+                                  ),
+                                  // subtitle: new Text('>>>${data.type}'),
+                                ),
+                                margin: const EdgeInsets.all(2.0),
+                              ),
                             );
-                          }),
-                        )
-                      : SliverToBoxAdapter(child: Container()),
+                          },
+                        );
+                      }),
+                    )
+                  : SliverToBoxAdapter(child: Container()),
               loading == true
                   ? SliverToBoxAdapter(
                       child: Center(child: CupertinoActivityIndicator()))
@@ -460,117 +541,42 @@ class _SearchState extends State<Search> {
                         itemCount: _listPageModel.length,
                         itemBuilder: (BuildContext context, int index) {
                           var data = _listPageModel[index];
-                          return FadeAnimation(
-                              (1.0 + index) / 4,
-                              new InkWell(
-                                onTap: () {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //       builder: (context) => ProfilessScreen(
-                                  //             id: data.id,
-                                  //             image: data.imageUrl,
-                                  //             name: data.name,
-                                  //           )),
-                                  // );
-                                },
-                                child: Card(
-                                  child: new ListTile(
-                                    leading: new CircleAvatar(
-                                      radius: 20,
-                                      backgroundColor: Colors.transparent,
-                                      child: Container(
-                                        color: Colors.white,
-                                        child: Image.network(
-                                            "https://today-api.moveforwardparty.org/api${data.imageUrl}/image",
-                                            width: 50,
-                                            height: 50),
-                                      ),
-                                    ),
-                                    title: new Text('${data.name}'),
-                                    subtitle: new Text('@${data.pageUsername}'),
-                                    trailing: Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      size: 18,
-                                      color: MColors.textDark,
-                                    ),
-                                  ),
-                                  margin: const EdgeInsets.all(0.0),
+                          return InkWell(
+                            onTap: () {
+                              Navigate.pushPage(
+                                  context,
+                                  Profliess(
+                                    id: data.id,
+                                    image: data.imageUrl,
+                                    name: data.name,
+                                    isOfficial: data.isOfficial,
+                                    pageUsername: data.pageUsername,
+                                    userid: userid1,
+                                  ));
+                            },
+                            child: Card(
+                              child: new ListTile(
+                                leading: new CircleAvatar(
+                                  radius: 20,
+                                  backgroundImage: NetworkImage(
+                                      "https://today-api.moveforwardparty.org/api${data.imageUrl}/image"),
+                                  backgroundColor: Colors.transparent,
                                 ),
-                              ));
+                                title: new Text('${data.name}'),
+                                subtitle: new Text('@${data.pageUsername}'),
+                                trailing: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 18,
+                                  color: MColors.textDark,
+                                ),
+                              ),
+                              margin: const EdgeInsets.all(0.0),
+                            ),
+                          );
                         },
                       ),
-                    )
-              // : SliverToBoxAdapter(child: Container()),
-              // SliverToBoxAdapter(
-              //   child: Container(
-              //     color: Colors.white,
-              //     child: Row(
-              //       children: <Widget>[
-              //         Row(
-              //           children: <Widget>[
-              //             Padding(
-              //               padding: EdgeInsets.all(12.0),
-              //               child: CircleAvatar(
-              //                 radius: 30.0,
-              //                 backgroundImage: NetworkImage(
-              //                     'https://via.placeholder.com/150'),
-              //                 backgroundColor: Colors.transparent,
-              //               ),
-              //             ),
-              //             SizedBox(
-              //               width: 12.0,
-              //             ),
-              //             Padding(
-              //               padding: EdgeInsets.only(
-              //                   //top: 6.0,
-              //                   ),
-              //               child: Column(
-              //                 crossAxisAlignment: CrossAxisAlignment.start,
-              //                 children: <Widget>[
-              //                   Text(
-              //                     'ณัฐพงษ์  เรืองปัญญาวุฒิ',
-              //                     style: TextStyle(
-              //                         color: Colors.grey[700],
-              //                         fontSize: 16.0,
-              //                         fontFamily: 'Anakotmai',
-              //                         fontWeight: FontWeight.bold),
-              //                   ),
-              //                   SizedBox(
-              //                     height: 5,
-              //                   ),
-              //                   Text(
-              //                     'กำลังทำสิ่งๆนี้อยู่',
-              //                     style: TextStyle(
-              //                         color: primaryColor,
-              //                         fontSize: 14.0,
-              //                         fontFamily: 'Anakotmai',
-              //                         fontWeight: FontWeight.bold),
-              //                   ),
-              //                 ],
-              //               ),
-              //             ),
-              //             Padding(
-              //               padding: EdgeInsets.only(top: 14, left: 4.0),
-              //               child: Container(
-              //                 margin: EdgeInsets.only(left: 90),
-              //                 child: Center(
-              //                   child: Icon(Icons.arrow_forward_ios),
-              //                 ),
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              // SliverToBoxAdapter(
-              //     child: Divider(
-              //   color: Colors.transparent,
-              //   height: 3,
-              //   thickness: 6.0,
-              // )),
+                    ),
+
             ],
           ),
         ),

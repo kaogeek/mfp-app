@@ -31,8 +31,10 @@ static const BodyTextSize = 18.0 ;
 static const BodyTextSize16 = 16.0 ;
 static const BodyTextSize24 = 24.0 ;
 static const BodyTextSize20 = 20.0 ;
+static const BodyTextSize12 = 12.0 ;
 
 static const SmallTextSize = 14.0 ;
+
 static const TitleTextSize= 23.0;
 
   static const TextTheme textTheme = TextTheme(
