@@ -18,8 +18,8 @@ import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/utils/style.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
-import 'package:mfp_app/view/Profile/Profile.dart';
-import 'package:mfp_app/view/Search/Search.dart';
+import 'package:mfp_app/view/Profile/profile.dart';
+import 'package:mfp_app/view/Search/search.dart';
 
 //APPBARS-------------------------------------
 
@@ -42,28 +42,10 @@ import 'package:mfp_app/view/Search/Search.dart';
 //     actions: actions,
 //   );
 // }
-Widget topImage(String image) {
-  return Container(
-    // height: 250.0,
-    width: double.infinity,
-    child: FullScreenWidget(
-      child: Center(
-        child: Hero(
-          tag: "image" + image,
-          child: Image.network(
-            image,
-            fit: BoxFit.fill,
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
 Widget myAlbumCard(List<GalleryPostSearchModel> list,BuildContext context) {
   if (list.length >= 4) {
     return Container(
-      height: 280,
+      height: MediaQuery.of(context).size.height/2.6,
       width: double.infinity,
       child: Center(
         child: Column(
@@ -161,8 +143,26 @@ Widget myAlbumCard(List<GalleryPostSearchModel> list,BuildContext context) {
     );
   }
 }
+Widget topImage(String image) {
+  return Container(
+    // height: 250.0,
+    width: double.infinity,
+    child: FullScreenWidget(
+      child: Center(
+        child: Hero(
+          tag: "image" + image,
+          child: Image.network(
+            image,
+            fit: BoxFit.fill,
+          ),
+        ),
+      ),
+    ),
+  );
+}
 
-Widget getItems(img_path, img_path2, count,BuildContext context) {
+
+Widget getItems(img_path, img_path2, count, BuildContext context) {
   return Container(
     width: double.infinity,
     child: Row(
@@ -174,8 +174,8 @@ Widget getItems(img_path, img_path2, count,BuildContext context) {
         ClipRRect(
           child: Image.network(
             img_path,
-            height: MediaQuery.of(context).size.height/5.2,
-            width:   MediaQuery.of(context).size.width/2.0,
+            height: MediaQuery.of(context).size.height / 5.2,
+            width: MediaQuery.of(context).size.width / 2.0,
             fit: BoxFit.cover,
             filterQuality: FilterQuality.low,
           ),
@@ -192,8 +192,8 @@ Widget getItems(img_path, img_path2, count,BuildContext context) {
                     // borderRadius: BorderRadius.only(bottomLeft:Radius.circular(10),),
                     child: Image.network(
                       img_path2,
-            height: MediaQuery.of(context).size.height/5.2,
-            width:   MediaQuery.of(context).size.width/2.0,
+                      height: MediaQuery.of(context).size.height / 5.2,
+                      width: MediaQuery.of(context).size.width / 2.0,
                       fit: BoxFit.cover,
                       filterQuality: FilterQuality.low,
                     ),
@@ -201,8 +201,8 @@ Widget getItems(img_path, img_path2, count,BuildContext context) {
                   (count > 0)
                       ? Positioned(
                           child: Container(
-            height: MediaQuery.of(context).size.height/5.2,
-            width:   MediaQuery.of(context).size.width/2.0,
+                            height: MediaQuery.of(context).size.height / 5.2,
+                            width: MediaQuery.of(context).size.width / 2.0,
                             decoration: BoxDecoration(color: Colors.black38),
                             child: Center(
                               child: Text(
@@ -221,8 +221,8 @@ Widget getItems(img_path, img_path2, count,BuildContext context) {
             : ClipRRect(
                 child: Image.network(
                   img_path2,
-            height: MediaQuery.of(context).size.height/5.2,
-            width:   MediaQuery.of(context).size.width/2.0,
+                  height: MediaQuery.of(context).size.height / 5.2,
+                  width: MediaQuery.of(context).size.width / 2.0,
                   fit: BoxFit.cover,
                   filterQuality: FilterQuality.low,
                 ),
@@ -504,25 +504,25 @@ Widget nonet(BuildContext context) {
               ),
               textColor: Colors.white,
               color: MColors.primaryColor,
-              onPressed: ()async {
-              await  checkInternetConnectivity().then((value) {
-                value == true
+              onPressed: () async {
+                await checkInternetConnectivity().then((value) {
+                  value == true
                       ? Navigate.pushPageReplacement(context, NavScreen())
-                      : 
-                      ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
-                          content: Text('ลองอีกครั้ง',textAlign: TextAlign .center,),
-                          
+                      : ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
+                          content: Text(
+                            'ลองอีกครั้ง',
+                            textAlign: TextAlign.center,
+                          ),
                           behavior: SnackBarBehavior.floating,
-                              width: 150,
-
+                          width: 150,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(24),
                           ),
-                          backgroundColor:MColors.primaryColor,
-                          duration :Duration(milliseconds: 200) 
+                          backgroundColor: MColors.primaryColor,
+                          duration: Duration(milliseconds: 200)
                           // margin: EdgeInsets.fromLTRB(0, 10, 0, 50),
                           // padding: EdgeInsets.all(20),
-                        ));
+                          ));
                 });
                 print('กด');
               },

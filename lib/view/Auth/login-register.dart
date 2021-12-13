@@ -86,14 +86,7 @@ class _LoginregisterState extends State<Loginregister>
 
                 //-------------------------------------------------------------------------------//
 
-                Center(
-                    child: TextButton(
-                  child: Text("Skip for new",
-                      style: TextStyle(color: Colors.black)),
-                  onPressed: () {
-                    print("กด");
-                  },
-                ))
+                
               ],
             ),
           ),

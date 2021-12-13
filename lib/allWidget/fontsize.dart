@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/utils/timeutils.dart';
 import 'package:mfp_app/view/Profile/Profliess.dart';
@@ -30,7 +31,7 @@ Widget texttitle(String string, context) => Text(
       style: Theme.of(context).textTheme.headline4,
     );
 Widget subtexttitlepost(String string, context) => Text(
-      '$string อ่านต่อ..',
+      '$string',
       style: Theme.of(context).textTheme.bodyText1,
     );
 Widget texttitleVideorecommend(String string, context) => Text(
@@ -77,15 +78,17 @@ Widget authorpost(
   bool isenable,
 ) =>
     InkWell(
-      onTap:isenable==false?null: () => Navigate.pushPage(
-          context,
-          Profliess(
-            id: id,
-            image: imageUrl,
-            name: name,
-            isOfficial: isOfficial,
-            pageUsername: pageUsername,
-          )),
+      onTap: isenable == false
+          ? null
+          : () => Navigate.pushPage(
+              context,
+              Profliess(
+                id: id,
+                image: imageUrl,
+                name: name,
+                isOfficial: isOfficial,
+                pageUsername: pageUsername,
+              )),
       child: Text(
         '$string',
         style: Theme.of(context).textTheme.bodyText2,
@@ -100,5 +103,14 @@ Widget texthashtags(String string) => Text(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: MColors.primaryWhite,
+      ),
+    );
+Widget textreadstory(String string) => Text(
+      string,
+      style: TextStyle(
+        fontFamily: AppTheme.FontAnakotmaiMedium,
+        fontSize: 19,
+        // fontWeight: FontWeight.bold,
+        color: MColors.primaryColor,
       ),
     );

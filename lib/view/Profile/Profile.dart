@@ -7,7 +7,7 @@ import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
-import 'package:mfp_app/view/Search/Search.dart';
+import 'package:mfp_app/view/Search/search.dart';
 
 class ProfileSc extends StatefulWidget {
   final String userid;
@@ -97,7 +97,7 @@ class _ProfileScState extends State<ProfileSc> {
                       Search(
                         userid: id,
                       ),
-                    null),
+                      null),
                   SliverToBoxAdapter(
                       child: Divider(
                     color: Colors.transparent,
@@ -106,7 +106,8 @@ class _ProfileScState extends State<ProfileSc> {
                   )),
                   SliverToBoxAdapter(
                     child: Container(
-                      height: 130.0,
+                      height: MediaQuery.of(context).size.height / 5.5,
+                      width: MediaQuery.of(context).size.width,
                       color: Colors.white,
                       child: Row(
                         children: <Widget>[
@@ -154,15 +155,13 @@ class _ProfileScState extends State<ProfileSc> {
                                   ],
                                 ),
                               ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width / 5,
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios_sharp,
-                                size: 28.0,
-                                color: primaryColor,
-                              ),
                             ],
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.arrow_forward_ios_sharp,
+                            size: 28.0,
+                            color: primaryColor,
                           ),
                         ],
                       ),

@@ -26,11 +26,13 @@ class PostButton extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: Container(
+            // color: Colors.black,
             // padding: const EdgeInsets.symmetric(horizontal: 2.0),
             height: hight / 20.0,
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+              // mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment :CrossAxisAlignment.center,
               children: [
                 icon,
                 // const SizedBox(width: 4.0),
@@ -39,13 +41,12 @@ class PostButton extends StatelessWidget {
                 //   child: Text(label, maxLines: 2, overflow: TextOverflow.ellipsis))
 
                 Container(
-                  width: widthCont * 0.22,
-                  child: Center(
-                    child: Text(label,
-                        style: Theme.of(context).textTheme.subtitle1,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                  ),
+                  width: widthCont / width ,
+                  alignment: Alignment.centerLeft,
+                  child: Text(label,
+                      style: Theme.of(context).textTheme.subtitle1,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis),
                 ),
               ],
             ),

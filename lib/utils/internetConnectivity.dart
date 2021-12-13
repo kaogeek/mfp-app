@@ -1,7 +1,4 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:mfp_app/allWidget/allWidget.dart';
-import 'package:mfp_app/utils/router.dart';
 
 Future checkInternetConnectivity() async {
   bool isConnected;

@@ -17,8 +17,8 @@ import 'package:http/http.dart' as Http;
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/utils/timeutils.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
-import 'package:mfp_app/view/Profile/Profile.dart';
-import 'package:mfp_app/view/Search/Search.dart';
+import 'package:mfp_app/view/Profile/profile.dart';
+import 'package:mfp_app/view/Search/search.dart';
 
 class PostDetailsSC extends StatefulWidget {
   final String id;
@@ -176,7 +176,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
       String postid, String mytoken, String mag, String myuid) async {
     print('sendcomment');
 
-    var url =Uri.parse( "${Api.url}api/post/$postid/comment");
+    var url = Uri.parse("${Api.url}api/post/$postid/comment");
     final headers = {
       "userid": myuid,
       "content-type": "application/json",
@@ -429,7 +429,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                           isFollow,
                           pageUsername,
                           isOfficial,
-                          widget.userid,true),
+                          widget.userid,
+                          true),
                       SizedBox(
                         width: 2,
                       ),
@@ -455,9 +456,9 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                     icon: Icon(
                                       Icons.favorite_outline,
                                       color: MColors.primaryBlue,
-                                      size: 20.0,
                                     ),
                                     label: '${widget.likeCount} ถูกใจ',
+                                    width: 8.0,
                                     onTap: () async {
                                       HapticFeedback.lightImpact();
 
@@ -465,8 +466,11 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                       widget.token == "" || widget.token == null
                                           ? Navigate.pushPage(
                                               context, Loginregister())
-                                          : await Api.islike(widget.id,
-                                                  widget.userid, widget.token)
+                                          : await Api.islike(
+                                                  widget.id,
+                                                  widget.userid,
+                                                  widget.token,
+                                                  "")
                                               .then((value) => ({
                                                     jsonResponse =
                                                         jsonDecode(value.body),
@@ -513,8 +517,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                     icon: Icon(
                                       Icons.favorite,
                                       color: MColors.primaryBlue,
-                                      size: 20.0,
                                     ),
+                                    width: 8.0,
                                     label: '$likeCount ถูกใจ',
                                     onTap: () async {
                                       HapticFeedback.lightImpact();
@@ -523,8 +527,11 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                       widget.token == null
                                           ? Navigate.pushPage(
                                               context, Loginregister())
-                                          : await Api.islike(widget.id,
-                                                  widget.userid, widget.token)
+                                          : await Api.islike(
+                                                  widget.id,
+                                                  widget.userid,
+                                                  widget.token,
+                                                  "")
                                               .then((value) => ({
                                                     jsonResponse =
                                                         jsonDecode(value.body),
@@ -569,8 +576,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                               icon: Icon(
                                 MdiIcons.commentOutline,
                                 color: MColors.primaryBlue,
-                                size: 20.0,
                               ),
+                              width: 4.1,
                               label: '$commentCount ความคิดเห็น',
                               onTap: () => print('Comment'),
                             ),
@@ -578,8 +585,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                               icon: Icon(
                                 Icons.share,
                                 color: MColors.primaryBlue,
-                                size: 25.0,
                               ),
+                              width: 8.0,
                               label: '$shareCount แชร์',
                               onTap: () => print('Share'),
                             ),

@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'package:mfp_app/model/postlistSSmodel.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:mfp_app/model/RecommendedUserPageModel.dart';
+import 'package:mfp_app/model/postModel.dart';
 import 'package:mfp_app/model/searchhastag.dart';
-import 'package:flutter/foundation.dart';
 import 'package:mfp_app/model/searchpostlistModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as Http;
@@ -10,29 +11,34 @@ class Api {
   static const String url = "https://today-api.moveforwardparty.org/";
 
   static Future logout() async {
-    print('Calllogout');
+    var facebookLogin = FacebookLogin();
+
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await SharedPreferences.getInstance();
     await preferences.remove("token");
     var clear = await preferences.clear();
+    await facebookLogin.logOut();
+
     preferences?.setBool("isLoggedIn", false);
     preferences?.setString("token", "");
     preferences?.setString("imageURL", "");
-    print("!remover secc");
+    // print("!remover secc");
+
     return clear;
   }
   /*--------------------logout--------------------------------------*/
 
   static Future<Http.Response> getuserprofile(String userid) async {
-    print('getuserprofile');
+    // print('getuserprofile');
 
     final responseData = await Http.get("${Api.url}api/profile/$userid");
 
     return responseData;
   }
+
   /*--------------------ดึงค่าuserprofile--------------------------------------*/
   static Future<Http.Response> getPage(String pageid) async {
-    print('getPage');
+    // print('getPage');
 
     final responseData = await Http.get("${Api.url}api/page/$pageid");
 
@@ -58,14 +64,20 @@ class Api {
     var imageURL = prefs.getString('imageURL');
     return imageURL;
   }
+
   /*--------------------getimageURLจากSharedPreferences--------------------------------------*/
+  static Future getmodelogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String mode = prefs.getString('mode');
+    return mode;
+  }
 
   static Future getPostList(int offset) async {
-    print('getPostList');
+    // print('getPostList');
     String url = "${Api.url}api/main/content/search";
     final headers = {
       // "mode": "EMAIL",
-      "authority":"today-api.moveforwardparty.org",
+      "authority": "today-api.moveforwardparty.org",
       "content-type": "application/json",
     };
     Map data = {
@@ -74,7 +86,42 @@ class Api {
       "type": "",
       "createBy": [],
       "objective": "",
-      "endActionCount": 6,
+      "endActionCount": 16,
+      "pageCategories": [],
+      "sortBy": "LASTEST_DATE",
+      "filter": {"limit": 5, "offset": offset}
+    };
+    var body = jsonEncode(data);
+    print(data);
+
+    final responseData = await Http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+    print(responseData.body);
+
+    return responseData;
+  }
+
+  //---------------
+  static Future<List<PostSearchModel>> getpostlisttest(int offset) async {
+    // print('getPostList');
+    List<PostSearchModel> postlist = [];
+
+    String url = "${Api.url}api/main/content/search";
+    final headers = {
+      // "mode": "EMAIL",
+      "authority": "today-api.moveforwardparty.org",
+      "content-type": "application/json",
+    };
+    Map data = {
+      "keyword": [""],
+      "hashtag": [""],
+      "type": "",
+      "createBy": [],
+      "objective": "",
+      "endActionCount": 16,
       "pageCategories": [],
       "sortBy": "LASTEST_DATE",
       "filter": {"limit": 5, "offset": offset}
@@ -88,9 +135,16 @@ class Api {
     );
 
     if (responseData.statusCode == 200) {
-      return responseData;
+      var datapostlist = jsonDecode(responseData.body);
+      for (Map i in datapostlist["data"]) {
+        postlist.add(PostSearchModel.fromJson(i));
+      }
+      return postlist;
+    } else if (responseData.statusCode == 400) {
+      return null;
     }
   }
+
   /*--------------------getPostจาก/content/search--------------------------------------*/
 
   static Future getemergencycontent(String emergencyEventId) async {
@@ -101,16 +155,129 @@ class Api {
   }
   /*--------------------getcontentemergencyจาก/emergency/emergencyid/timeline--------------------------------------*/
 
-  static Future<Http.Response> getRecommendedUserPage() async {
+  static Future<List<RecomUserPageModel>> getRecommendedUserPage() async {
+    List<RecomUserPageModel> pagelist = [];
+
     final responseData =
         await Http.get("${Api.url}api/recommend?limit=5&offset=0");
-    return responseData;
+    if (responseData.statusCode == 200) {
+      var data = jsonDecode(responseData.body);
+      for (Map i in data["data"]) {
+        pagelist.add(RecomUserPageModel.fromJson(i));
+      }
+      return pagelist;
+    } else if (responseData.statusCode == 200) {
+      return null;
+    }
+  }
+
+  static Future<String> singin(String email, String pass) async {
+    print('singin');
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+var mytoken;
+bool islogin =false;
+    var url = Uri.parse("${Api.url}api/login");
+    Map data = {"username": email, "password": pass};
+    final headers = {
+      "mode": "EMAIL",
+      "content-type": "application/json",
+    };
+    var body = jsonEncode(data);
+
+    var res = await Http.post(url, headers: headers, body: body);
+    final jsonResponse = jsonDecode(res.body);
+    print('body$body');
+
+    print('jsonResponse$jsonResponse');
+
+    if (res.statusCode == 200) {
+                  mytoken = jsonResponse["data"]["token"];
+
+      if (jsonResponse['status'] == 1) {
+        print(jsonResponse['message']);
+        var msgres = jsonResponse['message'];
+        if (jsonResponse != null) {
+          sharedPreferences.setString(
+              "token", '${jsonResponse["data"]["token"]}');
+          sharedPreferences.setString(
+              "myuid", '${jsonResponse["data"]["user"]["id"]}');
+          sharedPreferences.setString(
+              "imageURL", '${jsonResponse["data"]["user"]["imageURL"]}');
+
+          sharedPreferences?.setBool("isLoggedIn", true);
+       
+          var userid = jsonResponse["data"]["user"]["id"];
+
+          if (mytoken != null) {
+            islogin =true;
+            return mytoken;
+          } else if (mytoken == null) {
+             islogin =false;
+            return mytoken;
+          }
+          return mytoken;
+
+          // Navigator.of(context).pushAndRemoveUntil(
+          //     CupertinoPageRoute(
+          //         builder: (BuildContext context) => NavScreen()),
+          //     (Route<dynamic> route) => false);
+        } else {
+          // setState(() {
+          //   _isloading = false;
+          // });
+        }
+      }
+    }
+    if (res.statusCode == 400) {
+      if (jsonResponse['status'] == 0) {
+        print(jsonResponse['message']);
+        return null;
+        // setState(() {
+        //   msgres = jsonResponse['message'];
+        //   _isloading = false;
+
+        //   iserror = true;
+        // });
+      }
+    }
+    return mytoken;
+  }
+
+static  Future getstory(String id) async {
+    var storytestreplaceAll,storytest;
+    try {
+      var url = Uri.parse("${Api.url}api/post/search");
+      final headers = {
+        "content-type": "application/json",
+      };
+      Map data = {
+        "limit": 10,
+        "count": false,
+        "whereConditions": {"_id": id}
+      };
+      var body = jsonEncode(data);
+      var responseRequest = await Http.post(url, headers: headers, body: body);
+      if (responseRequest.statusCode == 200) {
+        final jsonResponse = jsonDecode(responseRequest.body);
+          var date1 = jsonResponse["data"];
+          for (var i in date1) {
+            storytest = i["story"]["story"];
+            // storyimage = i["story"]["coverImage"];
+            storytestreplaceAll = storytest.replaceAll("<create-text>", "");
+          }
+                  print("Response  :$storytestreplaceAll");
+
+          return storytestreplaceAll;
+      } if (responseRequest.statusCode == 400) {
+        return null;
+      }
+    } catch (e) {}
   }
 
   /*--------------------getแนะนำpageUseryจาก/recommend--------------------------------------*/
   static Future<Http.Response> sendfollowPage(
       String pageid, String token, String userid) async {
-    print('getHashtagList');
+    // print('getHashtagList');
     var url = "https://today-api.moveforwardparty.org/api/page/$pageid/follow";
     final headers = {
       // "mode": "EMAIL",
@@ -126,9 +293,9 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('headers$headers');
-    print('responseData${responseData.body}');
+    // print('body$body');
+    // print('headers$headers');
+    // print('responseData${responseData.body}');
 
     return responseData;
   }
@@ -143,7 +310,7 @@ class Api {
   }
 
   static Future<Http.Response> getHashtagList() async {
-    print('getHashtagList');
+    // print('getHashtagList');
     var url = "https://today-api.moveforwardparty.org/api/hashtag/trend/";
     final headers = {
       // "mode": "EMAIL",
@@ -166,8 +333,8 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('responseData${responseData.body}');
+    // print('body$body');
+    // print('responseData${responseData.body}');
 
     return responseData;
   }
@@ -195,25 +362,34 @@ class Api {
   //   return responseData;
   // }
 
-  static Future<Http.Response> getPostemergencyEventsList() async {
-    print('getHashtagList');
+  static Future<List<EmergencyEventsContent>>
+      getPostemergencyEventsList() async {
+    List<EmergencyEventsContent> listemergencyEvents = [];
+    // print('getHashtagList');
     final responseData = await Http.get(
         "https://today-api.moveforwardparty.org/api/main/content");
-
-    return responseData;
+    if (responseData.statusCode == 200) {
+      var datapostlist = jsonDecode(responseData.body);
+      for (Map i in datapostlist["data"]["emergencyEvents"]["contents"]) {
+        listemergencyEvents.add(EmergencyEventsContent.fromJson(i));
+      }
+      return listemergencyEvents;
+    } else if (responseData.statusCode == 400) {
+      return null;
+    }
   }
 
   static Future<Http.Response> getPostsectionModelsEventsList() async {
-    print('getHashtagList');
+    // print('getHashtagList');
     final responseData = await Http.get(
         "https://today-api.moveforwardparty.org/api/main/content");
-    print(responseData.body);
+    // print(responseData.body);
 
     return responseData;
   }
 
   static Future<Http.Response> getPostDetailSS(String id) async {
-    print('getPostDetailSS');
+    // print('getPostDetailSS');
 
     final responseData = await Http.get(
         "https://today-api.moveforwardparty.org/api/page/$id/post/?offset=0");
@@ -222,7 +398,7 @@ class Api {
   }
 
   static Future<List<SearchHastag>> getHt(String query) async {
-    print('getHashtagList');
+    // print('getHashtagList');
     var url = "https://today-api.moveforwardparty.org/api/hashtag/trend/";
     final headers = {
       // "mode": "EMAIL",
@@ -260,7 +436,7 @@ class Api {
   }
 
   static Future<Http.Response> mantsearch(String quer) async {
-    print('getHashtagList');
+    // print('getHashtagList');
     var url = "https://today-api.moveforwardparty.org/api/main/search/";
     final headers = {
       // "mode": "EMAIL",
@@ -277,14 +453,14 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('responseData${responseData.body}');
+    // print('body$body');
+    // print('responseData${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> mantinitisearch(String uid) async {
-    print('getHashtagList');
+    // print('getHashtagList');
     var url = "https://today-api.moveforwardparty.org/api/hashtag/trend/";
     final headers = {
       // "mode": "EMAIL",
@@ -310,15 +486,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('responseData${responseData.body}');
+    // print('body$body');
+    // print('responseData${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> apisearchlist(
       String keyword, String hashtag, int offset) async {
-    print('getHashtagList');
+    // print('getHashtagList');
     var url = "https://today-api.moveforwardparty.org/api/main/content/search";
     final headers = {
       // "mode": "EMAIL",
@@ -341,15 +517,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('responseData${responseData.body}');
+    // print('body$body');
+    // print('responseData${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> getcommentlist(
       String postid, String uid, String token) async {
-    print('getcommentlist');
+    // print('getcommentlist');
 
     var url = "${Api.url}api/post/$postid/comment/search";
     final headers = {
@@ -368,8 +544,8 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('responseDatacommentlist${responseData.body}');
+    // print('body$body');
+    // print('responseDatacommentlist${responseData.body}');
 
     return responseData;
   }
@@ -402,7 +578,7 @@ class Api {
 
   static Future<Http.Response> updataimage(
       String id, String base64image, String fileName, String token) async {
-    print('updataimage');
+    // print('updataimage');
     var url = "https://today-api.moveforwardparty.org/api/profile/$id/image";
     final headers = {
       "userid": id,
@@ -427,15 +603,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('responseupdataimage${responseData.body}');
+    // print('body$body');
+    // print('responseupdataimage${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> repost(
       String postid, String uid, String token) async {
-    print('repost');
+    // print('repost');
     var url = "https://today-api.moveforwardparty.org/api/post/$postid/repost";
     final headers = {
       "userid": uid,
@@ -453,15 +629,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('repost${responseData.body}');
+    // print('body$body');
+    // print('repost${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> repostwithdetail(
       String postid, String uid, String token, String detail) async {
-    print('repostwithdetail');
+    // print('repostwithdetail');
     var url = "https://today-api.moveforwardparty.org/api/post/$postid/repost";
     final headers = {
       "userid": uid,
@@ -479,18 +655,19 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('repost${responseData.body}');
+    // print('body$body');
+    // print('repost${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> islike(
-      String postid, String uid, String token) async {
-    print('sendcomment');
+      String postid, String uid, String token, String mode) async {
+    // print('sendcomment');
     var url = "${Api.url}api/post/$postid/like";
     final headers = {
       "userid": uid,
+      "mode": mode,
       "authorization": "Bearer $token",
       "content-type": "application/json",
       "accept": "application/json"
@@ -516,7 +693,8 @@ class Api {
 
     return responseData;
   }
-   static Future<Http.Response> isfollowpage(
+
+  static Future<Http.Response> isfollowpage(
       String pageid, String uid, String token) async {
     var url = "${Api.url}api/page/$pageid/follow";
     final headers = {
@@ -526,8 +704,7 @@ class Api {
       "accept": "application/json"
       // "whereConditions": {"isHideStory": false},
     };
-    Map data = {
-    };
+    Map data = {};
 
     var body = jsonEncode(data);
 
@@ -536,16 +713,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('islike${responseData.body}');
+    // print('body$body');
+    // print('islike${responseData.body}');
 
     return responseData;
   }
 
-
   static Future<Http.Response> islikecomment(
       String postid, String uid, String token, String commentid) async {
-    print('islikecomment');
+    // print('islikecomment');
     var url = "${Api.url}api/post/$postid/comment/$commentid/like";
     final headers = {
       "userid": uid,
@@ -563,17 +739,17 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('headers$headers');
+    // print('body$body');
+    // print('headers$headers');
 
-    print('islikecomment${responseData.body}');
+    // print('islikecomment${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> iseditcomment(String postid, String uid,
       String token, String commentid, String commenttext) async {
-    print('iseditcomment');
+    // print('iseditcomment');
     var url =
         "https://today-api.moveforwardparty.org/api/post/$postid/comment/$commentid";
     final headers = {
@@ -592,15 +768,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('iseditcomment${responseData.body}');
+    // print('body$body');
+    // print('iseditcomment${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> isfollow(
       String postid, String uid, String token, String pageid) async {
-    print('isfollow');
+    // print('isfollow');
     var url = "https://today-api.moveforwardparty.org/api/page/$pageid/follow";
     final headers = {
       "userid": uid,
@@ -618,14 +794,14 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('isfollow${responseData.body}');
+    // print('body$body');
+    // print('isfollow${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> getprofilepost(String uid, String token) async {
-    print('getprofilepost$uid');
+    // print('getprofilepost$uid');
     var url =
         "https://today-api.moveforwardparty.org/api/profile/$uid/post/search";
     final headers = {
@@ -674,25 +850,26 @@ class Api {
 
   static Future<Http.Response> getpagess(
       String userid, String token, String pageid) async {
-    print('getpagess$userid');
+    // print('getpagess$userid');
     final headers = {
       // "Authorization": "Bearer $token",
-      "userId":userid,
+      "userId": userid,
       "Content-Type": "application/json",
       // "accept": "application/json"
       // "whereConditions": {"isHideStory": false},
     };
 
     final responseData = await Http.get(
-        "https://today-api.moveforwardparty.org/api/page/$pageid",headers: headers);
-    print('responseDatagetpagess${responseData.body}');
+        "https://today-api.moveforwardparty.org/api/page/$pageid",
+        headers: headers);
+    // print('responseDatagetpagess${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> setimagecover(
       String uid, String base64image, String fileName, String token) async {
-    print('updataimage');
+    // print('updataimage');
     var url = "https://today-api.moveforwardparty.org/api/profile/$uid/cover";
     final headers = {
       "userid": uid,
@@ -717,15 +894,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('responseupdataimage${responseData.body}');
+    // print('body$body');
+    // print('responseupdataimage${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> createpost(
       String uid, String token, String title, String detail) async {
-    print('createpost');
+    // print('createpost');
     var url = "https://today-api.moveforwardparty.org/api/page/null/post";
     final headers = {
       "userid": uid,
@@ -753,8 +930,8 @@ class Api {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('repost${responseData.body}');
+    // print('body$body');
+    // print('repost${responseData.body}');
 
     return responseData;
   }

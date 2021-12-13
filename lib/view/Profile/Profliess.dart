@@ -20,7 +20,7 @@ import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
 import 'package:http/http.dart' as Http;
-import 'package:mfp_app/view/Profile/Profile.dart';
+import 'package:mfp_app/view/Profile/profile.dart';
 import 'package:mfp_app/view/Search/Search.dart';
 
 class Profliess extends StatefulWidget {
@@ -92,7 +92,7 @@ class _ProfliessState extends State<Profliess> {
 
   var pagecoverURL;
 
-  var pagefollowers=0;
+  var pagefollowers = 0;
 
   @override
   void initState() {
@@ -143,59 +143,50 @@ class _ProfliessState extends State<Profliess> {
                         }
                     })),
 //-------------------------------------
- Api.getuserprofile("$userid")
-                            .then((responseData) async => ({
-                                  if (responseData.statusCode == 200)
-                                    {
-                                      datagetuserprofile =
-                                          jsonDecode(responseData.body),
-                                      setState(() {
-                                        // displayName1 =
-                                        //     datagetuserprofile["data"]
-                                        //         ["displayName"];
-                                        // gender = datagetuserprofile["data"]
-                                        //     ["gender"];
-                                        // firstName = datagetuserprofile["data"]
-                                        //     ["firstName"];
-                                        // lastName = datagetuserprofile["data"]
-                                        //     ["lastName"];
-                                        // id = datagetuserprofile["data"]["id"];
-                                        // email =
-                                        //     datagetuserprofile["data"]["email"];
-                                        image = datagetuserprofile["data"]
-                                            ["imageURL"];
-                                      }),
-                                   
-                                      print('image$image'),
-                                    }
-                                })),
+            Api.getuserprofile("$userid").then((responseData) async => ({
+                  if (responseData.statusCode == 200)
+                    {
+                      datagetuserprofile = jsonDecode(responseData.body),
+                      setState(() {
+                        // displayName1 =
+                        //     datagetuserprofile["data"]
+                        //         ["displayName"];
+                        // gender = datagetuserprofile["data"]
+                        //     ["gender"];
+                        // firstName = datagetuserprofile["data"]
+                        //     ["firstName"];
+                        // lastName = datagetuserprofile["data"]
+                        //     ["lastName"];
+                        // id = datagetuserprofile["data"]["id"];
+                        // email =
+                        //     datagetuserprofile["data"]["email"];
+                        image = datagetuserprofile["data"]["imageURL"];
+                      }),
+                      print('image$image'),
+                    }
+                })),
 
-                                 Api.getPage("${widget.id}")
-                            .then((responseData) async => ({
-                                  if (responseData.statusCode == 200)
-                                    {
-                                      datagetuserprofile =
-                                          jsonDecode(responseData.body),
-                                      setState(() {
-                                        // displayName1 =
-                                        //     datagetuserprofile["data"]
-                                        //         ["displayName"];
-                                        // gender = datagetuserprofile["data"]
-                                        //     ["gender"];
-                                        // firstName = datagetuserprofile["data"]
-                                        //     ["firstName"];
-                                        // lastName = datagetuserprofile["data"]
-                                        //     ["lastName"];
-                                        // id = datagetuserprofile["data"]["id"];
-                                        pagecoverURL =
-                                            datagetuserprofile["data"]["coverURL"];
-                                        pagefollowers = datagetuserprofile["data"]
-                                            ["followers"];
-                                      }),
-                                   
-                                      print('image$image'),
-                                    }
-                                })),
+            Api.getPage("${widget.id}").then((responseData) async => ({
+                  if (responseData.statusCode == 200)
+                    {
+                      datagetuserprofile = jsonDecode(responseData.body),
+                      setState(() {
+                        // displayName1 =
+                        //     datagetuserprofile["data"]
+                        //         ["displayName"];
+                        // gender = datagetuserprofile["data"]
+                        //     ["gender"];
+                        // firstName = datagetuserprofile["data"]
+                        //     ["firstName"];
+                        // lastName = datagetuserprofile["data"]
+                        //     ["lastName"];
+                        // id = datagetuserprofile["data"]["id"];
+                        pagecoverURL = datagetuserprofile["data"]["coverURL"];
+                        pagefollowers = datagetuserprofile["data"]["followers"];
+                      }),
+                      print('image$image'),
+                    }
+                })),
           }));
 
       _getPostListSS(widget.pageUsername, _currentMax);
@@ -210,17 +201,19 @@ class _ProfliessState extends State<Profliess> {
   }
 
   Future _getPostListSS(String name, int offset) async {
-       final headers = {
+    final headers = {
       // "mode": "EMAIL",
-      "authority":"today-api.moveforwardparty.org",
+      "authority": "today-api.moveforwardparty.org",
       "content-type": "application/json",
     };
-    Map data = {"type":"","offset":offset,"limit":5};
-      var body = jsonEncode(data);
+    Map data = {"type": "", "offset": offset, "limit": 5};
+    var body = jsonEncode(data);
 
-    final responseData = await Http.post(Uri.parse(
-        "${Api.url}api/page/$name/post/search"), headers: headers,
-      body: body,);
+    final responseData = await Http.post(
+      Uri.parse("${Api.url}api/page/$name/post/search"),
+      headers: headers,
+      body: body,
+    );
 
     print('getPostListSS');
     print(responseData.body);
@@ -314,7 +307,8 @@ class _ProfliessState extends State<Profliess> {
                                   },
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 5,bottom: 5),
+                                  padding:
+                                      const EdgeInsets.only(top: 5, bottom: 5),
                                   child: CircleAvatar(
                                     radius: 25.0,
                                     backgroundImage: NetworkImage(
@@ -741,7 +735,6 @@ class _ProfliessState extends State<Profliess> {
                                         nDataList1.shareCount,
                                         nDataList1.coverImage,
                                         nDataList1.id,
-                                        
                                       );
                                     }),
                               );
@@ -766,109 +759,110 @@ class _ProfliessState extends State<Profliess> {
             ),
           );
   }
-  
-Widget myAlbumCardPagepost(List<GalleryPostPageSS> list) {
-  if (list.length >= 4) {
-    return Container(
-      height: MediaQuery.of(context).size.height/2.6,
-      width: MediaQuery.of(context).size.width/1.0,
-      child: Center(
-        child: Column(
-          mainAxisAlignment:MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            getItems(list[0].signUrl, list[1].signUrl, 0,context),
-            getItems(list[2].signUrl, list[3].signUrl, list.length - 4,context),
-          ],
-        ),
-      ),
-    );
-  } else if (list.length >= 3) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Container(
-        height: MediaQuery.of(context).size.height/2.6,
-      width: MediaQuery.of(context).size.width/1.0,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10.0),
-            border: Border.all(color: Colors.grey, width: 0.2)),
+
+  Widget myAlbumCardPagepost(List<GalleryPostPageSS> list) {
+    if (list.length >= 4) {
+      return Container(
+        height: MediaQuery.of(context).size.height / 2.6,
+        width: MediaQuery.of(context).size.width / 1.0,
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 100,
-                ),
-                getItems(list[0].signUrl, list[1].signUrl, 0,context),
-                Expanded(
-                  child: getItems(
-                      list[2].signUrl, list[3].signUrl ?? "", list.length - 3,context),
-                ),
-              ],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              getItems(list[0].signUrl, list[1].signUrl, 0, context),
+              getItems(
+                  list[2].signUrl, list[3].signUrl, list.length - 4, context),
+            ],
+          ),
+        ),
+      );
+    } else if (list.length >= 3) {
+      return Padding(
+        padding: const EdgeInsets.all(10),
+        child: Container(
+          height: MediaQuery.of(context).size.height / 2.6,
+          width: MediaQuery.of(context).size.width / 1.0,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10.0),
+              border: Border.all(color: Colors.grey, width: 0.2)),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    height: 100,
+                  ),
+                  getItems(list[0].signUrl, list[1].signUrl, 0, context),
+                  Expanded(
+                    child: getItems(list[2].signUrl, list[3].signUrl ?? "",
+                        list.length - 3, context),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
-  } else if (list.length >= 2) {
-    return Container(
-    height: MediaQuery.of(context).size.height/2.6,
-      width: MediaQuery.of(context).size.width/1.0,
-      color: Colors.white,
-      child: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            getItems(list[0].signUrl, list[1].signUrl, 0,context),
-          ],
+      );
+    } else if (list.length >= 2) {
+      return Container(
+        height: MediaQuery.of(context).size.height / 2.6,
+        width: MediaQuery.of(context).size.width / 1.0,
+        color: Colors.white,
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              getItems(list[0].signUrl, list[1].signUrl, 0, context),
+            ],
+          ),
         ),
-      ),
-    );
-  } else if (list.length >= 1) {
-    return Container(
-      child: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // Padding(
-            //   padding: EdgeInsets.only(
-            //       left: 10.0, top: 2),
-            //   child: Text(
-            //     name,
-            //     style: TextStyle(
-            //         color: Colors.black,
-            //         fontSize: 14,
-            //         fontWeight: FontWeight.bold),
-            //   ),
-            // ),
+      );
+    } else if (list.length >= 1) {
+      return Container(
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              // Padding(
+              //   padding: EdgeInsets.only(
+              //       left: 10.0, top: 2),
+              //   child: Text(
+              //     name,
+              //     style: TextStyle(
+              //         color: Colors.black,
+              //         fontSize: 14,
+              //         fontWeight: FontWeight.bold),
+              //   ),
+              // ),
 
-            list[0].signUrl != null
-                ?
-                // Hero(
-                //   tag:"image"+ list[0].signUrl.toString(),
-                //   child:
-                topImage(list[0].signUrl.toString())
-                // CachedNetworkImage(
-                //     imageUrl: 'https://via.placeholder.com/350x150',
-                //     placeholder: (context, url) =>
-                //         new CupertinoActivityIndicator(),
-                //     errorWidget: (context, url, error) => Container(
-                //       decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.all(Radius.circular(8)),
-                //       ),
-                //       child:Image(image: CachedNetworkImageProvider(list[0].signUrl),)
-                //     ),
-                //   )
-                : SizedBox.shrink(),
-          ],
+              list[0].signUrl != null
+                  ?
+                  // Hero(
+                  //   tag:"image"+ list[0].signUrl.toString(),
+                  //   child:
+                  topImage(list[0].signUrl.toString())
+                  // CachedNetworkImage(
+                  //     imageUrl: 'https://via.placeholder.com/350x150',
+                  //     placeholder: (context, url) =>
+                  //         new CupertinoActivityIndicator(),
+                  //     errorWidget: (context, url, error) => Container(
+                  //       decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.all(Radius.circular(8)),
+                  //       ),
+                  //       child:Image(image: CachedNetworkImageProvider(list[0].signUrl),)
+                  //     ),
+                  //   )
+                  : SizedBox.shrink(),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
-}
 
   Widget PostList(
       String posttitle,
@@ -889,9 +883,12 @@ Widget myAlbumCardPagepost(List<GalleryPostPageSS> list) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-                        gallery.length != 0 ? myAlbumCardPagepost(gallery) : SizedBox.shrink(),
+             topImage(gallery[0].signUrl.toString()),
 
-          
+            // gallery.length != 0
+            //     ? myAlbumCardPagepost(gallery)
+            //     : SizedBox.shrink(),
+
             // gallery.length != 0 ? myAlbumCard(gallery) : SizedBox.shrink(),
             // Image.network(gallery[0].signUrl),
             Card(
@@ -914,7 +911,7 @@ Widget myAlbumCardPagepost(List<GalleryPostPageSS> list) {
                     children: [
                       fixtextauthor(),
                       authorpost(postbyname, context, dateTime, "", "", "fasle",
-                          false, "false", false, "",false),
+                          false, "false", false, "", false),
                       texttimetimestamp(dateTime),
                     ],
                   ),
@@ -936,8 +933,8 @@ Widget myAlbumCardPagepost(List<GalleryPostPageSS> list) {
                                     icon: Icon(
                                       Icons.favorite_outline,
                                       color: MColors.primaryBlue,
-                                      size: 20.0,
                                     ),
+                                    width: 8.0,
                                     label: '$likeCount ถูกใจ',
                                     onTap: () async {
                                       HapticFeedback.lightImpact();
@@ -947,7 +944,7 @@ Widget myAlbumCardPagepost(List<GalleryPostPageSS> list) {
                                           ? Navigate.pushPage(
                                               context, Loginregister())
                                           : await Api.islike(
-                                                  postid, userid, token)
+                                                  postid, userid, token, "")
                                               .then((value) => ({
                                                     jsonResponse =
                                                         jsonDecode(value.body),
@@ -992,9 +989,9 @@ Widget myAlbumCardPagepost(List<GalleryPostPageSS> list) {
                                     icon: Icon(
                                       Icons.favorite,
                                       color: MColors.primaryBlue,
-                                      size: 20.0,
                                     ),
                                     label: '$likeCount ถูกใจ',
+                                    width: 8.0,
                                     onTap: () async {
                                       HapticFeedback.lightImpact();
 
@@ -1003,7 +1000,7 @@ Widget myAlbumCardPagepost(List<GalleryPostPageSS> list) {
                                           ? Navigate.pushPage(
                                               context, Loginregister())
                                           : await Api.islike(
-                                                  postid, userid, token)
+                                                  postid, userid, token, "")
                                               .then((value) => ({
                                                     jsonResponse =
                                                         jsonDecode(value.body),
@@ -1048,17 +1045,17 @@ Widget myAlbumCardPagepost(List<GalleryPostPageSS> list) {
                               icon: Icon(
                                 MdiIcons.commentOutline,
                                 color: MColors.primaryBlue,
-                                size: 20.0,
                               ),
                               label: '$commentCount ความคิดเห็น',
+                              width: 4.1,
                               onTap: () => print('Comment'),
                             ),
                             PostButton(
                               icon: Icon(
                                 Icons.share,
                                 color: MColors.primaryBlue,
-                                size: 25.0,
                               ),
+                              width: 8.0,
                               label: '$shareCount แชร์',
                               onTap: () => print('Share'),
                             ),
