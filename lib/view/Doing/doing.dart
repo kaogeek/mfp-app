@@ -107,9 +107,7 @@ class _DoingSCState extends State<DoingSC> {
                   token,
                   userid,
                   image,
-                  Search(
-                    userid: userid,
-                  ),
+                  Search(),
                   ProfileSc(
                     userid: userid,
                     token: token,

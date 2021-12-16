@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:mfp_app/Api/Api.dart';
+import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/allWidget/sizeconfig.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/controller/auth_provider.dart';
 import 'package:mfp_app/utils/app_theme.dart';
+import 'package:mfp_app/utils/internetConnectivity.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/Auth/register-email.dart';
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
@@ -100,6 +102,16 @@ class _LoginemailState extends State<Loginemail> {
   //     }
   //   }
   // }
+  @override
+  void initState() {
+    // TODO: implement initState
+    checkInternetConnectivity().then((value) {
+      value == true
+          ? () {}()
+          : Navigate.pushPageDialog(context, nonet(context));
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,9 +147,9 @@ class _LoginemailState extends State<Loginemail> {
       onSaved: (value) {
         authController.emailController.text = value;
       },
-      validator: (value) {
-        return authController.validateemail(value);
-      },
+      // validator: (value) {
+      //   return authController.validateemail(value);
+      // },
     );
     //-------------------รหัสผ่าน---------------------//
     final TextFormField _txtPassword = TextFormField(
@@ -179,15 +191,15 @@ class _LoginemailState extends State<Loginemail> {
       onSaved: (value) {
         authController.passController.text = value;
       },
-      validator: (value) {
-        return authController.validatepassword(value);
-      },
+      // validator: (value) {
+      //   return authController.validatepassword(value);
+      // },
     );
     // if (_emailController.text != "" && _passController.text != "") {
     //   _isEnabled = false;
     //   print('_isEnabled$_isEnabled');
     // }
-    
+
     return Container(
       color: MColors.primaryWhite,
       child: Scaffold(
@@ -281,46 +293,51 @@ class _LoginemailState extends State<Loginemail> {
                                 const Radius.circular(10.0))),
                         child: _txtPassword,
                       ),
-                      iserror == true
-                          ? Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Text(
-                                msgres,
-                                style:
-                                    TextStyle(fontSize: 16, color: Colors.red),
-                              ),
-                            )
-                          : Container(),
+                      Obx(() {
+                        if (authController.iserror.value)
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Text(
+                              authController.msg,
+                              style: TextStyle(fontSize: 16, color: Colors.red),
+                            ),
+                          );
+                        else
+                          return Container();
+                      }),
 
                       //----------------ปุ่ม ลืมรหัสผ่านใช่ไหม ?--------------//
-                      iserror == true
-                          ? Center(
-                              child: TextButton(
-                                child: Text('ลืมรหัสผ่าน ?',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 17,
-                                      fontFamily: AppTheme.FontAnakotmaiLight,
-                                    )),
-                                onPressed: () {
-                                  print('กด');
-                                },
-                              ),
-                            )
-                          : Align(
-                              alignment: Alignment.bottomRight,
-                              child: TextButton(
-                                child: Text('ลืมรหัสผ่าน ?',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontFamily: AppTheme.FontAnakotmaiLight,
-                                    )),
-                                onPressed: () {
-                                  print('กด');
-                                },
-                              ),
+                      Obx(() {
+                        if (authController.iserror.value)
+                          return Center(
+                            child: TextButton(
+                              child: Text('ลืมรหัสผ่าน ?',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 17,
+                                    fontFamily: AppTheme.FontAnakotmaiLight,
+                                  )),
+                              onPressed: () {
+                                print('กด');
+                              },
                             ),
+                          );
+                        else
+                          return Align(
+                            alignment: Alignment.bottomRight,
+                            child: TextButton(
+                              child: Text('ลืมรหัสผ่าน ?',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontFamily: AppTheme.FontAnakotmaiLight,
+                                  )),
+                              onPressed: () {
+                                print('กด');
+                              },
+                            ),
+                          );
+                      }),
 
                       //-------------------------------------------------------------------------------//
                       //-------------------------------------เข้าสู่ระบบ----------------------------------//
@@ -387,18 +404,28 @@ class _LoginemailState extends State<Loginemail> {
                                             // setState(() {
                                             //   _isloading = true;
                                             // });
-                                          await  authController.checkLogin();
-                                         await authController.login(
+                                            await authController.checkLogin();
+                                            await authController.login(
                                                 _emailController.text,
-                                               _passController.text);
-                                                    print('isLogin${authController.isLogin.value}');
-                                               
-                                                if (authController.isLogin.value){
-                                                    return Navigator.of(context).pushAndRemoveUntil( CupertinoPageRoute(
-                                                          builder: (BuildContext context) =>NavScreen()),(Route<dynamic> route) =>false);
-                                                 } else {
-                                                      return  showAboutDialog(context: context);
-                                                 }
+                                                _passController.text);
+                                            print(
+                                                'isLogin${authController.isLogin.value}');
+
+                                            if (authController.isLogin.value) {
+                                              return Navigator.of(context)
+                                                  .pushAndRemoveUntil(
+                                                      CupertinoPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              NavScreen()),
+                                                      (Route<dynamic> route) =>
+                                                          false);
+                                            } else {
+                                              setState(() {
+                                                iserror = true;
+                                              });
+                                              // return  showAboutDialog(context: context);
+                                            }
                                           },
                                         ),
                                       )

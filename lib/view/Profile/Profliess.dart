@@ -22,30 +22,15 @@ import 'package:mfp_app/view/Auth/login-register.dart';
 import 'package:http/http.dart' as Http;
 import 'package:mfp_app/view/Profile/profile.dart';
 import 'package:mfp_app/view/Search/Search.dart';
+import 'package:mfp_app/view/Today/story_page.dart';
 
 class Profliess extends StatefulWidget {
   final String id;
   final String image;
-  final String name;
-  final String phonenumber;
-  final String lineId;
-  final String facebookUrl;
-  final String twitterUrl;
-  final bool isOfficial;
-  final String pageUsername;
-  final String userid;
   const Profliess({
     Key key,
     this.id,
     this.image,
-    this.name,
-    this.phonenumber,
-    this.lineId,
-    this.facebookUrl,
-    this.twitterUrl,
-    this.isOfficial,
-    this.pageUsername,
-    this.userid,
   }) : super(key: key);
 
   // ShopSC({Key? key}) : super(key: key);
@@ -58,7 +43,7 @@ class _ProfliessState extends State<Profliess> {
   final TrackingScrollController _trackingScrollController =
       TrackingScrollController();
 
-  var token;
+  var token = "";
 
   StreamController _postsController;
   var userimageUrl;
@@ -84,7 +69,7 @@ class _ProfliessState extends State<Profliess> {
   var coverURL;
   bool isFollow = false;
 
-  String userid;
+  String userid = "";
 
   var datagetuserprofile;
 
@@ -94,103 +79,94 @@ class _ProfliessState extends State<Profliess> {
 
   var pagefollowers = 0;
 
+  var pageprofileimage = "";
+  var pagename = "";
+  var pageUsername = "";
+
+  var pageid="";
+
   @override
   void initState() {
     print('initState');
-    super.initState();
-    setState(() {
-      _scrollController.addListener(_loadMore);
+    _scrollController.addListener(_loadMore);
 
-      Api.gettoke().then((value) => value({
-            token = value,
-            print('token$token'),
+    Future.delayed(Duration.zero, () async {
+      print('delayedgetpost');
+      //-----token----
+      token = await Api.gettoke();
+      print('token$token');
+      //----userid-----
+      userid = await Api.getmyuid();
+      print('userid$userid');
+      //--getPage
+      await Api.getPage(widget.id).then((responseData) async => ({
+            if (responseData.statusCode == 200)
+              {
+                datagetuserprofile = jsonDecode(responseData.body),
+                print('datagetuserprofile$datagetuserprofile'),
+                setState(() {
+                  pageid=datagetuserprofile["data"]["id"];
+                  pageUsername = datagetuserprofile["data"]["pageUsername"];
+                  pageprofileimage = datagetuserprofile["data"]["imageURL"];
+                  pagename = datagetuserprofile["data"]["name"];
+                  pagecoverURL = datagetuserprofile["data"]["coverURL"];
+                  pagefollowers = datagetuserprofile["data"]["followers"];
+                }),
+                print('pageUsername$pageUsername'),
+              }
           }));
-
-      Api.getimageURL().then((value) => ({
-            setState(() {
-              userimageUrl = value;
-            }),
-            print('userimageUrl$userimageUrl'),
+      //---getuserprofile
+      await Api.getuserprofile(userid).then((responseData) async => ({
+            if (responseData.statusCode == 200)
+              {
+                datagetuserprofile = jsonDecode(responseData.body),
+                setState(() {
+                  // displayName1 =
+                  //     datagetuserprofile["data"]
+                  //         ["displayName"];
+                  // gender = datagetuserprofile["data"]
+                  //     ["gender"];
+                  // firstName = datagetuserprofile["data"]
+                  //     ["firstName"];
+                  // lastName = datagetuserprofile["data"]
+                  //     ["lastName"];
+                  // id = datagetuserprofile["data"]["id"];
+                  // email =
+                  //     datagetuserprofile["data"]["email"];
+                  image = datagetuserprofile["data"]["imageURL"];
+                }),
+                print('image$image'),
+              }
           }));
-      Api.getmyuid().then((value) => ({
-            setState(() {
-              userid = value;
-            }),
-            print('myuidhome$userid'),
-            Api.getpagess("${userid.toString()}", token, widget.id)
-                .then((responseData) => ({
-                      if (responseData.statusCode == 200)
-                        {
-                          dataht = jsonDecode(responseData.body),
-                          setState(() {
-                            followers = dataht["data"]["followers"];
-                            if (dataht["data"]["isFollow"] == true) {
-                              setState(() {
-                                isFollow = true;
-                              });
-                            }
-                            if (dataht["data"]["isFollow"] == false) {
-                              setState(() {
-                                isFollow = false;
-                              });
-                            }
-                            setState(() {
-                              isLoading = false;
-                            });
+      //--checkisFollow
+      Api.getpagess(userid, token, widget.id).then((responseData) async => ({
+            if (responseData.statusCode == 200)
+              {
+                dataht = jsonDecode(responseData.body),
+                setState(() {
+                  followers = dataht["data"]["followers"];
 
-                            print('isFollow$isFollow');
-                          }),
-                        }
-                    })),
-//-------------------------------------
-            Api.getuserprofile("$userid").then((responseData) async => ({
-                  if (responseData.statusCode == 200)
-                    {
-                      datagetuserprofile = jsonDecode(responseData.body),
-                      setState(() {
-                        // displayName1 =
-                        //     datagetuserprofile["data"]
-                        //         ["displayName"];
-                        // gender = datagetuserprofile["data"]
-                        //     ["gender"];
-                        // firstName = datagetuserprofile["data"]
-                        //     ["firstName"];
-                        // lastName = datagetuserprofile["data"]
-                        //     ["lastName"];
-                        // id = datagetuserprofile["data"]["id"];
-                        // email =
-                        //     datagetuserprofile["data"]["email"];
-                        image = datagetuserprofile["data"]["imageURL"];
-                      }),
-                      print('image$image'),
-                    }
-                })),
+                  if (dataht["data"]["isFollow"] == true) {
+                    setState(() {
+                      isFollow = true;
+                    });
+                  }
+                  if (dataht["data"]["isFollow"] == false) {
+                    setState(() {
+                      isFollow = false;
+                    });
+                  }
+                  setState(() {
+                    isLoading = false;
+                  });
 
-            Api.getPage("${widget.id}").then((responseData) async => ({
-                  if (responseData.statusCode == 200)
-                    {
-                      datagetuserprofile = jsonDecode(responseData.body),
-                      setState(() {
-                        // displayName1 =
-                        //     datagetuserprofile["data"]
-                        //         ["displayName"];
-                        // gender = datagetuserprofile["data"]
-                        //     ["gender"];
-                        // firstName = datagetuserprofile["data"]
-                        //     ["firstName"];
-                        // lastName = datagetuserprofile["data"]
-                        //     ["lastName"];
-                        // id = datagetuserprofile["data"]["id"];
-                        pagecoverURL = datagetuserprofile["data"]["coverURL"];
-                        pagefollowers = datagetuserprofile["data"]["followers"];
-                      }),
-                      print('image$image'),
-                    }
-                })),
+                  print('isFollow$isFollow');
+                }),
+              }
           }));
-
-      _getPostListSS(widget.pageUsername, _currentMax);
+      await _getPostListSS(pageUsername, _currentMax);
     });
+    super.initState();
     _postsController = new StreamController();
   }
 
@@ -210,7 +186,7 @@ class _ProfliessState extends State<Profliess> {
     var body = jsonEncode(data);
 
     final responseData = await Http.post(
-      Uri.parse("${Api.url}api/page/$name/post/search"),
+      Uri.parse("${Api.url}api/page/$name/post/search?isHideStory=true"),
       headers: headers,
       body: body,
     );
@@ -236,6 +212,10 @@ class _ProfliessState extends State<Profliess> {
       });
 
       // loading = false,
+    } else if (responseData.statusCode == 400) {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -251,7 +231,7 @@ class _ProfliessState extends State<Profliess> {
         _isLoadMoreRunning = true; // Display a progress indicator at the bottom
 
         try {
-          _getPostListSS(widget.pageUsername, _currentMax);
+          _getPostListSS(pageUsername, _currentMax);
         } catch (err) {
           print('Something went wrong!');
         }
@@ -261,395 +241,372 @@ class _ProfliessState extends State<Profliess> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading == true
-        ? Container(
-            color: Colors.white,
-            child: Center(child: CupertinoActivityIndicator()))
-        : Container(
-            color: Colors.white,
-            child: SafeArea(
-              child: Scaffold(
-                body: CustomScrollView(
-                  controller: _scrollController,
-                  slivers: [
-                    primaryAppBar(
-                        context,
-                        token,
-                        widget.userid,
-                        image,
-                        Search(
-                          userid: widget.userid,
-                        ),
-                        ProfileSc(
-                          userid: widget.userid,
-                          token: token,
-                        )),
-                    SliverToBoxAdapter(
-                        child: Divider(
-                      color: Colors.grey[100],
-                      height: 3,
-                      thickness: 3.0,
-                    )),
-                    SliverToBoxAdapter(
-                      child: Container(
-                        color: Colors.white,
-                        child: Row(
-                          children: <Widget>[
-                            Row(
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        child: Scaffold(
+          body: CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              primaryAppBar(
+                  context,
+                  token,
+                  userid,
+                  image,
+                  Search(),
+                  ProfileSc(
+                    userid: userid,
+                    token: token,
+                  )),
+              SliverToBoxAdapter(
+                  child: Divider(
+                color: Colors.grey[100],
+                height: 3,
+                thickness: 3.0,
+              )),
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.white,
+                  child: Row(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(
+                              Icons.arrow_back_ios,
+                              color: MColors.primaryColor,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, bottom: 5),
+                            child: CircleAvatar(
+                              radius: 25.0,
+                              backgroundImage: NetworkImage(
+                                  "https://today-api.moveforwardparty.org/api$pageprofileimage/image"),
+                              backgroundColor: Colors.transparent,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 2,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.arrow_back_ios,
-                                    color: MColors.primaryColor,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
+                                Text(
+                                  pagename,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16.0,
+                                      fontFamily: 'Anakotmai',
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(top: 5, bottom: 5),
-                                  child: CircleAvatar(
-                                    radius: 25.0,
-                                    backgroundImage: NetworkImage(
-                                        "https://today-api.moveforwardparty.org/api${widget.image}/image"),
-                                    backgroundColor: Colors.transparent,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 2,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 5),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(
-                                        widget.name,
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Column(
+                  children: <Widget>[
+                    Stack(
+                      overflow: Overflow.visible,
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        pagecoverURL == null
+                            ? Container()
+                            : Image.network(
+                                "https://today-api.moveforwardparty.org/api$pagecoverURL/image"),
+                        // FadeInImage.assetNetwork(
+                        //   placeholder: 'images/placeholder.png',
+                        //   image:
+                        //       ,
+                        //   height: 180,
+                        //   fit: BoxFit.cover,
+                        // ),
+                        Positioned(
+                          bottom: -80.0,
+                          child: CircleAvatar(
+                            radius: 70.0,
+                            backgroundImage: NetworkImage(
+                                "https://today-api.moveforwardparty.org/api$pageprofileimage/image"),
+                            backgroundColor: Colors.transparent,
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SliverToBoxAdapter(
+                  child: Container(
+                color: Colors.white,
+                height: 200,
+                child: Stack(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Center(
+                        child: Text(
+                          pagename,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontSize: 22,
+                            fontFamily: 'Anakotmai-Bold',
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 65.0),
+                      child: Center(
+                        child: Text(
+                          '@$pageUsername',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16.0,
+                            fontFamily: 'Anakotmai',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+              SliverToBoxAdapter(
+                  child: Divider(
+                color: Colors.transparent,
+                height: 3,
+                thickness: 6.0,
+              )),
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.white,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Spacer(),
+                      InkWell(
+                        onTap: () async {
+                          HapticFeedback.lightImpact();
+                          var jsonResponse;
+                          token == null || token == ""
+                              ? Navigate.pushPage(context, Loginregister())
+                              : await Api.isfollowpage(
+                                      widget.id, userid, token)
+                                  .then((value) => ({
+                                        jsonResponse = jsonDecode(value.body),
+                                        print(
+                                            'message${jsonResponse['message']}'),
+                                        if (value.statusCode == 200)
+                                          {
+                                            if (jsonResponse['message'] ==
+                                                "Followed Page Success")
+                                              {
+                                                setState(() {
+                                                  // isFollow = true;
+                                                  isFollow =
+                                                      jsonResponse['data']
+                                                          ['isFollow'];
+                                                  isFollow = true;
+                                                }),
+                                              }
+                                            else if (jsonResponse['message'] ==
+                                                "Unfollow Page Success")
+                                              {
+                                                setState(() {
+                                                  isFollow =
+                                                      jsonResponse['data']
+                                                          ['isFollow'];
+                                                  isFollow = false;
+                                                }),
+                                              }
+                                          }
+                                      }));
+                          print("กดlike");
+                        },
+                        child: Container(
+                          width: 110.0,
+                          height: 40.0,
+                          child: Center(
+                            child: Text(
+                              '${isFollow == true ? "กำลังติดตาม" : "ติดตาม"}',
+                              style: TextStyle(
+                                color: isFollow == true
+                                    ? MColors.primaryWhite
+                                    : MColors.primaryColor,
+                                fontSize: 14.0,
+                                fontFamily: AppTheme.FontAnakotmaiBold,
+                              ),
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                              color: isFollow == true
+                                  ? MColors.primaryColor
+                                  : MColors.primaryWhite,
+                              border: Border.all(color: primaryColor),
+                              borderRadius: const BorderRadius.all(
+                                  const Radius.circular(20))),
+                        ),
+                      ),
+                      Spacer(),
+                      Icon(
+                        Icons.person,
+                        color: MColors.primaryColor,
+                      ),
+                      SizedBox(
+                        width: 3,
+                      ),
+                      Text(
+                        '$pagefollowers พัน',
+                        style: TextStyle(
+                            color: MColors.primaryColor,
+                            fontSize: 16.0,
+                            fontFamily: AppTheme.FontAnakotmaiBold,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Spacer(),
+                      Text(
+                        'เกี่ยวกับ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.0,
+                          fontFamily: AppTheme.FontAnakotmaiMedium,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Spacer(),
+                    ],
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                  child: Divider(
+                color: Colors.transparent,
+                height: 3,
+                thickness: 6.0,
+              )),
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Text(
+                      'สิ่งที่กำลังทำใน 1 เดือนที่ผ่านมา',
+                      maxLines: 2,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: MColors.primaryBlue,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Anakotmai',
+                          fontSize: 17),
+                    ),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 1,
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Center(
+                  child: Container(
+                    color: Colors.white,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25, right: 25),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width / 2.4,
+                                height:
+                                    MediaQuery.of(context).size.height / 5.8,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.grey[100],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(1),
+                                        blurRadius: 0.5,
+                                        spreadRadius: 0.5,
+                                      ),
+                                    ]),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 11),
+                                      child: CircleAvatar(
+                                        radius: 40.0,
+                                        backgroundImage: NetworkImage(
+                                            'https://via.placeholder.com/150'),
+                                        backgroundColor: Colors.transparent,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      child: Text(
+                                        '#น้ำท่วม',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                             color: Colors.black,
-                                            fontSize: 16.0,
-                                            fontFamily: 'Anakotmai',
-                                            fontWeight: FontWeight.bold),
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Anakotmai-Bold',
+                                            fontSize: 14),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Column(
-                        children: <Widget>[
-                          Stack(
-                            overflow: Overflow.visible,
-                            alignment: Alignment.center,
-                            children: <Widget>[
-                              FadeInImage.assetNetwork(
-                                placeholder: 'images/placeholder.png',
-                                image:
-                                    "https://today-api.moveforwardparty.org/api$pagecoverURL/image",
-                                height: 180,
-                                fit: BoxFit.cover,
-                              ),
-                              Positioned(
-                                bottom: -80.0,
-                                child: CircleAvatar(
-                                  radius: 70.0,
-                                  backgroundImage: NetworkImage(
-                                      "https://today-api.moveforwardparty.org/api${widget.image}/image"),
-                                  backgroundColor: Colors.black,
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                        child: Container(
-                      color: Colors.white,
-                      height: 200,
-                      child: Stack(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Center(
-                              child: Text(
-                                widget.name,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: primaryColor,
-                                  fontSize: 22,
-                                  fontFamily: 'Anakotmai-Bold',
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 65.0),
-                            child: Center(
-                              child: Text(
-                                '@${widget.pageUsername}',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16.0,
-                                  fontFamily: 'Anakotmai',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )),
-                    SliverToBoxAdapter(
-                        child: Divider(
-                      color: Colors.transparent,
-                      height: 3,
-                      thickness: 6.0,
-                    )),
-                    SliverToBoxAdapter(
-                      child: Container(
-                        color: Colors.white,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Spacer(),
-                            InkWell(
-                              onTap: () async {
-                                HapticFeedback.lightImpact();
-                                var jsonResponse;
-                                token == null || token == ""
-                                    ? Navigate.pushPage(
-                                        context, Loginregister())
-                                    : await Api.isfollowpage(
-                                            widget.id, widget.userid, token)
-                                        .then((value) => ({
-                                              jsonResponse =
-                                                  jsonDecode(value.body),
-                                              print(
-                                                  'message${jsonResponse['message']}'),
-                                              if (value.statusCode == 200)
-                                                {
-                                                  if (jsonResponse['message'] ==
-                                                      "Followed Page Success")
-                                                    {
-                                                      setState(() {
-                                                        // isFollow = true;
-                                                        isFollow =
-                                                            jsonResponse['data']
-                                                                ['isFollow'];
-                                                        isFollow = true;
-                                                      }),
-                                                    }
-                                                  else if (jsonResponse[
-                                                          'message'] ==
-                                                      "Unfollow Page Success")
-                                                    {
-                                                      setState(() {
-                                                        isFollow =
-                                                            jsonResponse['data']
-                                                                ['isFollow'];
-                                                        isFollow = false;
-                                                      }),
-                                                    }
-                                                }
-                                            }));
-                                print("กดlike");
-                              },
-                              child: Container(
-                                width: 110.0,
-                                height: 40.0,
-                                child: Center(
-                                  child: Text(
-                                    '${isFollow == true ? "กำลังติดตาม" : "ติดตาม"}',
-                                    style: TextStyle(
-                                      color: isFollow == true
-                                          ? MColors.primaryWhite
-                                          : MColors.primaryColor,
-                                      fontSize: 14.0,
-                                      fontFamily: AppTheme.FontAnakotmaiBold,
                                     ),
-                                  ),
+                                  ],
                                 ),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 2.4,
+                                height:
+                                    MediaQuery.of(context).size.height / 5.8,
                                 decoration: BoxDecoration(
-                                    color: isFollow == true
-                                        ? MColors.primaryColor
-                                        : MColors.primaryWhite,
-                                    border: Border.all(color: primaryColor),
-                                    borderRadius: const BorderRadius.all(
-                                        const Radius.circular(20))),
-                              ),
-                            ),
-                            Spacer(),
-                            Icon(
-                              Icons.person,
-                              color: MColors.primaryColor,
-                            ),
-                            SizedBox(
-                              width: 3,
-                            ),
-                            Text(
-                              '$pagefollowers พัน',
-                              style: TextStyle(
-                                  color: MColors.primaryColor,
-                                  fontSize: 16.0,
-                                  fontFamily: AppTheme.FontAnakotmaiBold,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Spacer(),
-                            Text(
-                              'เกี่ยวกับ',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16.0,
-                                fontFamily: AppTheme.FontAnakotmaiMedium,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Spacer(),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                        child: Divider(
-                      color: Colors.transparent,
-                      height: 3,
-                      thickness: 6.0,
-                    )),
-                    SliverToBoxAdapter(
-                      child: Container(
-                        color: Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: Text(
-                            'สิ่งที่กำลังทำใน 1 เดือนที่ผ่านมา',
-                            maxLines: 2,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                color: MColors.primaryBlue,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Anakotmai',
-                                fontSize: 17),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: 1,
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Center(
-                        child: Container(
-                          color: Colors.white,
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 25, right: 25),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.grey[100],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(1),
+                                        blurRadius: 0.5,
+                                        spreadRadius: 0.5,
+                                      ),
+                                    ]),
+                                child: Column(
                                   children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width /
-                                          2.4,
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                              5.8,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: Colors.grey[100],
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.withOpacity(1),
-                                              blurRadius: 0.5,
-                                              spreadRadius: 0.5,
-                                            ),
-                                          ]),
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 11),
-                                            child: CircleAvatar(
-                                              radius: 40.0,
-                                              backgroundImage: NetworkImage(
-                                                  'https://via.placeholder.com/150'),
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 10),
-                                            child: Text(
-                                              '#น้ำท่วม',
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: 'Anakotmai-Bold',
-                                                  fontSize: 14),
-                                            ),
-                                          ),
-                                        ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 11),
+                                      child: CircleAvatar(
+                                        radius: 40.0,
+                                        backgroundImage: NetworkImage(
+                                            'https://via.placeholder.com/150'),
+                                        backgroundColor: Colors.transparent,
                                       ),
                                     ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width /
-                                          2.4,
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                              5.8,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: Colors.grey[100],
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.withOpacity(1),
-                                              blurRadius: 0.5,
-                                              spreadRadius: 0.5,
-                                            ),
-                                          ]),
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 11),
-                                            child: CircleAvatar(
-                                              radius: 40.0,
-                                              backgroundImage: NetworkImage(
-                                                  'https://via.placeholder.com/150'),
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                            ),
-                                          ),
-                                          Text(
-                                            '# WALKTODAY',
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily: 'Anakotmai-Bold',
-                                                fontSize: 14),
-                                          ),
-                                        ],
-                                      ),
+                                    Text(
+                                      '# WALKTODAY',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Anakotmai-Bold',
+                                          fontSize: 14),
                                     ),
                                   ],
                                 ),
@@ -657,23 +614,29 @@ class _ProfliessState extends State<Profliess> {
                             ],
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                    SliverToBoxAdapter(
-                        child: Divider(
-                      color: Colors.transparent,
-                      height: 15,
-                      thickness: 6.0,
-                    )),
-                    SliverToBoxAdapter(
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                  child: Divider(
+                color: Colors.transparent,
+                height: 15,
+                thickness: 6.0,
+              )),
+              listpostss.length == 0
+                  ? SliverToBoxAdapter(child: Center(child: Text("ไม่มีโพส")))
+                  : SliverToBoxAdapter(
                       child: StreamBuilder(
                         stream: _postsController.stream,
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return Center(child: CarouselLoading());
+                            return Center(child: CupertinoActivityIndicator());
                           }
+
                           // if (snapshot.connectionState == ConnectionState.none) {
                           //   return Center(child: Text(messger));
                           // }
@@ -707,35 +670,19 @@ class _ProfliessState extends State<Profliess> {
                                       //   return SizedBox.shrink();
                                       // }
 
-                                      if (index == listpostss.length) {
-                                        print('เท่ากัน');
-                                      }
-
-                                      //  else {
-                                      //   PostList(
-                                      //     nDataList1.post.title,
-                                      //     nDataList1.post.detail,
-                                      //     nDataList1.page.name,
-                                      //     nDataList1.page.createdDate,
-                                      //     nDataList1.post.gallery,
-                                      //     nDataList1.post.likeCount,
-                                      //     nDataList1.post.commentCount,
-                                      //     nDataList1.post.shareCount,
-                                      //   );
-                                      // }
-
                                       return PostList(
-                                        nDataList1.title,
-                                        nDataList1.detail,
-                                        widget.name,
-                                        nDataList1.createdDate,
-                                        nDataList1.gallery,
-                                        nDataList1.likeCount,
-                                        nDataList1.commentCount,
-                                        nDataList1.shareCount,
-                                        nDataList1.coverImage,
-                                        nDataList1.id,
-                                      );
+                                          nDataList1.title,
+                                          nDataList1.detail,
+                                          pagename,
+                                          nDataList1.createdDate,
+                                          nDataList1.gallery,
+                                          nDataList1.likeCount,
+                                          nDataList1.commentCount,
+                                          nDataList1.shareCount,
+                                          nDataList1.coverImage,
+                                          nDataList1.id,
+                                          nDataList1.story,
+                                          nDataList1.type);
                                     }),
                               );
                             },
@@ -743,21 +690,24 @@ class _ProfliessState extends State<Profliess> {
                         },
                       ),
                     ),
-                    if (_isLoadMoreRunning == true)
-                      SliverToBoxAdapter(
-                        child: Center(
-                            child: Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  MColors.primaryColor)),
-                        )),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          );
+              listpostss.length == 0
+                  ? SliverToBoxAdapter(child: Container())
+                  : _isLoadMoreRunning == true
+                      ? SliverToBoxAdapter(
+                          child: Center(
+                              child: Container(
+                            margin: EdgeInsets.only(bottom: 20),
+                            child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    MColors.primaryColor)),
+                          )),
+                        )
+                      : SliverToBoxAdapter(child: Container()),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget myAlbumCardPagepost(List<GalleryPostPageSS> list) {
@@ -778,32 +728,19 @@ class _ProfliessState extends State<Profliess> {
         ),
       );
     } else if (list.length >= 3) {
-      return Padding(
-        padding: const EdgeInsets.all(10),
-        child: Container(
-          height: MediaQuery.of(context).size.height / 2.6,
-          width: MediaQuery.of(context).size.width / 1.0,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
-              border: Border.all(color: Colors.grey, width: 0.2)),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 100,
-                  ),
-                  getItems(list[0].signUrl, list[1].signUrl, 0, context),
-                  Expanded(
-                    child: getItems(list[2].signUrl, list[3].signUrl ?? "",
-                        list.length - 3, context),
-                  ),
-                ],
+      return Container(
+        height: MediaQuery.of(context).size.height / 2.6,
+        width: double.infinity,
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              getItems(list[0].signUrl, list[1].signUrl, 0, context),
+              Expanded(
+                child: getItems(list[2].signUrl, list[2].signUrl ?? "",
+                    list.length - 3, context),
               ),
-            ),
+            ],
           ),
         ),
       );
@@ -838,7 +775,6 @@ class _ProfliessState extends State<Profliess> {
               //         fontWeight: FontWeight.bold),
               //   ),
               // ),
-
               list[0].signUrl != null
                   ?
                   // Hero(
@@ -856,7 +792,7 @@ class _ProfliessState extends State<Profliess> {
                   //       child:Image(image: CachedNetworkImageProvider(list[0].signUrl),)
                   //     ),
                   //   )
-                  : SizedBox.shrink(),
+                  : Container(),
             ],
           ),
         ),
@@ -865,16 +801,19 @@ class _ProfliessState extends State<Profliess> {
   }
 
   Widget PostList(
-      String posttitle,
-      String subtitle,
-      String postbyname,
-      DateTime dateTime,
-      List<GalleryPostPageSS> gallery,
-      int likeCount,
-      int commentCount,
-      int shareCount,
-      String coverimage,
-      String postid) {
+    String posttitle,
+    String subtitle,
+    String postbyname,
+    DateTime dateTime,
+    List<GalleryPostPageSS> gallery,
+    int likeCount,
+    int commentCount,
+    int shareCount,
+    String coverimage,
+    String postid,
+    story,
+    String type,
+  ) {
     return InkWell(
       onTap: () {},
       child: Container(
@@ -883,13 +822,12 @@ class _ProfliessState extends State<Profliess> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-             topImage(gallery[0].signUrl.toString()),
+            // coverimage!=null? topImage(coverimage.toString()):
+            gallery.length != 0 || coverimage != null
+                ? myAlbumCardPagepost(gallery)
+                : topImage(coverimage.toString()),
 
-            // gallery.length != 0
-            //     ? myAlbumCardPagepost(gallery)
-            //     : SizedBox.shrink(),
-
-            // gallery.length != 0 ? myAlbumCard(gallery) : SizedBox.shrink(),
+            // gallery.length != 0 ? myAlbumCardPagepost(gallery) : Container(),
             // Image.network(gallery[0].signUrl),
             Card(
               child: Column(
@@ -906,12 +844,38 @@ class _ProfliessState extends State<Profliess> {
                     padding: const EdgeInsets.all(10.0),
                     child: subtexttitlepost(subtitle, context),
                   ),
+                  story != null
+                      ? Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: InkWell(
+                              onTap: () async {
+                                Navigate.pushPage(
+                                    context,
+                                    StroyPageSc(
+                                      postid: postid,
+                                      titalpost: posttitle,
+                                      imagUrl: gallery,
+                                      type: type,
+                                      createdDate: dateTime,
+                                      postby: pageUsername,
+                                      imagepage: pageprofileimage,
+                                      likeCount: likeCount,
+                                      commentCount: commentCount,
+                                      shareCount: shareCount,
+                                      repostCount: 0,
+                                      userid: userid,
+                                      token: token,
+                                    ));
+                              },
+                              child: textreadstory('อ่านสตอรี่..')),
+                        )
+                      : Container(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       fixtextauthor(),
-                      authorpost(postbyname, context, dateTime, "", "", "fasle",
-                          false, "false", false, "", false),
+                      authorpost(postbyname, context, dateTime, pageid, "", "fasle",
+                          false, "false", false, "", true),
                       texttimetimestamp(dateTime),
                     ],
                   ),
@@ -1047,7 +1011,7 @@ class _ProfliessState extends State<Profliess> {
                                 color: MColors.primaryBlue,
                               ),
                               label: '$commentCount ความคิดเห็น',
-                              width: 4.1,
+                              width: 4.2,
                               onTap: () => print('Comment'),
                             ),
                             PostButton(

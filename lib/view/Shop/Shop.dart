@@ -145,9 +145,7 @@ class _ShopSCState extends State<ShopSC> {
                         token,
                         userid,
                         image,
-                        Search(
-                          userid: userid,
-                        ),
+                        Search(),
                         ProfileSc(
                           userid: userid,
                           token: token,
@@ -551,7 +549,7 @@ class _ShopSCState extends State<ShopSC> {
                         }
                       } else if (Platform.isIOS) {
                         // iOS
-                        String uri = 'line://oaMessage/@mfpshop/สนใจ';
+                        String uri = 'https://line.me/R/ti/p/@mfpshop';
                         if (await canLaunch(uri)) {
                           await launch(uri);
                         } else {

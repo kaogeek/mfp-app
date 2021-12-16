@@ -94,9 +94,7 @@ class _ProfileScState extends State<ProfileSc> {
                       widget.token,
                       widget.userid,
                       image,
-                      Search(
-                        userid: id,
-                      ),
+                      Search(),
                       null),
                   SliverToBoxAdapter(
                       child: Divider(

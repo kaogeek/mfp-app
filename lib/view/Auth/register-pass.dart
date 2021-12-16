@@ -137,70 +137,74 @@ class _RegisterpasswordState extends State<Registerpassword> {
             child: Column(
               children: [
                 Container(
-                    height: MediaQuery.of(context).size.height * 0.19,
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back_sharp,
-                            size: 40,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                            print('กด');
-                          },
+                  height: MediaQuery.of(context).size.height * 0.19,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.arrow_back_sharp,
+                          size: 40,
+                          color: Colors.white,
                         ),
-                        Spacer(),
-                        Container(
-                          height: 100,
-                          width: 170,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                            image: AssetImage('images/MFP-Logo-Horizontal.png'),
-                          )),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          print('กด');
+                        },
+                      ),
+                      Spacer(),
+                      Container(
+                        height: 100,
+                        width: 170,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                          image: AssetImage('images/MFP-Logo-Horizontal.png'),
+                        )),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: Container(
+                    // color: Colors.black,
+                    height: MediaQuery.of(context).size.height / 5.8,
+                    width: MediaQuery.of(context).size.width / 1,
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'สวัสดี,',
+                            style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'ยินดีต้อนรับเข้าสู่ แพลตฟอร์ม',
+                            style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'ก้าวไกลทูเดย์',
+                            style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                 Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-                   child: Container(
-                    // color: Colors.black,
-                    height: MediaQuery.of(context).size.height / 5.5,
-                    width: MediaQuery.of(context).size.width / 1,
-                    child: Column(
-                      children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text('สวัสดี,', 
-                        style: TextStyle(
-                            
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),),
-                      ),
-                            Align(
-                alignment: Alignment.centerLeft,
-
-                              child: Text('ยินดีต้อนรับเข้าสู่ แพลตฟอร์ม', style: TextStyle(
-                                                    
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),),
-                            ),
-                             Align(
-                                               alignment: Alignment.centerLeft,
-
-                               child: Text( 'ก้าวไกลทูเดย์', style: TextStyle(
-                                                     
-                                                       fontSize: 25,
-                                                       fontWeight: FontWeight.bold,
-                                                       color: Colors.white),),
-                             ),
-                    ],),
                 ),
-                 ),
                 Container(
                   //color: Colors.black,
                   height: MediaQuery.of(context).size.height * 0.09,
@@ -210,7 +214,8 @@ class _RegisterpasswordState extends State<Registerpassword> {
                       children: [
                         Text(
                           'กรุณาใส่ตั้งรหัสผ่าน',
-                          style: TextStyle(fontSize: 17, color: Colors.grey[100]),
+                          style:
+                              TextStyle(fontSize: 17, color: Colors.grey[100]),
                         ),
                       ],
                     ),

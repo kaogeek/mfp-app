@@ -20,11 +20,27 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       builder: () => MaterialApp(
         debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.light, // Change it as you want
         title: 'Flutter Demo',
         theme: ThemeData(
           textTheme: AppTheme.textTheme,
           visualDensity: VisualDensity.adaptivePlatformDensity,
+           primaryColor: Colors.white,
+        primaryColorBrightness: Brightness.light,
+        brightness: Brightness.light,
+        primaryColorDark: Colors.black,
+        canvasColor: Colors.white,
         ),
+         darkTheme: ThemeData(
+        primaryColor: Colors.black,
+        primaryColorBrightness: Brightness.dark,
+        primaryColorLight: Colors.black,
+        brightness: Brightness.dark,
+        primaryColorDark: Colors.black,      
+        indicatorColor: Colors.white,
+        canvasColor: Colors.black,
+        // next line is important!
+        appBarTheme: AppBarTheme(brightness: Brightness.dark)),
         home: SplashPage(),
       ),
       designSize: const Size(360, 640),

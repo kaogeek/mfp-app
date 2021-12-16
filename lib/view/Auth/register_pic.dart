@@ -3,7 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/utils/internetConnectivity.dart';
+import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/Auth/register_ginfo.dart';
 
 class PicProfile extends StatefulWidget {
@@ -23,6 +26,20 @@ class PicProfile extends StatefulWidget {
 class _PicProfileState extends State<PicProfile> {
   File _image;
   String img64;
+   @override
+  void initState() {
+    // TODO: implement initState
+    checkInternetConnectivity().then((value) {
+      value == true
+          ? () {   
+            
+          }()
+          : Navigate.pushPageDialog(context, nonet(context));
+    
+   
+  });
+   super.initState();
+  }
   _imgFromCamera() async {
     File image = await ImagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50);
@@ -290,6 +307,7 @@ class _PicProfileState extends State<PicProfile> {
                                         password: widget.password,
                                         img64: img64,
                                         fileimg: _image,
+                                        mode: "EMAIL",
                                       )),
                             );
                             print('กด');
