@@ -86,7 +86,7 @@ class _MenuSCState extends State<MenuSC> {
     super.dispose();
   }
 
-  showAlertDialog(BuildContext context) {
+  showAlertDialog(BuildContext context,String text,String text1,String text2,double width,double height) {
     // set up the buttons
     Widget continueButton = TextButton(
       child: Text("Close"),
@@ -96,22 +96,77 @@ class _MenuSCState extends State<MenuSC> {
     );
 
     // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Message"),
-      content: Text(msg),
-      actions: [
-        continueButton,
-      ],
+    // AlertDialog alert = AlertDialog(
+    //   content: Center(child: Text(msg)),
+    //   actions: [
+    //     continueButton,
+    //   ],
+    // );
+  Dialog dialog=   Dialog(
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Container(
+        width: MediaQuery.of(context).size.width /width,
+        height: MediaQuery.of(context).size.height / height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors:[primaryColor, secondaryColor]),
+            borderRadius: BorderRadius.circular(15.0),
+            boxShadow: [
+              BoxShadow(
+                  offset: const Offset(12, 26),
+                  blurRadius: 50,
+                  spreadRadius: 0,
+                  color: Colors.grey.withOpacity(.1)),
+            ]),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              backgroundColor: MColors.primaryBlue.withOpacity(.05),
+              radius: 25,
+              child: Image.network(
+                  "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/FlutterBricksLogo-Med.png?alt=media&token=7d03fedc-75b8-44d5-a4be-c1878de7ed52"),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+             Text(text,
+                style: TextStyle(
+                    color: MColors.primaryWhite,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold)),
+            const SizedBox(
+              height: 3.5,
+            ),
+             Text(text1,
+                style: TextStyle(
+                    color: MColors.primaryWhite,
+                    fontSize: 16,
+                    fontFamily:AppTheme.FontAnakotmaiMedium,
+                   )),
+            const SizedBox(
+              height: 3.5,
+            ),
+             Text(text2,
+                style: TextStyle(
+                    color: MColors.primaryWhite,
+                    fontSize: 16,
+                    fontFamily:AppTheme.FontAnakotmaiMedium,
+                   )),
+          ],
+        ),
+      ),
     );
 
     // show the dialog
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return alert;
+        return dialog;
       },
     );
   }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -127,9 +182,7 @@ class _MenuSCState extends State<MenuSC> {
                   token,
                   userid,
                   image,
-                  Search(
-                    userid: userid,
-                  ),
+                  Search(),
                   ProfileSc(
                     userid: userid,
                     token: token,
@@ -320,7 +373,7 @@ class _MenuSCState extends State<MenuSC> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               InkWell(
-                                onTap: () => showAlertDialog(context),
+                                onTap: () => showAlertDialog(context,"พรรคก้าวไกล","สำนักงานใหญ่\nเลขที่ 167 อาคารอนาคตใหม่ ชั้น 6\nรามคำแหง 42 แขวงหัวหมาก เขตบางกะปิ\nกรุงเทพมหานคร 10240\n","ติดต่อเรา\n☎️02-821-5874 (จันทร์-ศุกร์ 10:00-18:00 น.)\n📧office@moveforwardparty.org\nMoveForwardPartyThailand\n@MFPThailand\nพรรคก้าวไกล - Move Forward Party",1.2,2.0),
                                 child: Container(
                                   width:
                                       MediaQuery.of(context).size.width / 2.3,
@@ -366,7 +419,7 @@ class _MenuSCState extends State<MenuSC> {
                               ),
                               Spacer(),
                               InkWell(
-                                onTap: () => showAlertDialog(context),
+                                onTap: () => showAlertDialog(context,"พรรคก้าวไกล","ยังไม่เปิดให้บริการ","",1.5,5),
                                 child: Container(
                                   width:
                                       MediaQuery.of(context).size.width / 2.3,
@@ -419,7 +472,7 @@ class _MenuSCState extends State<MenuSC> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               InkWell(
-                                onTap: () => showAlertDialog(context),
+                                onTap: () =>showAlertDialog(context,"พรรคก้าวไกล","ยังไม่เปิดให้บริการ","",1.5,5),
                                 child: Container(
                                   width:
                                       MediaQuery.of(context).size.width / 2.3,

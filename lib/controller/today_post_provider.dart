@@ -1,29 +1,47 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/model/RecommendedUserPageModel.dart';
+import 'package:mfp_app/model/searchpostlist.dart';
 import 'package:mfp_app/model/searchpostlistModel.dart';
 
 class TodayPostController extends GetxController {
- 
   RxList<PostSearchModel> postList = <PostSearchModel>[].obs;
-    RxList<RecomUserPageModel> recompageList = <RecomUserPageModel>[].obs;
+  RxList<RecomUserPageModel> recompageList = <RecomUserPageModel>[].obs;
+  RxList<SearchPostList> serarchpostList = <SearchPostList>[].obs;
+
   var _currentMax = 0.obs;
   var isLoading = true.obs;
   var firstload = true.obs;
-  var idloadingstory = false.obs;
-  var storycontent ="";
-  var id="";
+  var idloadingstory = true.obs;
+  var storycontent = "";
+  var id = "";
+  var postid;
+  RxString titalpost = "".obs;
+  var imagUrl;
+  //  String type;
+  var createdDate;
+  var postby;
+  var imagepage;
+  var likeCount;
+  var commentCount;
+  var shareCount;
+  var repostCount;
+
+  var storytestreplaceAll = "";
   @override
-  void onInit()async {
-  await getpost(_currentMax);
-  await  getrecompage();
-  await getstory(id);
+  void onInit() async {
+    // await getpost(_currentMax);
+    // await getrecompage();
+    // await getstory(id);
     super.onInit();
   }
 
-getpost(var offset) async {
+  getpost(var offset, {var pagenumber = 0}) async {
     print('getmergencyevents');
     try {
+       
       if (postList.length == 0) {
         isLoading(true);
         firstload(true);
@@ -37,14 +55,29 @@ getpost(var offset) async {
       isLoading(false);
     }
   }
- 
- 
- 
-getrecompage() async {
+
+  getsearchpostList(var label, var keyword, var offset,
+      {var pagenumber = 0}) async {
+    print('getsearchpostList');
+    try {
+      if (serarchpostList.length == 0 || pagenumber == 0) {
+        isLoading(true);
+        serarchpostList.clear();
+      }
+
+      var searchposts = await Api.apisearchlist(label, keyword, offset);
+      if (searchposts != null) {
+        serarchpostList.addAll(searchposts);
+      }
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  getrecompage() async {
     print('getrecompage');
     try {
       if (recompageList.length == 0) {
-      
         recompageList.clear();
       }
       var pages = await Api.getRecommendedUserPage();
@@ -56,14 +89,28 @@ getrecompage() async {
     }
   }
 
-  getstory(String id) async{
+  getstory(String id) async {
     print('getstory');
     try {
-      idloadingstory.value=true;
-      storycontent = await Api.getstory(id);
-       idloadingstory.value=false;
+      idloadingstory.value = true;
+      var responseRequest = await Api.getstory(id);
+      if (responseRequest.statusCode == 200) {
+        final jsonResponse = jsonDecode(responseRequest.body);
+        for (Map i in jsonResponse["data"]) {
+          var storytest = i["story"]["story"];
+          var tital = i["title"];
+          storytestreplaceAll = storytest.replaceAll("<create-text>", "");
+          titalpost.value = tital;
+        }
+        print("Response  :$storytestreplaceAll");
+        print('titalpost$titalpost');
+      }
+      if (responseRequest.statusCode == 400) {
+        return null;
+      }
+      idloadingstory.value = false;
     } finally {
-      idloadingstory.value=false;
+      idloadingstory.value = false;
     }
   }
 }

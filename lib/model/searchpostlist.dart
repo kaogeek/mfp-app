@@ -141,7 +141,6 @@ class Post {
         this.viewCount,
         this.createdDate,
         this.startDateTime,
-        this.story,
         this.pageId,
         this.referencePost,
         this.rootReferencePost,
@@ -173,7 +172,6 @@ class Post {
     int viewCount;
     DateTime createdDate;
     DateTime startDateTime;
-    Story story;
     String pageId;
     dynamic referencePost;
     dynamic rootReferencePost;
@@ -181,7 +179,7 @@ class Post {
     dynamic ranges;
     DateTime updateDate;
     int total;
-    List<Gallery> gallery;
+    List<GallerySearchPost> gallery;
     List<dynamic> needs;
     List<dynamic> fulfillment;
     List<dynamic> hashTags;
@@ -205,7 +203,6 @@ class Post {
         viewCount: json["viewCount"],
         createdDate: DateTime.parse(json["createdDate"]),
         startDateTime: DateTime.parse(json["startDateTime"]),
-        story: Story.fromJson(json["story"]),
         pageId: json["pageId"],
         referencePost: json["referencePost"],
         rootReferencePost: json["rootReferencePost"],
@@ -213,7 +210,7 @@ class Post {
         ranges: json["ranges"],
         updateDate: DateTime.parse(json["updateDate"]),
         total: json["total"],
-        gallery: List<Gallery>.from(json["gallery"].map((x) => Gallery.fromJson(x))),
+        gallery: List<GallerySearchPost>.from(json["gallery"].map((x) => GallerySearchPost.fromJson(x))),
         needs: List<dynamic>.from(json["needs"].map((x) => x)),
         fulfillment: List<dynamic>.from(json["fulfillment"].map((x) => x)),
         hashTags: List<dynamic>.from(json["hashTags"].map((x) => x)),
@@ -238,7 +235,6 @@ class Post {
         "viewCount": viewCount,
         "createdDate": createdDate.toIso8601String(),
         "startDateTime": startDateTime.toIso8601String(),
-        "story": story.toJson(),
         "pageId": pageId,
         "referencePost": referencePost,
         "rootReferencePost": rootReferencePost,
@@ -253,13 +249,15 @@ class Post {
     };
 }
 
-class Gallery {
-    Gallery({
+class GallerySearchPost {
+    GallerySearchPost({
         this.id,
         this.post,
         this.fileId,
         this.imageUrl,
         this.ordering,
+        this.signUrl,
+
     });
 
     String id;
@@ -267,13 +265,16 @@ class Gallery {
     String fileId;
     String imageUrl;
     int ordering;
+    String signUrl;
 
-    factory Gallery.fromJson(Map<String, dynamic> json) => Gallery(
+    factory GallerySearchPost.fromJson(Map<String, dynamic> json) => GallerySearchPost(
         id: json["_id"],
         post: json["post"],
         fileId: json["fileId"],
         imageUrl: json["imageURL"],
         ordering: json["ordering"],
+                signUrl: json["signURL"],
+
     );
 
     Map<String, dynamic> toJson() => {
@@ -285,57 +286,7 @@ class Gallery {
     };
 }
 
-class Story {
-    Story({
-        this.story,
-        this.storyAry,
-        this.coverImage,
-    });
 
-    String story;
-    List<StoryAry> storyAry;
-    String coverImage;
-
-    factory Story.fromJson(Map<String, dynamic> json) => Story(
-        story: json["story"],
-        storyAry: List<StoryAry>.from(json["storyAry"].map((x) => StoryAry.fromJson(x))),
-        coverImage: json["coverImage"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "story": story,
-        "storyAry": List<dynamic>.from(storyAry.map((x) => x.toJson())),
-        "coverImage": coverImage,
-    };
-}
-
-class StoryAry {
-    StoryAry({
-        this.htmlType,
-        this.text,
-        this.style,
-        this.value,
-    });
-
-    String htmlType;
-    String text;
-    Style style;
-    String value;
-
-    factory StoryAry.fromJson(Map<String, dynamic> json) => StoryAry(
-        htmlType: json["htmlType"],
-        text: json["text"],
-        style: Style.fromJson(json["style"]),
-        value: json["value"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "htmlType": htmlType,
-        "text": text,
-        "style": style.toJson(),
-        "value": value,
-    };
-}
 
 class Style {
     Style({

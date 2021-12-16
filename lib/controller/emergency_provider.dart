@@ -11,7 +11,7 @@ class EmergencyController extends GetxController {
   var isLoading = true.obs;
   @override
   void onInit() {
-    getmergencyevents();
+    // getmergencyevents();
     super.onInit();
   }
 

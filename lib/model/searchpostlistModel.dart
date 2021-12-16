@@ -249,7 +249,7 @@ class Post {
         hashTags: List<HashTag>.from(json["hashTags"].map((x) => HashTag.fromJson(x))),
         coverImageSignUrl: json["coverImageSignURL"],
         userTags: json["userTags"] == null ? null : List<dynamic>.from(json["userTags"].map((x) => x)),
-        story: json["story"] == null ? null : Story.fromJson(json["story"]),
+           story: json["story"] == null ? null : Story.fromJson(json["story"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -340,26 +340,12 @@ class HashTag {
 }
 
 class Story {
-    Story({
-        this.story,
-        this.storyAry,
-        this.coverImage,
-    });
-
-    String story;
-    List<StoryAry> storyAry;
-    String coverImage;
+    Story();
 
     factory Story.fromJson(Map<String, dynamic> json) => Story(
-        story: json["story"],
-        storyAry: List<StoryAry>.from(json["storyAry"].map((x) => StoryAry.fromJson(x))),
-        coverImage: json["coverImage"],
     );
 
     Map<String, dynamic> toJson() => {
-        "story": story,
-        "storyAry": List<dynamic>.from(storyAry.map((x) => x.toJson())),
-        "coverImage": coverImage,
     };
 }
 

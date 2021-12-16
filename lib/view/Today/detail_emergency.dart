@@ -41,7 +41,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
   List<EmergencyEvent> listeEmergency = [];
   List<EmergencyEventModel> listeEmergencyEventModel = [];
 
-  StreamController _postsController;
   var dataht,
       datapostlist,
       myuid,
@@ -97,8 +96,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                       for (Map i in datapostlist["data"]["needItems"])
                         {
                           listeNeedModel.add(NeedItem.fromJson(i)),
-                          // _postsController.add(i),
-                          // newicon=i['standardItem']['imageURL'],
                         },
 
                       setState(() {
@@ -139,9 +136,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
         // TODO
       }
     });
-
-    _postsController = new StreamController();
-
     super.initState();
   }
 
@@ -166,9 +160,7 @@ class _DTemergenScState extends State<DTEmergenSc> {
                   widget.token,
                   "",
                   image,
-                  Search(
-                    userid: widget.userid,
-                  ),
+                  Search(),
                   ProfileSc(
                     userid: widget.userid,
                     token: widget.token,
@@ -199,7 +191,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                         return ListView.builder(
                             physics: ClampingScrollPhysics(),
                             shrinkWrap: true,
-                            // padding: const EdgeInsets.all(8.0),
                             scrollDirection: Axis.vertical,
                             itemCount: listeEmergency.length,
                             itemBuilder: (
@@ -208,7 +199,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                             ) {
                               final nDataList1 = listeEmergency[index];
                               print(listeEmergency.length);
-                              // print(nDataList1.hashTagName);
                               return PostList(
                                 nDataList1.hashTagName,
                                 nDataList1.coverPageUrl,
@@ -246,9 +236,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                               child: Container(
                                 color: Colors.white,
                                 width: 170,
-
-                                // height: MediaQuery.of(context).size.height / 2.0,
-                                // alignment: Alignment.center,
                                 child: Column(
                                   children: [
                                     Padding(
@@ -266,29 +253,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                                                     const CupertinoActivityIndicator()),
                                       ),
                                     ),
-
-                                    // Image.network("https://today-api.moveforwardparty.org/api/file/6034a808e1e737658b221294/image"),
-                                    // e.standardItem.imageUrl != null
-                                    //     ? new Image.network("https://today.moveforwardparty.org/assets/img/customize_item.svg")
-                                    //     // CachedNetworkImage(
-                                    //     //     imageUrl:
-                                    //     //         "https://today-api.moveforwardparty.org/api/file/6034a808e1e737658b221294/image",
-                                    //     //     placeholder: (context, url) =>
-                                    //     //         new CupertinoActivityIndicator(),
-                                    //     //     errorWidget: (context, url,
-                                    //     //             error) =>
-                                    //     //         Container(
-                                    //     //             decoration: BoxDecoration(
-                                    //     //               borderRadius:
-                                    //     //                   BorderRadius.all(
-                                    //     //                       Radius.circular(
-                                    //     //                           8)),
-                                    //     //             ),
-                                    //     //             child: new Image.asset(
-                                    //     //                 'images/placeholder.png')),
-                                    //     //   )
-                                    //     : new Image.network(
-                                    //         'https://today.moveforwardparty.org/assets/img/customize_item.svg'),
                                     Container(
                                       alignment: Alignment.topRight,
                                       child: Text(
@@ -436,13 +400,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
     String hashTagName,
     String coverImage,
     String title,
-    // String followedCount,
-    // String subtitle,
-    // // List<Gallery> gallery,
-    // int likeCount,
-    // int commentCount,
-    // int shareCount,
-    // String postid,
   ) {
     return InkWell(
       child: Container(
@@ -460,10 +417,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
-                // child: new Image.network(
-                //  "https://today-api.moveforwardparty.org/api$coverImage/image",
-                //   filterQuality: FilterQuality.low,
-                // ),
               ),
             ),
             Column(

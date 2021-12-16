@@ -5,8 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mfp_app/Api/Api.dart';
+import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
+import 'package:mfp_app/utils/internetConnectivity.dart';
+import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,13 +44,13 @@ class _BuildprofileState extends State<Buildprofile> {
   var msg;
 
   var msgres;
-  bool isloading =false;
+  bool isloading = false;
 
   Future<http.Response> singin(String email, String pass) async {
     print('singin');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    var url =Uri.parse( "${Api.url}api/login");
+    var url = Uri.parse("${Api.url}api/login");
     Map data = {"username": email, "password": pass};
     final headers = {
       "mode": "EMAIL",
@@ -67,6 +70,8 @@ class _BuildprofileState extends State<Buildprofile> {
               "token", '${jsonResponse["data"]["token"]}');
           sharedPreferences.setString(
               "myuid", '${jsonResponse["data"]["user"]["id"]}');
+        sharedPreferences.setString(
+              "mode", 'EMAIL');
 
           sharedPreferences?.setBool("isLoggedIn", true);
           var mytoken = jsonResponse["data"]["token"];
@@ -87,7 +92,7 @@ class _BuildprofileState extends State<Buildprofile> {
               (Route<dynamic> route) => false);
         } else {
           setState(() {
-           isloading = false;
+            isloading = false;
           });
         }
       }
@@ -136,214 +141,224 @@ class _BuildprofileState extends State<Buildprofile> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    checkInternetConnectivity().then((value) {
+      value == true
+          ? () {}()
+          : Navigate.pushPageDialog(context, nonet(context));
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-      children: [
-        Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-            image: AssetImage('images/shutterstock_553511089.png'),
-            fit: BoxFit.cover,
-          )),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: Column(
-              children: [
-                Container(
-                        height: MediaQuery.of(context).size.height * 0.19,
-                        child: Row(
-                          children: [
-                            
-                            Spacer(),
-                            Container(
-                              height: 100,
-                              width: 170,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                image:
-                                    AssetImage('images/MFP-Logo-Horizontal.png'),
-                              )),
-                            ),
-                          ],
+        body: SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      child: Column(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+              image: AssetImage('images/shutterstock_553511089.png'),
+              fit: BoxFit.cover,
+            )),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Column(
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.19,
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Container(
+                          height: 100,
+                          width: 170,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                            image: AssetImage('images/MFP-Logo-Horizontal.png'),
+                          )),
                         ),
-                      ),
-                Container(
-                  //color: Colors.black,
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  width: MediaQuery.of(context).size.width * 0.86,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => Confirmproduct()),
-                    // );
-                    print("กด");
-                  },
-                  child: Container(
-                      //-------------------รูปโปรไฟล์----------------//
-                      //color: Colors.grey,
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      width: MediaQuery.of(context).size.width * 0.85,
-                      child: CircleAvatar(
-                        radius: (80),
-                        backgroundColor: Colors.white,
-                        child: CircleAvatar(
-                          radius: 108.0,
-                          backgroundImage: FileImage(widget.image),
-                        ),
-                      )),
-                ),
-                Container(
-                  //color: Colors.black,
-                  height: MediaQuery.of(context).size.height * 0.02,
-                  width: MediaQuery.of(context).size.width * 0.86,
-                ),
-                Container(
-                  //color: Colors.black,
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  width: MediaQuery.of(context).size.width * 0.86,
-                  child: Center(
-                      child: Text(
-                    '${widget.firstname} ${widget.lastname}',
-                    style: TextStyle(
-                       fontSize: AppTheme.BodyTextSize20,
-                            fontFamily: AppTheme.FontAnakotmaiMedium,
-                     color: Colors.white),
-                  )),
-                ),
-                Container(
-                  //color: Colors.black,
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  width: MediaQuery.of(context).size.width * 0.86,
-                  child: Center(
-                      child: Text(
-                    '@${widget.uniqueid}',
-                    style: TextStyle(
-                     fontSize: AppTheme.BodyTextSize20,
-                            fontFamily: AppTheme.FontAnakotmaiLight,
-                            fontWeight: FontWeight.w300,
-                    color: Colors.white
+                      ],
                     ),
-                  )),
-                ),
-                Container(
-                  //color: Colors.black,
-                  height: MediaQuery.of(context).size.height * 0.01,
-                  width: MediaQuery.of(context).size.width * 0.86,
-                ),
-                Container(
-                  //color: Colors.black,
-                  height: MediaQuery.of(context).size.height * 0.1,
-                  width: MediaQuery.of(context).size.width * 0.86,
-                  child: Center(
-                      child: Text('ยินดีต้อนรับสู่ พรรคก้าวไกล',
-                          style: TextStyle(
-                              fontSize: 27,
-                            fontFamily: AppTheme.FontAnakotmaiBold,
-                              color: Colors.white,
-                              ))),
-                ),
-                Container(
-                  //color: Colors.black,
-                  height: MediaQuery.of(context).size.height * 0.01,
-                  width: MediaQuery.of(context).size.width * 0.86,
-                ),
-                Container(
-                  //color: Colors.black,
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  width: MediaQuery.of(context).size.width * 0.86,
-                  child: Center(
-                      child: Text('ยินดีต้อนรับสู่ แพลตฟอร์ม',
-                          style: TextStyle(
-                           fontSize: AppTheme.BodyTextSize20,
-                            fontFamily: AppTheme.FontAnakotmaiMedium,
-                          color: Colors.grey
-                          ))),
-                ),
-                Container(
-                  //color: Colors.black,
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  width: MediaQuery.of(context).size.width * 0.86,
-                  child: Center(
-                      child: Text('ก้าวไกลทูเดย์',
-                          style: TextStyle(
-                           fontSize: AppTheme.BodyTextSize20,
-                            fontFamily: AppTheme.FontAnakotmaiMedium,
-                          color: Colors.grey
-                          ))),
-                ),
-                Container(
-                  //color: Colors.white,
-                  height: MediaQuery.of(context).size.height * 0.08,
-                  width: MediaQuery.of(context).size.width * 0.86,
-                ),
-                // isloading == true
-                //             ? Container(
-                  // width: MediaQuery.of(context).size.width * 0.9,
-                //                 child: Row(
-                //                   children: <Widget>[
-                //                     Expanded(
-                //                       child: ElevatedButton(
-                //                         style: TextButton.styleFrom(
-                //                           padding: EdgeInsets.only(
-                //                               top: 15, bottom: 15),
-                //                           shape: RoundedRectangleBorder(
-                //                               borderRadius:
-                //                                   BorderRadius.circular(30.0),
-                //                               side: BorderSide(
-                //                                   color: Colors.red)),
-                //                           primary: MColors.primaryColor,
-                //                         ),
-                //                         onPressed: null,
-                //                         child: Center(
-                //                           child: CircularProgressIndicator(color: MColors.primaryColor,),
-                //                         ),
-                //                       ),
-                //                     )
-                //                   ],
-                //                 ),
-                //               )
-                //             :
-                             Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: RaisedButton(
-                          padding: EdgeInsets.only(top: 15, bottom: 15),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              side: BorderSide(color: Colors.red)),
-                          child: Text(
-                            'สร้างโปรไฟล์',
-                            style: TextStyle(fontSize: AppTheme.BodyTextSize20,
-                            fontFamily: AppTheme.FontAnakotmaiMedium,
-                            ),
-                          ),
-                          textColor: Colors.white,
-                          color: MColors.primaryColor,
-                          onPressed: () async {
-                            await singin(widget.email, widget.password);
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => Buildprofile()),
-                            // );
-                            print('กด');
-                          },
-                        ),
-                      )
-                    ],
                   ),
-                ),
-              ],
+                  Container(
+                    //color: Colors.black,
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    width: MediaQuery.of(context).size.width * 0.86,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => Confirmproduct()),
+                      // );
+                      print("กด");
+                    },
+                    child: Container(
+                        //-------------------รูปโปรไฟล์----------------//
+                        //color: Colors.grey,
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        width: MediaQuery.of(context).size.width * 0.85,
+                        child: CircleAvatar(
+                          radius: (80),
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                            radius: 108.0,
+                            backgroundImage: FileImage(widget.image),
+                          ),
+                        )),
+                  ),
+                  Container(
+                    //color: Colors.black,
+                    height: MediaQuery.of(context).size.height * 0.02,
+                    width: MediaQuery.of(context).size.width * 0.86,
+                  ),
+                  Container(
+                    //color: Colors.black,
+                    height: MediaQuery.of(context).size.height * 0.04,
+                    width: MediaQuery.of(context).size.width * 0.86,
+                    child: Center(
+                        child: Text(
+                      '${widget.firstname} ${widget.lastname}',
+                      style: TextStyle(
+                          fontSize: AppTheme.BodyTextSize20,
+                          fontFamily: AppTheme.FontAnakotmaiMedium,
+                          color: Colors.white),
+                    )),
+                  ),
+                  Container(
+                    //color: Colors.black,
+                    height: MediaQuery.of(context).size.height * 0.04,
+                    width: MediaQuery.of(context).size.width * 0.86,
+                    child: Center(
+                        child: Text(
+                      '@${widget.uniqueid}',
+                      style: TextStyle(
+                          fontSize: AppTheme.BodyTextSize20,
+                          fontFamily: AppTheme.FontAnakotmaiLight,
+                          fontWeight: FontWeight.w300,
+                          color: Colors.white),
+                    )),
+                  ),
+                  Container(
+                    //color: Colors.black,
+                    height: MediaQuery.of(context).size.height * 0.01,
+                    width: MediaQuery.of(context).size.width * 0.86,
+                  ),
+                  Container(
+                    //color: Colors.black,
+                    height: MediaQuery.of(context).size.height * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.86,
+                    child: Center(
+                        child: Text('ยินดีต้อนรับสู่ พรรคก้าวไกล',
+                            style: TextStyle(
+                              fontSize: 27,
+                              fontFamily: AppTheme.FontAnakotmaiBold,
+                              color: Colors.white,
+                            ))),
+                  ),
+                  Container(
+                    //color: Colors.black,
+                    height: MediaQuery.of(context).size.height * 0.01,
+                    width: MediaQuery.of(context).size.width * 0.86,
+                  ),
+                  Container(
+                    //color: Colors.black,
+                    height: MediaQuery.of(context).size.height * 0.04,
+                    width: MediaQuery.of(context).size.width * 0.86,
+                    child: Center(
+                        child: Text('ยินดีต้อนรับสู่ แพลตฟอร์ม',
+                            style: TextStyle(
+                                fontSize: AppTheme.BodyTextSize20,
+                                fontFamily: AppTheme.FontAnakotmaiMedium,
+                                color: Colors.grey))),
+                  ),
+                  Container(
+                    //color: Colors.black,
+                    height: MediaQuery.of(context).size.height * 0.04,
+                    width: MediaQuery.of(context).size.width * 0.86,
+                    child: Center(
+                        child: Text('ก้าวไกลทูเดย์',
+                            style: TextStyle(
+                                fontSize: AppTheme.BodyTextSize20,
+                                fontFamily: AppTheme.FontAnakotmaiMedium,
+                                color: Colors.grey))),
+                  ),
+                  Container(
+                    //color: Colors.white,
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    width: MediaQuery.of(context).size.width * 0.86,
+                  ),
+                  isloading == true
+                      ? Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: TextButton.styleFrom(
+                                    padding:
+                                        EdgeInsets.only(top: 15, bottom: 15),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                        side: BorderSide(color: Colors.red)),
+                                    primary: MColors.primaryColor,
+                                  ),
+                                  onPressed: null,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: MColors.primaryColor,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      : Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: RaisedButton(
+                                  padding: EdgeInsets.only(top: 15, bottom: 15),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      side: BorderSide(color: Colors.red)),
+                                  child: Text(
+                                    'สร้างโปรไฟล์',
+                                    style: TextStyle(
+                                      fontSize: AppTheme.BodyTextSize20,
+                                      fontFamily: AppTheme.FontAnakotmaiMedium,
+                                    ),
+                                  ),
+                                  textColor: Colors.white,
+                                  color: MColors.primaryColor,
+                                  onPressed: () async {
+                                    await singin(widget.email, widget.password);
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(builder: (context) => Buildprofile()),
+                                    // );
+                                    print('กด');
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                ],
+              ),
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     ));
   }
 }

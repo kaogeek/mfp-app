@@ -85,9 +85,6 @@ Widget authorpost(
               Profliess(
                 id: id,
                 image: imageUrl,
-                name: name,
-                isOfficial: isOfficial,
-                pageUsername: pageUsername,
               )),
       child: Text(
         '$string',
@@ -99,7 +96,7 @@ Widget authorpost(
 Widget texthashtags(String string) => Text(
       string,
       style: TextStyle(
-        fontFamily: 'Anakotmai-Light',
+        fontFamily: AppTheme.FontAnakotmaiLight,
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: MColors.primaryWhite,
@@ -108,7 +105,7 @@ Widget texthashtags(String string) => Text(
 Widget textreadstory(String string) => Text(
       string,
       style: TextStyle(
-        fontFamily: AppTheme.FontAnakotmaiMedium,
+        fontFamily: AppTheme.FontAnakotmaiLight,
         fontSize: 19,
         // fontWeight: FontWeight.bold,
         color: MColors.primaryColor,

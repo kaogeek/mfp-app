@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/sizeconfig.dart';
@@ -25,9 +24,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   ScrollController _scrollController = ScrollController();
   dynamic _userData;
   bool _checking = true;
-  bool _isLoggedIn = false;
   Map _userObj = {};
-  final FacebookLogin facebookSignIn = new FacebookLogin();
+  // final FacebookLogin facebookSignIn = new FacebookLogin();
 
   String _message = 'Log in/out by pressing the buttons below.';
 
@@ -58,7 +56,37 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     return (bytes != null ? base64Encode(bytes) : null);
   }
 
+  showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget continueButton = TextButton(
+      child: Text("Close"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Message"),
+      content: Text(msg),
+      actions: [
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   void initiateFacebookLogin() async {
+    setState(() {
+      isLoggedIn = true;
+    });
     var facebookLogin = FacebookLogin();
     var facebookLoginResult =
         await facebookLogin.logIn(['public_profile', 'email']);
@@ -66,16 +94,21 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     switch (facebookLoginResult.status) {
       case FacebookLoginStatus.error:
         print("Error");
+        setState(() {
+          isLoggedIn = false;
+        });
         onLoginStatusChanged(false);
         break;
       case FacebookLoginStatus.cancelledByUser:
         print("CancelledByUser");
+        setState(() {
+          isLoggedIn = false;
+        });
         onLoginStatusChanged(false);
         break;
       case FacebookLoginStatus.loggedIn:
         final FacebookAccessToken accessToken = facebookLoginResult.accessToken;
-        print(
-            '''
+        print('''
          Logged in!
          
          Token: ${accessToken.token}
@@ -115,6 +148,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       String fbtoken, FacebookAccessToken accessToken, String imgBase64Str,
       {profileData}) async {
     print('singinFB');
+    setState(() {
+      isLoggedIn = true;
+    });
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     var url = Uri.parse("${Api.url}api/login");
@@ -151,6 +187,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             isLoggedIn = true;
           } else if (mytoken == null) {
             iserror = true;
+            isLoggedIn = false;
           }
 
           Navigator.of(context).pushAndRemoveUntil(
@@ -350,13 +387,16 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     'images/Email.png',
                     Color(0xFFE5E5E5),
                     MColors.primaryBlue,
-                    () async {
-                      // initiateFacebookLogin();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Loginemail()),
-                      );
-                    },
+                    isLoggedIn != true
+                        ? () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Loginemail()),
+                            );
+                          }
+                        : null,
+                    Container(),
                   ),
                   _bution(
                     'เข้าสู่ระบบด้วยFacebook',
@@ -365,31 +405,45 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     Colors.white,
                     () async {
                       initiateFacebookLogin();
+                      setState(() {
+                        isLoggedIn = true;
+                      });
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(builder: (context) => widget),
                       // );
                     },
+                    CircularProgressIndicator(
+                      color: MColors.primaryColor,
+                    ),
                   ),
                   _bution(
                     'เข้าสู่ระบบด้วยTwitter',
                     'images/twitter.png',
                     Color(0xFF1DA1F3),
                     Colors.white,
-                    () async {
-                      FacebookAuth.instance
-                          .login(permissions: ["public_profile", "email"]).then(
-                              (value) {
-                        FacebookAuth.instance.getUserData().then((userData) {
-                          setState(() {
-                            _isLoggedIn = true;
-                            _userObj = userData;
-                          });
-                        });
-                        FacebookAuth.instance.expressLogin();
-                        print(_userObj['name']);
-                      });
-                    },
+                    isLoggedIn != true
+                        ? () async {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(new SnackBar(
+                              content: Text(
+                                'ยังไม่เปิดให้บริการ',
+                                textAlign: TextAlign.center,
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              width: MediaQuery.of(context).size.width / 1.2,
+
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              backgroundColor: MColors.primaryColor,
+                              duration: Duration(milliseconds: 5000),
+                              // margin: EdgeInsets.fromLTRB(0, 0, 0, 50),
+                              // padding: EdgeInsets.all(20),
+                            ));
+                          }
+                        : null,
+                    Container(),
                   ),
 
                   Container(
@@ -414,7 +468,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   }
 
   Widget _bution(String text, String textassetimage, Color color,
-      Color textColor, Function onPressed) {
+      Color textColor, Function onPressed, Widget widget) {
     return Row(
       children: <Widget>[
         Expanded(
@@ -444,6 +498,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     fontFamily: AppTheme.FontAnakotmaiLight,
                   ),
                 ),
+                Spacer(),
+                isLoggedIn == true ? widget : Container(),
               ],
             ),
             textColor: textColor,

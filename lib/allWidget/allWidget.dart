@@ -12,6 +12,7 @@ import 'package:mfp_app/allWidget/PostButton.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/postModel.dart';
 import 'package:mfp_app/allWidget/circle_button.dart';
+import 'package:mfp_app/model/searchpostlist.dart';
 import 'package:mfp_app/model/searchpostlistModel.dart';
 import 'package:mfp_app/utils/internetConnectivity.dart';
 import 'package:mfp_app/utils/router.dart';
@@ -57,37 +58,114 @@ Widget myAlbumCard(List<GalleryPostSearchModel> list,BuildContext context) {
         ),
       ),
     );
-  } else if (list.length >= 3) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Container(
-        height: 340,
-        width: 300,
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10.0),
-            border: Border.all(color: Colors.grey, width: 0.2)),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 100,
-                ),
-                getItems(list[0].signUrl, list[1].signUrl, 0,context),
-                Expanded(
-                  child: getItems(
-                      list[2].signUrl, list[3].signUrl ?? "", list.length - 3,context),
-                ),
-              ],
+  }
+   else if (list.length >= 3) {
+    return Container(
+     height: MediaQuery.of(context).size.height/2.6,
+    width: double.infinity,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            getItems(list[0].signUrl, list[1].signUrl, 0,context),
+            Expanded(
+              child: getItems( list[2].signUrl, list[2].signUrl ?? "", list.length - 3,context),
             ),
-          ),
+          ],
         ),
       ),
     );
-  } else if (list.length >= 2) {
+  }
+   else if (list.length >= 2) {
+    return Container(
+      height: 340,
+      width: double.infinity,
+      color: Colors.black,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            getItems(list[0].signUrl, list[1].signUrl, 0,context),
+          ],
+        ),
+      ),
+    );
+  } else if (list.length >= 1) {
+    return Container(
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // Padding(
+            //   padding: EdgeInsets.only(
+            //       left: 10.0, top: 2),
+            //   child: Text(
+            //     name,
+            //     style: TextStyle(
+            //         color: Colors.black,
+            //         fontSize: 14,
+            //         fontWeight: FontWeight.bold),
+            //   ),
+            // ),
+
+            list[0].signUrl != null
+                ?
+                // Hero(
+                //   tag:"image"+ list[0].signUrl.toString(),
+                //   child:
+                topImage(list[0].signUrl.toString())
+                // CachedNetworkImage(
+                //     imageUrl: 'https://via.placeholder.com/350x150',
+                //     placeholder: (context, url) =>
+                //         new CupertinoActivityIndicator(),
+                //     errorWidget: (context, url, error) => Container(
+                //       decoration: BoxDecoration(
+                //         borderRadius: BorderRadius.all(Radius.circular(8)),
+                //       ),
+                //       child:Image(image: CachedNetworkImageProvider(list[0].signUrl),)
+                //     ),
+                //   )
+                : SizedBox.shrink(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+Widget searchAlbumCard(List<GallerySearchPost> list,BuildContext context) {
+  if (list.length >= 4) {
+    return Container(
+      height: MediaQuery.of(context).size.height/2.6,
+      width: double.infinity,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            getItems(list[0].signUrl, list[1].signUrl, 0,context),
+            getItems(list[2].signUrl, list[3].signUrl, list.length - 4,context),
+          ],
+        ),
+      ),
+    );
+  }
+   else if (list.length >= 3) {
+    return Container(
+     height: MediaQuery.of(context).size.height/2.6,
+    width: double.infinity,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            getItems(list[0].signUrl, list[1].signUrl, 0,context),
+            Expanded(
+              child: getItems( list[2].signUrl, list[2].signUrl ?? "", list.length - 3,context),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+   else if (list.length >= 2) {
     return Container(
       height: 340,
       width: double.infinity,
@@ -151,8 +229,9 @@ Widget topImage(String image) {
       child: Center(
         child: Hero(
           tag: "image" + image,
-          child: Image.network(
-            image,
+          child:image==null?Container(): Image.network(
+            image
+            ,
             fit: BoxFit.fill,
           ),
         ),
@@ -166,11 +245,7 @@ Widget getItems(img_path, img_path2, count, BuildContext context) {
   return Container(
     width: double.infinity,
     child: Row(
-      // crossAxisAlignment :CrossAxisAlignment.center,
-      // mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        // SizedBox(width: 5,),
-
         ClipRRect(
           child: Image.network(
             img_path,
@@ -180,23 +255,18 @@ Widget getItems(img_path, img_path2, count, BuildContext context) {
             filterQuality: FilterQuality.low,
           ),
         ),
-
-        // SizedBox(
-        //   width: 11,
-        // ),
         (count > 0)
             ? Stack(
                 overflow: Overflow.visible,
                 children: <Widget>[
                   ClipRRect(
-                    // borderRadius: BorderRadius.only(bottomLeft:Radius.circular(10),),
-                    child: Image.network(
+                    child: img_path2!=null? Image.network(
                       img_path2,
                       height: MediaQuery.of(context).size.height / 5.2,
                       width: MediaQuery.of(context).size.width / 2.0,
                       fit: BoxFit.cover,
                       filterQuality: FilterQuality.low,
-                    ),
+                    ):Container(),
                   ),
                   (count > 0)
                       ? Positioned(
@@ -219,13 +289,13 @@ Widget getItems(img_path, img_path2, count, BuildContext context) {
                 ],
               )
             : ClipRRect(
-                child: Image.network(
+                child:img_path2!=null? Image.network(
                   img_path2,
                   height: MediaQuery.of(context).size.height / 5.2,
                   width: MediaQuery.of(context).size.width / 2.0,
                   fit: BoxFit.cover,
                   filterQuality: FilterQuality.low,
-                ),
+                ):Container(),
               ),
       ],
     ),
@@ -270,22 +340,8 @@ Widget primaryAppBar(
         color: MColors.primaryBlue,
         onPressed: () => print('Messenger'),
       ),
-      token != "" && token != null
-          ? InkWell(
-              onTap: () => widgetprofile == null
-                  ? null
-                  : Navigate.pushPage(context, widgetprofile),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: CircleAvatar(
-                  radius: 25.0,
-                  backgroundImage: NetworkImage(
-                      'https://today-api.moveforwardparty.org/api$imageurl/image'),
-                  backgroundColor: Colors.transparent,
-                ),
-              ),
-            )
-          : Padding(
+     token == null || token == ""
+          ? Padding(
               padding: const EdgeInsets.all(5.0),
               child: CircleAvatar(
                 radius: 25.0,
@@ -302,6 +358,20 @@ Widget primaryAppBar(
                 ),
               ),
             )
+          :InkWell(
+              onTap: () => widgetprofile == null
+                  ? null
+                  : Navigate.pushPage(context, widgetprofile),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: CircleAvatar(
+                  radius: 25.0,
+                  backgroundImage: NetworkImage(
+                      'https://today-api.moveforwardparty.org/api$imageurl/image'),
+                  backgroundColor: Colors.transparent,
+                ),
+              ),
+            ) 
     ],
   );
 }
@@ -478,9 +548,8 @@ Widget nonet(BuildContext context) {
           SizedBox(
             height: MediaQuery.of(context).size.height / 4.0,
           ),
-
           Image.asset(
-            'images/error_404.png',
+            'images/error_404.jpg',
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height / 2,
             fit: BoxFit.cover,
@@ -488,9 +557,10 @@ Widget nonet(BuildContext context) {
           Align(
               alignment: Alignment.topCenter,
               child: Text(
-                'NetWork interruption',
+                'Network Interruption',
                 style: TextStyle(),
               )),
+              SizedBox(height: 20,),
           Container(
             width: MediaQuery.of(context).size.width * 0.4,
             child: RaisedButton(
@@ -508,21 +578,21 @@ Widget nonet(BuildContext context) {
                 await checkInternetConnectivity().then((value) {
                   value == true
                       ? Navigate.pushPageReplacement(context, NavScreen())
-                      : ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
-                          content: Text(
-                            'ลองอีกครั้ง',
-                            textAlign: TextAlign.center,
-                          ),
+                      : ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           behavior: SnackBarBehavior.floating,
-                          width: 150,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          backgroundColor: MColors.primaryColor,
-                          duration: Duration(milliseconds: 200)
-                          // margin: EdgeInsets.fromLTRB(0, 10, 0, 50),
-                          // padding: EdgeInsets.all(20),
-                          ));
+
+    backgroundColor: Colors.yellow,
+    content: Row(
+      children: [
+        Icon(Icons.warning,color: Colors.black,),
+        SizedBox(width: 5,),
+        Text('ลองอีกครั้ง',style: TextStyle(fontSize: 16,color: Colors.black),),
+        
+      ],
+    ),
+    duration: Duration(milliseconds: 1000),
+    dismissDirection: DismissDirection.horizontal,
+  ));
                 });
                 print('กด');
               },

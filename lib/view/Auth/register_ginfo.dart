@@ -8,7 +8,10 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mfp_app/Api/Api.dart';
+import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/utils/internetConnectivity.dart';
+import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/Auth/register-buildprofile.dart';
 import 'package:http/http.dart' as http;
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
@@ -59,7 +62,7 @@ class _GeneralinformationState extends State<Generalinformation> {
 
   TextEditingController _firstname;
   TextEditingController _lastname;
-  TextEditingController _birthday;
+  final TextEditingController _birthday = new TextEditingController();
   final TextEditingController _customGender = TextEditingController();
 
   DateTime date;
@@ -110,12 +113,17 @@ class _GeneralinformationState extends State<Generalinformation> {
 
   @override
   void initState() {
-    super.initState();
+    // TODO: implement initState
     _email = new TextEditingController(text: widget.email);
     _name = new TextEditingController(text: widget.name);
     _firstname = new TextEditingController(text: widget.firstname);
     _lastname = new TextEditingController(text: widget.lastname);
-    _birthday = new TextEditingController(text: widget.birthdate.toString());
+    checkInternetConnectivity().then((value) {
+      value == true
+          ? () {}()
+          : Navigate.pushPageDialog(context, nonet(context));
+    });
+    super.initState();
   }
 
   Future<http.Response> Register(
@@ -253,7 +261,7 @@ class _GeneralinformationState extends State<Generalinformation> {
         "fbUserId": fbid,
         'fbToken': fbToken,
         'fbAccessExpirationTime': fbexpires.toIso8601String(),
-        "fbSignedRequest": "",
+        "fbSignedRequest": "MOBILE",
       };
       //encode Map to JSON
       var body = jsonEncode(data);
@@ -272,17 +280,15 @@ class _GeneralinformationState extends State<Generalinformation> {
 
         if (jsonResponse['status'] == 1) {
           setState(() {
-            isregisterfb = true;
-
             print("Response status :${jsonResponse.statusCode}");
             print("Response status :${jsonResponse.body}");
             sharedPreferences.setString(
                 "token", '${jsonResponse["data"]["token"]}');
             mytoken = jsonResponse["data"]["token"];
+            isregisterfb = true;
           });
         }
       }
-
       if (jsonResponse.statusCode == 400) {
         if (jsonResponse['status'] == 0) {
           setState(() {
@@ -598,12 +604,16 @@ class _GeneralinformationState extends State<Generalinformation> {
                     ),
 
                     //     onChanged: (date) {
+                    //                         _birthday.text = f.format(date).toString();
+
                     //   print('change $date in time zone ' +
                     //       date.timeZoneOffset.inHours.toString());
                     // },
                     onConfirm: (date) {
                   date = date;
+
                   _birthday.text = f.format(date).toString();
+
                   print('confirm $date');
                 }, currentTime: DateTime.now(), locale: LocaleType.th);
               },
@@ -1007,18 +1017,19 @@ class _GeneralinformationState extends State<Generalinformation> {
                                                 print('isregister$isregister');
                                                 print(
                                                     'isregisterfb$isregisterfb');
+                                                if (isregisterfb == true) {
+                                                  return Navigator.of(context)
+                                                      .pushAndRemoveUntil(
+                                                          CupertinoPageRoute(
+                                                              builder: (BuildContext
+                                                                      context) =>
+                                                                  NavScreen()),
+                                                          (Route<dynamic>
+                                                                  route) =>
+                                                              false);
+                                                }
 
-                                                isregisterfb == true
-                                                    ? Navigator.of(context)
-                                                        .pushAndRemoveUntil(
-                                                            CupertinoPageRoute(
-                                                                builder: (BuildContext
-                                                                        context) =>
-                                                                    NavScreen()),
-                                                            (Route<dynamic>
-                                                                    route) =>
-                                                                false)
-                                                    : showAlertDialog(context);
+                                                //  showAlertDialog(context);
 
                                                 isregister == true
                                                     ? Navigator.push(
