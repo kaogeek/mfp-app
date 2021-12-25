@@ -19,11 +19,9 @@ class _LoginregisterState extends State<Loginregister>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-
     final screenhight = MediaQuery.of(context).size.height;
     final statusbarheight = MediaQuery.of(context).padding.top;
     SizeConfig().init(context);
-
 
     return Scaffold(
       body: SingleChildScrollView(

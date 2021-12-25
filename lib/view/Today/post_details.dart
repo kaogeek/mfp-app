@@ -93,13 +93,13 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
     super.dispose();
   }
 
-  var loading = false;
+  var loading = true;
   var dataht;
 
   List<CommentlistModel> listModel = [];
   TextEditingController _commentController = TextEditingController();
   TextEditingController _commenteditController = TextEditingController();
-  bool islike = false;
+  bool islikepost = false;
   bool idedit = false;
   var jsonResponse;
   bool onref = false;
@@ -128,22 +128,39 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
       //--userid
       userid = await Api.getmyuid();
       print('userid$userid');
+      if (token == null) {
+        setState(() {
+          loading = false;
+        });
+      }
       //---getuserprofile
       await Api.getuserprofile(userid).then((responseData) async => ({
+            setState(() {
+              loading = true;
+            }),
             if (responseData.statusCode == 200)
               {
                 datagetuserprofile = jsonDecode(responseData.body),
                 setState(() {
                   userprofileimage = datagetuserprofile["data"]["imageURL"];
                 }),
+                setState(() {
+                  loading = false;
+                }),
+              }
+            else
+              {
+                setState(() {
+                  loading = false;
+                }),
               }
           }));
       //--getcommentlist
       await Api.getcommentlist(widget.postid, userid, token)
           .then((responseData) => ({
-                setState(() {
-                  loading = true;
-                }),
+                // setState(() {
+                //   loading = true;
+                // }),
                 print('getHashtagData'),
                 if (responseData.statusCode == 200)
                   {
@@ -157,35 +174,36 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                         }),
                         print('listModel${listModel.length}'),
                       },
-                    loading = false,
+                    // loading = false,
                   }
               }));
       //--.
       await Api.postsearch(userid, token, widget.postid, mode)
           .then((responseData) => ({
-                setState(() {
-                  loading = true;
-                }),
+                // setState(() {
+                //   loading = true;
+                // }),
                 print('postsearch'),
                 if (responseData.statusCode == 200)
                   {
                     datapostsearch = jsonDecode(responseData.body),
+                    print('checkislike$datapostsearch'),
                     for (Map i in dataht["data"])
                       {
                         print('islike${i["isLike"]}'),
-                        if (i["isLike"] == true)
+                        if (i["isLike"] == false)
                           {
                             setState(() {
-                              islike = true;
+                              islikepost = false;
                             }),
-                            print('islike$islike'),
+                            print('islike$islikepost'),
                           }
-                        else if (i["isLike"] == false)
+                        else if (i["isLike"] == true)
                           {
                             setState(() {
-                              islike = false;
+                              islikepost = true;
                             }),
-                            print('islike$islike'),
+                            print('islike$islikepost'),
                           }
                       },
                   }
@@ -236,9 +254,9 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
       listModel.clear();
     });
     Api.getcommentlist(widget.postid, userid, token).then((responseData) => ({
-          setState(() {
-            loading = true;
-          }),
+          // setState(() {
+          //   loading = true;
+          // }),
           print('getHashtagData'),
           if (responseData.statusCode == 200)
             {
@@ -253,7 +271,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                   print('listModel${listModel.length}'),
                 },
               setState(() {
-                loading = false;
+                // loading = false;
                 onref = false;
               }),
             }
@@ -265,73 +283,81 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
     if (onref == true) {
       _handleRefresh();
     }
-    return Container(
-      color: Colors.white,
-      child: SafeArea(
-        child: Scaffold(
-          body: RefreshIndicator(
-            onRefresh: () => () async {
-              print('RefreshIndicator');
-              HapticFeedback.mediumImpact();
+    return loading == true
+        ? Container(
+            color: Colors.white,
+            child: Center(
+              child: CircularProgressIndicator(
+                color: MColors.primaryColor,
+              ),
+            ))
+        : Container(
+            color: Colors.white,
+            child: SafeArea(
+              child: Scaffold(
+                body: RefreshIndicator(
+                  onRefresh: () => () async {
+                    print('RefreshIndicator');
+                    HapticFeedback.mediumImpact();
 
-              _handleRefresh();
-            }(),
-            child: CustomScrollView(
-              controller: _trackingScrollController,
-              slivers: [
-                primaryAppBar(
-                    context,
-                    token,
-                    userid,
-                    userprofileimage,
-                    Search(),
-                    ProfileSc(
-                      userid: userid,
-                      token: token,
-                    )),
-                AppBardetail(
-                  context,
-                  "โพสของ",
-                  widget.authorposttext,
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: MColors.primaryColor,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                    _handleRefresh();
+                  }(),
+                  child: CustomScrollView(
+                    controller: _trackingScrollController,
+                    slivers: [
+                      primaryAppBar(
+                          context,
+                          token,
+                          userid,
+                          userprofileimage,
+                          Search(),
+                          ProfileSc(
+                            userid: userid,
+                            token: token,
+                          )),
+                      AppBardetail(
+                        context,
+                        "โพสของ",
+                        widget.authorposttext,
+                        IconButton(
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+                            color: MColors.primaryColor,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+
+                      ///-----------APPBAR-----------------//
+                      SliverToBoxAdapter(
+                        child: PostList(
+                            widget.posttitle,
+                            widget.subtitle,
+                            widget.authorposttext,
+                            widget.dateTime,
+                            widget.gallery,
+                            widget.likeCount,
+                            widget.commentCount,
+                            widget.shareCoun,
+                            widget.pageid,
+                            widget.pageimage,
+                            widget.pagename,
+                            widget.isFollow,
+                            widget.pageUsername,
+                            widget.isOfficial,
+                            widget.story),
+                      ),
+                      SliverToBoxAdapter(
+                        child: _buildCommentList(),
+                      ),
+                    ],
                   ),
                 ),
-
-                ///-----------APPBAR-----------------//
-                SliverToBoxAdapter(
-                  child: PostList(
-                      widget.posttitle,
-                      widget.subtitle,
-                      widget.authorposttext,
-                      widget.dateTime,
-                      widget.gallery,
-                      widget.likeCount,
-                      widget.commentCount,
-                      widget.shareCoun,
-                      widget.pageid,
-                      widget.pageimage,
-                      widget.pagename,
-                      widget.isFollow,
-                      widget.pageUsername,
-                      widget.isOfficial,
-                      widget.story),
-                ),
-                SliverToBoxAdapter(
-                  child: buildcommentlist1(),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
   }
 
   Widget PostList(
@@ -359,23 +385,49 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             gallery[0].signUrl != null
-                ? Hero(
-                    tag: "image" + gallery[0].signUrl,
-                    child: CachedNetworkImage(
-                      imageUrl: gallery[0].signUrl,
-                      placeholder: (context, url) =>
-                          new CupertinoActivityIndicator(),
-                      errorWidget: (context, url, error) => Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                ? gallery[0].imageUrl != null
+                    ? Hero(
+                        tag: "image" + gallery[0].signUrl,
+                        child: CachedNetworkImage(
+                          imageUrl: gallery[0].signUrl,
+                          placeholder: (context, url) =>
+                              new CupertinoActivityIndicator(),
+                          errorWidget: (context, url, error) => Container(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                            ),
+                            child: new Image.network(
+                              gallery[0].signUrl,
+                              filterQuality: FilterQuality.low,
+                            ),
+                          ),
                         ),
-                        child: new Image.network(
-                          gallery[0].signUrl,
-                          filterQuality: FilterQuality.low,
+                      )
+                    : SizedBox.shrink()
+                : SizedBox.shrink(),
+            gallery[0].imageUrl != null
+                ? gallery[0].signUrl == null
+                    ? Hero(
+                        tag: "image" + gallery[0].imageUrl,
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              'https://today-api.moveforwardparty.org/api${gallery[0].imageUrl}/image',
+                          placeholder: (context, url) =>
+                              new CupertinoActivityIndicator(),
+                          errorWidget: (context, url, error) => Container(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                            ),
+                            child: new Image.network(
+                              'https://today-api.moveforwardparty.org/api${gallery[0].imageUrl}/image',
+                              filterQuality: FilterQuality.low,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  )
+                      )
+                    : SizedBox.shrink()
                 : SizedBox.shrink(),
             // gallery.length != 0 ? _myAlbumCard(gallery) : SizedBox.shrink(),
             // Image.network(gallery[0].signUrl),
@@ -413,8 +465,9 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                       commentCount: commentCount,
                                       shareCount: shareCount,
                                       repostCount: 0,
-                                      userid: userid,
                                       token: token,
+                                      userid: userid,
+                                      mode: mode,
                                     ));
                               },
                               child: textreadstory('อ่านสตอรี่..')),
@@ -456,124 +509,58 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            islike == false
-                                ? PostButton(
-                                    icon: Icon(
-                                      islike != true
-                                          ? Icons.favorite_outline
-                                          : Icons.favorite,
-                                      color: MColors.primaryBlue,
-                                    ),
-                                    label: '${widget.likeCount} ถูกใจ',
-                                    width: 8.0,
-                                    onTap: () async {
-                                      HapticFeedback.lightImpact();
-                                      var jsonResponse;
-                                      token == "" || token == null
-                                          ? Navigate.pushPage(
-                                              context, Loginregister())
-                                          : await Api.islike(widget.postid,
-                                                  userid, token, mode)
-                                              .then((value) => ({
-                                                    jsonResponse =
-                                                        jsonDecode(value.body),
-                                                    print(
-                                                        'message${jsonResponse['message']}'),
-                                                    if (value.statusCode == 200)
-                                                      {
-                                                        if (jsonResponse[
-                                                                'message'] ==
-                                                            "Like Post Success")
-                                                          {
-                                                            setState(() {
-                                                              islike =
-                                                                  jsonResponse[
-                                                                          'data']
-                                                                      [
-                                                                      'isLike'];
+                            PostButton(
+                              icon: Icon(
+                                islikepost != true
+                                    ? Icons.favorite_outline
+                                    : Icons.favorite,
+                                color: MColors.primaryBlue,
+                              ),
+                              label: '${widget.likeCount} ถูกใจ',
+                              width: 8.0,
+                              onTap: () async {
+                                HapticFeedback.lightImpact();
+                                var jsonResponse;
+                                token == "" || token == null
+                                    ? Navigate.pushPage(
+                                        context, Loginregister())
+                                    : await Api.islike(
+                                            widget.postid, userid, token, mode)
+                                        .then((value) => ({
+                                              jsonResponse =
+                                                  jsonDecode(value.body),
+                                              print(
+                                                  'message${jsonResponse['message']}'),
+                                              if (value.statusCode == 200)
+                                                {
+                                                  if (jsonResponse['message'] ==
+                                                      "Like Post Success")
+                                                    {
+                                                      setState(() {
+                                                        islikepost =
+                                                            jsonResponse['data']
+                                                                ['isLike'];
 
-                                                              widget
-                                                                  .likeCount++;
-                                                            }),
-                                                          }
-                                                        else if (jsonResponse[
-                                                                'message'] ==
-                                                            "UnLike Post Success")
-                                                          {
-                                                            setState(() {
-                                                              islike =
-                                                                  jsonResponse[
-                                                                          'data']
-                                                                      [
-                                                                      'isLike'];
+                                                        widget.likeCount++;
+                                                      }),
+                                                    }
+                                                  else if (jsonResponse[
+                                                          'message'] ==
+                                                      "UnLike Post Success")
+                                                    {
+                                                      setState(() {
+                                                        islikepost =
+                                                            jsonResponse['data']
+                                                                ['isLike'];
 
-                                                              --widget
-                                                                  .likeCount;
-                                                            }),
-                                                          }
-                                                      }
-                                                  }));
-                                      print("กดlike");
-                                    },
-                                  )
-                                : PostButton(
-                                    icon: Icon(
-                                      islike != true
-                                          ? Icons.favorite_outline
-                                          : Icons.favorite,
-                                      color: MColors.primaryBlue,
-                                    ),
-                                    width: 8.0,
-                                    label: '$likeCount ถูกใจ',
-                                    onTap: () async {
-                                      HapticFeedback.lightImpact();
-
-                                      var jsonResponse;
-                                      token == null
-                                          ? Navigate.pushPage(
-                                              context, Loginregister())
-                                          : await Api.islike(widget.postid,
-                                                  userid, token, mode)
-                                              .then((value) => ({
-                                                    jsonResponse =
-                                                        jsonDecode(value.body),
-                                                    print(
-                                                        'message${jsonResponse['message']}'),
-                                                    if (value.statusCode == 200)
-                                                      {
-                                                        if (jsonResponse[
-                                                                'message'] ==
-                                                            "Like Post Success")
-                                                          {
-                                                            setState(() {
-                                                              islike =
-                                                                  jsonResponse[
-                                                                          'data']
-                                                                      [
-                                                                      'isLike'];
-
-                                                              likeCount++;
-                                                            }),
-                                                          }
-                                                        else if (jsonResponse[
-                                                                'message'] ==
-                                                            "UnLike Post Success")
-                                                          {
-                                                            setState(() {
-                                                              islike =
-                                                                  jsonResponse[
-                                                                          'data']
-                                                                      [
-                                                                      'isLike'];
-
-                                                              likeCount--;
-                                                            }),
-                                                          }
-                                                      }
-                                                  }));
-                                      print("กดlike");
-                                    },
-                                  ),
+                                                        --widget.likeCount;
+                                                      }),
+                                                    }
+                                                }
+                                            }));
+                                print("กดlike");
+                              },
+                            ),
                             PostButton(
                               icon: Icon(
                                 MdiIcons.commentOutline,
@@ -682,8 +669,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
     );
   }
 
-  Widget buildcommentlist1() {
-    bool isLiked = false;
+  Widget _buildCommentList() {
     return StreamBuilder(
       stream: _postsController.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -694,9 +680,10 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
           itemCount: listModel.length,
           itemBuilder: (BuildContext context, int index) {
             var data = listModel[index];
-            var commentid = data.id;
             _commenteditController.text = data.comment;
-            return InkWell(
+            var commentid = data.id;
+
+            return new InkWell(
               onTap: () async {
                 data.user.id == userid
                     ? showCupertinoModalPopup<void>(
@@ -802,196 +789,152 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     : Container();
               },
               child: Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10),
-                child: new Column(
+                padding: EdgeInsets.all(8.0),
+                // widget.data['toCommentID'] == null ? EdgeInsets.all(8.0) : EdgeInsets.fromLTRB(34.0,8.0,8.0,8.0),
+                child: Stack(
                   children: <Widget>[
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                            radius: 25,
-                            foregroundImage: NetworkImage(data.user.imageUrl !=
-                                    null
-                                ? "https://today-api.moveforwardparty.org/api${data.user.imageUrl}/image"
-                                : ""),
-                            child: Icon(Icons.account_circle)),
-                        SizedBox(width: 10),
-                        Expanded(
-                          flex: 7,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                data.user.displayName,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              Text(
-                                  TimeUtils.readTimestamp(
-                                      data.createdDate.millisecondsSinceEpoch),
-                                  style: TextStyle(fontSize: 12)),
-                              SizedBox(height: 8),
-                              Text(data.comment,
-                                  style: TextStyle(
-                                      color: Colors.black87, fontSize: 16))
-                            ],
+                      children: <Widget>[
+                        Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(6.0, 2.0, 10.0, 2.0),
+                          child: Container(
+                            width: 48,
+                            // widget.data['toCommentID'] == null ? 48 : 40,
+                            height: 48,
+                            // widget.data['toCommentID'] == null ? 48 : 40,
+                            child: CircleAvatar(
+                              radius: 25.0,
+                              backgroundImage: data.user.imageUrl != null
+                                  ? NetworkImage(
+                                      "https://today-api.moveforwardparty.org/api${data.user.imageUrl}/image")
+                                  : NetworkImage(
+                                      'https://via.placeholder.com/150'),
+                              backgroundColor: Colors.transparent,
+                            ),
                           ),
                         ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
                             Container(
-                                child: IconButton(
-                              icon: Icon(
-                                  data.isLike != true
-                                      ? Icons.favorite_border
-                                      : Icons.favorite,
-                                  color: MColors.primaryColor),
-                              onPressed: () {
-                                Api.islikecomment(widget.postid, userid, token,
-                                        commentid, mode)
-                                    .then((value) => ({
-                                          jsonResponse = jsonDecode(value.body),
-                                          print(
-                                              'message${jsonResponse['message']}'),
-                                          if (value.statusCode == 200)
-                                            {
-                                              if (jsonResponse['message'] ==
-                                                  "Like Post Comment Success")
-                                                {
-                                                  setState(() {
-                                                    data.likeCount++;
-                                                    data.isLike = true;
-                                                  }),
-                                                }
-                                              else if (jsonResponse[
-                                                      'message'] ==
-                                                  "UnLike Post Comment Success")
-                                                {
-                                                  setState(() {
-                                                    data.likeCount--;
-                                                    data.isLike = false;
-                                                  }),
-                                                }
-                                            }
-                                        }));
-                              },
-                            )),
-                            IconButton(
-                              icon: Icon(Icons.more_vert_outlined),
-                              onPressed: () async {
-                                data.user.id == userid
-                                    ? showCupertinoModalPopup<void>(
-                                        context: context,
-                                        builder:
-                                            (BuildContext context) =>
-                                                CupertinoActionSheet(
-                                                  actions: <
-                                                      CupertinoActionSheetAction>[
-                                                    CupertinoActionSheetAction(
-                                                      child: const Text('Edit'),
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          idedit = true;
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                    ),
-                                                    CupertinoActionSheetAction(
-                                                      child: const Text(
-                                                          'Delete',
-                                                          style: TextStyle(
-                                                            color: Colors.red,
-                                                          )),
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                        showDialog(
-                                                            context: context,
-                                                            builder: (BuildContext
-                                                                    context) =>
-                                                                new CupertinoAlertDialog(
-                                                                  title:
-                                                                      new Text(
-                                                                    "Delete Comment",
-                                                                    style: TextStyle(
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
-                                                                  actions: [
-                                                                    CupertinoDialogAction(
-                                                                      isDefaultAction:
-                                                                          true,
-                                                                      child: new Text(
-                                                                          "Cancel"),
-                                                                      onPressed:
-                                                                          () =>
-                                                                              Navigator.pop(context),
-                                                                    ),
-                                                                    CupertinoDialogAction(
-                                                                        child:
-                                                                            new Text(
-                                                                          "Delete",
-                                                                          style:
-                                                                              TextStyle(color: Colors.red),
-                                                                        ),
-                                                                        onPressed:
-                                                                            () async {
-                                                                          Api.deletecomment(widget.postid, token, commentid, userid, mode).then((value) =>
-                                                                              ({
-                                                                                if (value['status'] == 1)
-                                                                                  {
-                                                                                    setState(() {
-                                                                                      onref = true;
-                                                                                    }),
-                                                                                  }
-                                                                              }));
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                          ScaffoldMessenger.of(context)
-                                                                              .showSnackBar(SnackBar(
-                                                                            backgroundColor:
-                                                                                Colors.green,
-                                                                            content:
-                                                                                Row(
-                                                                              children: [
-                                                                                Icon(
-                                                                                  Icons.check,
-                                                                                  color: MColors.primaryWhite,
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  width: 5,
-                                                                                ),
-                                                                                Text('Success')
-                                                                              ],
-                                                                            ),
-                                                                            duration:
-                                                                                const Duration(milliseconds: 2500),
-                                                                          ));
-                                                                        }),
-                                                                  ],
-                                                                ));
-                                                      },
-                                                    )
-                                                  ],
-                                                  cancelButton:
-                                                      CupertinoActionSheetAction(
-                                                    child: const Text('Cancel'),
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                  ),
-                                                ))
-                                    : Container();
-                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Text(
+                                        data.user.displayName,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: MColors.primaryBlue),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 4.0),
+                                      child: Text(
+                                        data.comment,
+                                        maxLines: null,
+                                        style: TextStyle(
+                                            color: MColors.primaryBlue),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              width: MediaQuery.of(context).size.width - 90,
+                              // widget.size.width- (widget.data['toCommentID'] == null ? 90 : 110),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Color(0xffDEDEDE),
+                                ),
+                                color: MColors.primaryWhite,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(15.0),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 10.0, top: 2.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.38,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    GestureDetector(
+                                      onTap: () async {
+                                        Api.islikecomment(widget.postid, userid,
+                                                token, commentid, mode)
+                                            .then((value) => ({
+                                                  jsonResponse =
+                                                      jsonDecode(value.body),
+                                                  print(
+                                                      'message${jsonResponse['message']}'),
+                                                  if (value.statusCode == 200)
+                                                    {
+                                                      if (jsonResponse[
+                                                              'message'] ==
+                                                          "Like Post Comment Success")
+                                                        {
+                                                          setState(() {
+                                                            data.likeCount++;
+                                                            data.isLike = true;
+                                                          }),
+                                                        }
+                                                      else if (jsonResponse[
+                                                              'message'] ==
+                                                          "UnLike Post Comment Success")
+                                                        {
+                                                          setState(() {
+                                                            data.likeCount--;
+                                                            data.isLike = false;
+                                                          }),
+                                                        }
+                                                    }
+                                                }));
+                                      },
+                                      child: Text(
+                                        'ถูกใจ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: MColors.primaryBlue),
+                                        // style:TextStyle(fontWeight: FontWeight.bold,color:_currentMyData.myLikeCommnetList != null && _currentMyData.myLikeCommnetList.contains(widget.data['commentID']) ? Colors.blue[900] : Colors.grey[700])
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    GestureDetector(
+                                      child: Text(
+                                        'ตอบกลับ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: MColors.primaryBlue),
+                                        // style:TextStyle(fontWeight: FontWeight.bold,color:_currentMyData.myLikeCommnetList != null && _currentMyData.myLikeCommnetList.contains(widget.data['commentID']) ? Colors.blue[900] : Colors.grey[700])
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text(
+                                      TimeUtils.readTimestamp(data
+                                          .createdDate.millisecondsSinceEpoch),
+                                      style:
+                                          TextStyle(color: MColors.primaryBlue),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
                         ),
                       ],
-                    ),
-                    Divider(
-                      color: Colors.grey[100],
-                      height: 5,
-                      thickness: 6.0,
                     ),
                   ],
                 ),

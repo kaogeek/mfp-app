@@ -371,7 +371,7 @@ class _GeneralinformationState extends State<Generalinformation> {
   }
 
   Future<String> networkImageToBase64(String imageUrl) async {
-    http.Response response = await http.get(imageUrl);
+    http.Response response = await http.get(Uri.parse(imageUrl));
     final bytes = response?.bodyBytes;
     return (bytes != null ? base64Encode(bytes) : null);
   }
@@ -640,7 +640,7 @@ class _GeneralinformationState extends State<Generalinformation> {
       key: _formKey,
       child: Scaffold(
         body: Container(
-            height: MediaQuery.of(context).size.height * 1,
+            height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width * 1,
             decoration: BoxDecoration(
                 image: DecorationImage(

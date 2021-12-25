@@ -169,7 +169,7 @@ class _PostSearchState extends State<PostSearch> {
                           return postlist(
                             nDataList1.post.title,
                             nDataList1.post.detail,
-                            nDataList1.page.name,
+                            nDataList1.page.name ?? "",
                             nDataList1.post.createdDate,
                             nDataList1.post.gallery,
                             nDataList1.post.likeCount,
@@ -185,6 +185,8 @@ class _PostSearchState extends State<PostSearch> {
                             nDataList1.page.isOfficial,
                             nDataList1,
                             nDataList1.post.type,
+                            nDataList1.post.coverImage,
+                            nDataList1.post.story,
                           );
                         });
                 }),
@@ -205,25 +207,26 @@ class _PostSearchState extends State<PostSearch> {
   }
 
   Widget postlist(
-    String posttitle,
-    String subtitle,
-    String authorposttext,
-    DateTime dateTime,
-    List gallery,
-    int likeCount,
-    int commentCount,
-    int shareCount,
-    int repostCount,
-    String postid,
-    String pageid,
-    String pageimage,
-    String pagename,
-    bool isFollow,
-    String pageUsername,
-    bool isOfficial,
-    nDataList1,
-    String type,
-  ) {
+      String posttitle,
+      String subtitle,
+      String authorposttext,
+      DateTime dateTime,
+      List gallery,
+      int likeCount,
+      int commentCount,
+      int shareCount,
+      int repostCount,
+      String postid,
+      String pageid,
+      String pageimage,
+      String pagename,
+      bool isFollow,
+      String pageUsername,
+      bool isOfficial,
+      nDataList1,
+      String type,
+      String coverimage,
+      story) {
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -240,7 +243,7 @@ class _PostSearchState extends State<PostSearch> {
                 commentCount: commentCount,
                 shareCoun: shareCount,
                 postid: postid,
-                userimage: '',
+                userimage: pageimage,
                 pageid: pageid,
                 pageimage: pageimage,
                 pagename: pagename,
@@ -259,11 +262,9 @@ class _PostSearchState extends State<PostSearch> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // topImage(gallery[0].signUrl.toString()),
-            gallery.length != 0
-                ? searchAlbumCard(gallery, context)
-                : SizedBox.shrink(),
-            // Image.network(gallery[0].signUrl),
+            //  coverimage!=null? Image.network("https://today-api.moveforwardparty.org/api$coverimage/image",width: double.infinity,):
+            // gallery[0].imageUrl!=null? Image.network("https://today-api.moveforwardparty.org/api${gallery[0].imageUrl}/image",):Image.network("https://today-api.moveforwardparty.org/api${gallery[0].signUrl}/image",),
+            gallery.length != 0 ? myAlbumCard(gallery, context) : Container(),
             Card(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -279,30 +280,32 @@ class _PostSearchState extends State<PostSearch> {
                     padding: const EdgeInsets.all(10.0),
                     child: subtexttitlepost(subtitle, context),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: InkWell(
-                        onTap: () async {
-                          Navigate.pushPage(
-                              context,
-                              StroyPageSc(
-                                postid: postid,
-                                titalpost: posttitle,
-                                imagUrl: gallery,
-                                type: type,
-                                createdDate: dateTime,
-                                postby: pagename,
-                                imagepage: pageimage,
-                                likeCount: likeCount,
-                                commentCount: commentCount,
-                                shareCount: shareCount,
-                                repostCount: repostCount,
-                                userid: userid,
-                                token: token,
-                              ));
-                        },
-                        child: textreadstory('อ่านสตอรี่..')),
-                  ),
+                  story != null
+                      ? Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: InkWell(
+                              onTap: () async {
+                                Navigate.pushPage(
+                                    context,
+                                    StroyPageSc(
+                                      postid: postid,
+                                      titalpost: posttitle,
+                                      imagUrl: gallery,
+                                      type: type,
+                                      createdDate: dateTime,
+                                      postby: pagename,
+                                      imagepage: pageimage,
+                                      likeCount: likeCount,
+                                      commentCount: commentCount,
+                                      shareCount: shareCount,
+                                      repostCount: repostCount,
+                                      token: token,
+                                      userid: userid,
+                                    ));
+                              },
+                              child: textreadstory('อ่านสตอรี่..')),
+                        )
+                      : Container(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     // mainAxisAlignment: MainAxisAlignment.start,

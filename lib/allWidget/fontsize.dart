@@ -84,7 +84,6 @@ Widget authorpost(
               context,
               Profliess(
                 id: id,
-                image: imageUrl,
               )),
       child: Text(
         '$string',

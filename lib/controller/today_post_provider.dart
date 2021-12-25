@@ -9,7 +9,7 @@ import 'package:mfp_app/model/searchpostlistModel.dart';
 class TodayPostController extends GetxController {
   RxList<PostSearchModel> postList = <PostSearchModel>[].obs;
   RxList<RecomUserPageModel> recompageList = <RecomUserPageModel>[].obs;
-  RxList<SearchPostList> serarchpostList = <SearchPostList>[].obs;
+  RxList<PostSearchModel> serarchpostList = <PostSearchModel>[].obs;
 
   var _currentMax = 0.obs;
   var isLoading = true.obs;
@@ -28,6 +28,7 @@ class TodayPostController extends GetxController {
   var commentCount;
   var shareCount;
   var repostCount;
+  RxString stroycoverImage = "".obs;
 
   var storytestreplaceAll = "";
   @override
@@ -41,7 +42,6 @@ class TodayPostController extends GetxController {
   getpost(var offset, {var pagenumber = 0}) async {
     print('getmergencyevents');
     try {
-       
       if (postList.length == 0) {
         isLoading(true);
         firstload(true);
@@ -99,6 +99,7 @@ class TodayPostController extends GetxController {
         for (Map i in jsonResponse["data"]) {
           var storytest = i["story"]["story"];
           var tital = i["title"];
+          // var stroycoverImage= i["coverImage"];
           storytestreplaceAll = storytest.replaceAll("<create-text>", "");
           titalpost.value = tital;
         }

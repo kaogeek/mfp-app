@@ -47,6 +47,9 @@ class _BuildprofileState extends State<Buildprofile> {
   bool isloading = false;
 
   Future<http.Response> singin(String email, String pass) async {
+    setState(() {
+      isloading = true;
+    });
     print('singin');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
@@ -70,8 +73,7 @@ class _BuildprofileState extends State<Buildprofile> {
               "token", '${jsonResponse["data"]["token"]}');
           sharedPreferences.setString(
               "myuid", '${jsonResponse["data"]["user"]["id"]}');
-        sharedPreferences.setString(
-              "mode", 'EMAIL');
+          sharedPreferences.setString("mode", 'EMAIL');
 
           sharedPreferences?.setBool("isLoggedIn", true);
           var mytoken = jsonResponse["data"]["token"];
@@ -81,7 +83,6 @@ class _BuildprofileState extends State<Buildprofile> {
           sharedPreferences.setString(
               "imageURL", '${jsonResponse["data"]["user"]["imageURL"]}');
           if (mytoken != null) {
-            isloading = true;
           } else if (mytoken == null) {
             // iserror = true;
           }
@@ -101,6 +102,8 @@ class _BuildprofileState extends State<Buildprofile> {
       if (jsonResponse['status'] == 0) {
         print(jsonResponse['message']);
         setState(() {
+          isloading = false;
+
           // msgres = jsonResponse['message'];
           // _isloading = false;
 
@@ -289,10 +292,9 @@ class _BuildprofileState extends State<Buildprofile> {
                                 fontFamily: AppTheme.FontAnakotmaiMedium,
                                 color: Colors.grey))),
                   ),
-                  Container(
+                  SizedBox(
                     //color: Colors.white,
-                    height: MediaQuery.of(context).size.height * 0.08,
-                    width: MediaQuery.of(context).size.width * 0.86,
+                    height: MediaQuery.of(context).size.height / 25,
                   ),
                   isloading == true
                       ? Container(

@@ -20,6 +20,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE" />
 
+
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="MFP Today"
@@ -37,8 +38,12 @@
          <category android:name="android.intent.category.DEFAULT" />
          <category android:name="android.intent.category.BROWSABLE" />
          <data android:scheme="@string/fb_login_protocol_scheme" />
+         <!-- <data android:scheme="twittersdk://"
+          android:host=":twittersdk://today.moveforwardparty.org/login"/>  -->
      </intent-filter>
  </activity>
+
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -67,6 +72,7 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

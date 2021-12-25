@@ -11,7 +11,8 @@ class CircleButton extends StatelessWidget {
     Key key,
     @required this.icon,
     @required this.iconSize,
-    @required this.onPressed, this.color,
+    @required this.onPressed,
+    this.color,
   }) : super(key: key);
 
   @override

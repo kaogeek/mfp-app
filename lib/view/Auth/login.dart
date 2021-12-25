@@ -12,6 +12,7 @@ import 'package:mfp_app/view/Auth/loginemail.dart';
 import 'package:mfp_app/view/Auth/register_ginfo.dart';
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:twitter_login/twitter_login.dart';
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);
@@ -39,6 +40,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
   bool iserror;
 
+  bool isfacebookLoggedIn = false;
+
+  bool isTwitterLoggedIn = false;
+
   String prettyPrint(Map json) {
     JsonEncoder encoder = new JsonEncoder.withIndent('  ');
     String pretty = encoder.convert(json);
@@ -51,7 +56,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   }
 
   Future<String> networkImageToBase64(String imageUrl) async {
-    http.Response response = await http.get(imageUrl);
+    http.Response response = await http.get(Uri.parse(imageUrl));
     final bytes = response?.bodyBytes;
     return (bytes != null ? base64Encode(bytes) : null);
   }
@@ -85,7 +90,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
   void initiateFacebookLogin() async {
     setState(() {
-      isLoggedIn = true;
+      isfacebookLoggedIn = true;
     });
     var facebookLogin = FacebookLogin();
     var facebookLoginResult =
@@ -95,14 +100,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       case FacebookLoginStatus.error:
         print("Error");
         setState(() {
-          isLoggedIn = false;
+          isfacebookLoggedIn = false;
         });
         onLoginStatusChanged(false);
         break;
       case FacebookLoginStatus.cancelledByUser:
         print("CancelledByUser");
         setState(() {
-          isLoggedIn = false;
+          isfacebookLoggedIn = false;
         });
         onLoginStatusChanged(false);
         break;
@@ -121,8 +126,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
         print("LoggedIn");
 
-        var graphResponse = await http.get(
-            'https://graph.facebook.com/v10.0/me?access_token=${facebookLoginResult.accessToken.token}&fields=name,first_name,last_name,birthday,picture,email,gender&method=get&pretty=0&sdk=joey&suppress_http_code=1');
+        var graphResponse = await http.get(Uri.parse(
+            'https://graph.facebook.com/v10.0/me?access_token=${facebookLoginResult.accessToken.token}&fields=name,first_name,last_name,birthday,picture,email,gender&method=get&pretty=0&sdk=joey&suppress_http_code=1'));
         var profile = json.decode(graphResponse.body);
         // profileData.add(profile);
         print(profile.toString());
@@ -139,6 +144,73 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             profileData: profile);
 
         break;
+    }
+  }
+
+  void initiateFacebookTwitter() async {
+    setState(() {
+      isTwitterLoggedIn = true;
+    });
+    final twitterLogin = TwitterLogin(
+      /// Consumer API keys
+      apiKey: '81eBPMrAFW20CN0PRnughGs4T',
+
+      /// Consumer API Secret keys
+      apiSecretKey: '9iYBWJTUA9W048wzjBZ4n0R6wjWojogGhNlC2C9GcismIF6CNS',
+
+      /// Registered Callback URLs in TwitterApp
+      /// Android is a deeplink
+      /// iOS is a URLScheme
+      redirectURI: 'https://today.moveforwardparty.org/login',
+    );
+
+    /// Forces the user to enter their credentials
+    /// to ensure the correct users account is authorized.
+    /// If you want to implement Twitter account switching, set [force_login] to true
+    /// login(forceLogin: true);
+    final authResult = await twitterLogin.login();
+    var session = authResult.user;
+    print('''
+         Logged inTw!
+         
+         name: ${session.name}
+        email: ${session.email}
+         authToken: ${authResult.authToken}
+        
+
+         ''');
+
+    switch (authResult.status) {
+      case TwitterLoginStatus.loggedIn:
+        print('''
+         Logged inTw!
+         
+         name: ${session.name}
+        email: ${session.email}
+         authToken: ${authResult.authToken}
+        
+
+         ''');
+
+        // success
+        print('====== Login success ======');
+        break;
+      case TwitterLoginStatus.cancelledByUser:
+        setState(() {
+          isTwitterLoggedIn = false;
+        });
+        // cancel
+        print('====== Login cancel ======');
+        break;
+      case TwitterLoginStatus.error:
+        setState(() {
+          isTwitterLoggedIn = false;
+        });
+        break;
+      // case null:
+      //   // error
+      //   print('====== Login error ======');
+      //   break;
     }
   }
 
@@ -285,7 +357,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       color: MColors.primaryWhite,
       child: Scaffold(
         body: Container(
-          height: MediaQuery.of(context).size.height * 1,
+          height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width * 1,
           decoration: BoxDecoration(
               image: DecorationImage(
@@ -387,14 +459,16 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     'images/Email.png',
                     Color(0xFFE5E5E5),
                     MColors.primaryBlue,
-                    isLoggedIn != true
-                        ? () async {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Loginemail()),
-                            );
-                          }
+                    isfacebookLoggedIn != true
+                        ? isTwitterLoggedIn != true
+                            ? () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Loginemail()),
+                                );
+                              }
+                            : null
                         : null,
                     Container(),
                   ),
@@ -403,47 +477,43 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     'images/facebook.png',
                     Color(0xFF1877F2),
                     Colors.white,
-                    () async {
-                      initiateFacebookLogin();
-                      setState(() {
-                        isLoggedIn = true;
-                      });
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => widget),
-                      // );
-                    },
-                    CircularProgressIndicator(
-                      color: MColors.primaryColor,
-                    ),
+                    isfacebookLoggedIn != true
+                        ? () async {
+                            initiateFacebookLogin();
+                            setState(() {
+                              isfacebookLoggedIn = true;
+                            });
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => widget),
+                            // );
+                          }
+                        : null,
+                    isfacebookLoggedIn == false
+                        ? Container()
+                        : CircularProgressIndicator(
+                            color: MColors.primaryColor,
+                          ),
                   ),
                   _bution(
                     'เข้าสู่ระบบด้วยTwitter',
                     'images/twitter.png',
                     Color(0xFF1DA1F3),
                     Colors.white,
-                    isLoggedIn != true
-                        ? () async {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(new SnackBar(
-                              content: Text(
-                                'ยังไม่เปิดให้บริการ',
-                                textAlign: TextAlign.center,
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                              width: MediaQuery.of(context).size.width / 1.2,
-
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                              backgroundColor: MColors.primaryColor,
-                              duration: Duration(milliseconds: 5000),
-                              // margin: EdgeInsets.fromLTRB(0, 0, 0, 50),
-                              // padding: EdgeInsets.all(20),
-                            ));
-                          }
-                        : null,
-                    Container(),
+                    null,
+                    null,
+                    //  isTwitterLoggedIn!=true   ?   isfacebookLoggedIn==false  ?()  async {
+                    //                             initiateFacebookTwitter();
+                    //        setState(() {
+                    //     isTwitterLoggedIn = true;
+                    //   });
+                    //       }
+                    //     : null: null,
+                    // isTwitterLoggedIn != true  ? isTwitterLoggedIn!=true  ?Container():    CircularProgressIndicator(
+                    //   color: MColors.primaryColor,
+                    // ):    CircularProgressIndicator(
+                    //   color: MColors.primaryColor,
+                    // ),
                   ),
 
                   Container(

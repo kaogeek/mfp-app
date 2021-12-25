@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class Navigate {
-  
   static Future pushPage(BuildContext context, Widget page) async {
     return await Navigator.push(
       context,
@@ -35,5 +34,4 @@ class Navigate {
       ),
     );
   }
-
 }

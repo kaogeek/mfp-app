@@ -25,17 +25,17 @@ class AppTheme {
   static const String FontAnakotmaiBold = "Anakotmai-Bold";
   static const String FontAnakotmaiMedium = "Anakotmai-Medium";
 
- static const LargeTextSize = 20.0;
-static const MediumTextSize = 20.0 ;
-static const BodyTextSize = 18.0 ;
-static const BodyTextSize16 = 16.0 ;
-static const BodyTextSize24 = 24.0 ;
-static const BodyTextSize20 = 20.0 ;
-static const BodyTextSize12 = 12.0 ;
+  static const LargeTextSize = 20.0;
+  static const MediumTextSize = 20.0;
+  static const BodyTextSize = 18.0;
+  static const BodyTextSize16 = 16.0;
+  static const BodyTextSize24 = 24.0;
+  static const BodyTextSize20 = 20.0;
+  static const BodyTextSize12 = 12.0;
 
-static const SmallTextSize = 14.0 ;
+  static const SmallTextSize = 14.0;
 
-static const TitleTextSize= 23.0;
+  static const TitleTextSize = 23.0;
 
   static const TextTheme textTheme = TextTheme(
     headline1: display2,
@@ -48,30 +48,28 @@ static const TitleTextSize= 23.0;
     bodyText1: body1,
     caption: caption,
   );
-   static const TextStyle display2 = TextStyle(
+  static const TextStyle display2 = TextStyle(
     // h4 -> display1 // post titel
     fontFamily: FontAnakotmaiBold,
-        fontSize: TitleTextSize,
-        fontWeight: FontWeight.bold,
-        color: MColors.primaryBlue,
+    fontSize: TitleTextSize,
+    fontWeight: FontWeight.bold,
+    color: MColors.primaryBlue,
   );
-
 
   static const TextStyle display1 = TextStyle(
     // h4 -> display1
-     fontFamily: FontAnakotmaiMedium,
-        fontSize: BodyTextSize,
-                fontWeight: FontWeight.bold,
+    fontFamily: FontAnakotmaiMedium,
+    fontSize: BodyTextSize,
+    fontWeight: FontWeight.bold,
 
-        color: MColors.primaryBlue,
+    color: MColors.primaryBlue,
   );
 
   static const TextStyle headline = TextStyle(
-        fontFamily: FontAnakotmaiLight,
-        fontSize: SmallTextSize,
-
-        color: MColors.textGrey,
-      );
+    fontFamily: FontAnakotmaiLight,
+    fontSize: SmallTextSize,
+    color: MColors.textGrey,
+  );
 
   static const TextStyle title = TextStyle(
     // h6 -> title
@@ -90,29 +88,28 @@ static const TitleTextSize= 23.0;
     letterSpacing: -0.04,
     color: darkText,
   );
-    static const TextStyle subtitle1 = TextStyle(
+  static const TextStyle subtitle1 = TextStyle(
     // subtitle1 -> subtitle1
     fontFamily: FontAnakotmaiMedium,
-        fontSize: SmallTextSize,
-        fontWeight: FontWeight.bold,
-        color: MColors.primaryBlue,
+    fontSize: SmallTextSize,
+    fontWeight: FontWeight.bold,
+    color: MColors.primaryBlue,
   );
-
 
   static const TextStyle body2 = TextStyle(
     // body1 -> body2
-   fontFamily: FontAnakotmaiLight,
-        fontSize: SmallTextSize,
-        fontWeight: FontWeight.w500,
-        color: MColors.primaryColor,
+    fontFamily: FontAnakotmaiLight,
+    fontSize: SmallTextSize,
+    fontWeight: FontWeight.w500,
+    color: MColors.primaryColor,
   );
 
   static const TextStyle body1 = TextStyle(
     // body2 -> body1
-      fontFamily: FontAnakotmaiLight,
-        fontSize: BodyTextSize,
-      fontWeight: FontWeight.w400,
-        color: MColors.textDark,
+    fontFamily: FontAnakotmaiLight,
+    fontSize: BodyTextSize,
+    fontWeight: FontWeight.w400,
+    color: MColors.textDark,
   );
 
   static const TextStyle caption = TextStyle(
