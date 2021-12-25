@@ -9,7 +9,6 @@ Future checkInternetConnectivity() async {
     }
   } on SocketException catch (_) {
     isConnected = false;
-  
   }
   return isConnected;
 }

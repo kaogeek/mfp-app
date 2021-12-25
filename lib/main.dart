@@ -21,11 +21,11 @@ class MyApp extends StatelessWidget {
       builder: () => MaterialApp(
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.light, // Change it as you want
-        title: 'Flutter Demo',
+        title: 'MFP Today',
         theme: ThemeData(
-          textTheme: AppTheme.textTheme,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-           primaryColor: Colors.white,
+        textTheme: AppTheme.textTheme,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        primaryColor: Colors.white,
         primaryColorBrightness: Brightness.light,
         brightness: Brightness.light,
         primaryColorDark: Colors.black,

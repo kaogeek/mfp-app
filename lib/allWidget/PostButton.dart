@@ -31,23 +31,29 @@ class PostButton extends StatelessWidget {
             height: hight / 20.0,
             child: Row(
               // mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment :CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // crossAxisAlignment :CrossAxisAlignment.center,
               children: [
+                Spacer(),
                 icon,
                 // const SizedBox(width: 4.0),
                 // Container(
                 //   width: 90,
                 //   child: Text(label, maxLines: 2, overflow: TextOverflow.ellipsis))
-
-                Container(
-                  width: widthCont / width ,
-                  alignment: Alignment.centerLeft,
-                  child: Text(label,
-                      style: Theme.of(context).textTheme.subtitle1,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis),
-                ),
+                Spacer(),
+                Text(label,
+                    style: Theme.of(context).textTheme.subtitle1,
+                    maxLines: 1,
+                    overflow: TextOverflow.clip),
+                Spacer(),
+                // Container(
+                //   width: widthCont / width ,
+                //   alignment: Alignment.centerLeft,
+                //   child: Text(label,
+                //       style: Theme.of(context).textTheme.subtitle1,
+                //       maxLines: 1,
+                //       overflow: TextOverflow.clip),
+                // ),
               ],
             ),
           ),

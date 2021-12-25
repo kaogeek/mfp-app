@@ -1,13 +1,14 @@
-
 import 'package:get/get.dart';
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/model/postModel.dart';
+
 class EmergencyController extends GetxController {
-    EmergencyController emergencyController;
+  EmergencyController emergencyController;
 
   EmergencyController({this.emergencyController});
 
-  RxList<EmergencyEventsContent> emergencyevList = <EmergencyEventsContent>[].obs;
+  RxList<EmergencyEventsContent> emergencyevList =
+      <EmergencyEventsContent>[].obs;
   var isLoading = true.obs;
   @override
   void onInit() {
@@ -25,6 +26,7 @@ class EmergencyController extends GetxController {
       var emergencys = await Api.getPostemergencyEventsList();
       if (emergencys != null) {
         emergencyevList.addAll(emergencys);
+        isLoading(false);
       }
     } finally {
       isLoading(false);

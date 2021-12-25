@@ -120,7 +120,7 @@ class _RegisterpasswordState extends State<Registerpassword> {
 
     return Form(
       key: _key,
-      autovalidate: _autoValidate,
+      // autovalidate: _autoValidate,
       child: Scaffold(
           body: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
