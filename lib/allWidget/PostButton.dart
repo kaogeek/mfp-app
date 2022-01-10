@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/utils/app_theme.dart';
 
 class PostButton extends StatelessWidget {
   final Icon icon;
@@ -41,9 +43,16 @@ class PostButton extends StatelessWidget {
                 //   width: 90,
                 //   child: Text(label, maxLines: 2, overflow: TextOverflow.ellipsis))
                 Spacer(),
-                Text(label,
-                    style: Theme.of(context).textTheme.subtitle1,
+                AutoSizeText(label,
+                    style: TextStyle(fontFamily: AppTheme.FontAnakotmaiMedium,
+    fontSize: 13,
+    fontWeight: FontWeight.bold,
+    color: MColors.primaryBlue,
+    
+    overflow: TextOverflow.clip,),
                     maxLines: 1,
+                    minFontSize: 13,
+                    maxFontSize: 17,
                     overflow: TextOverflow.clip),
                 Spacer(),
                 // Container(

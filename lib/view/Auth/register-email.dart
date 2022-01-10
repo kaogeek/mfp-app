@@ -199,7 +199,7 @@ class _RegisterState extends State<Register> {
 
                 SizedBox(
                   //color: Colors.black,
-                  height: MediaQuery.of(context).size.height / 3.0,
+                  height: MediaQuery.of(context).size.height / 3.4,
                 ),
                 _isButtonDisabled == true
                     ? Container(
@@ -256,7 +256,7 @@ class _RegisterState extends State<Register> {
                           ],
                         ),
                       ),
-                Spacer(),
+               
                 Container(
                   //color: Colors.black,
                   alignment: Alignment.bottomCenter,

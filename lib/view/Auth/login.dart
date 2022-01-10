@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:get/get.dart';
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/sizeconfig.dart';
 import 'package:mfp_app/constants/colors.dart';
@@ -52,6 +53,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    Get.reset();
+
     super.initState();
   }
 
@@ -380,6 +383,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             color: Colors.white,
                           ),
                           onPressed: () {
+                            
                             Navigator.pop(context);
                             print('กด');
                           },
@@ -500,8 +504,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     'images/twitter.png',
                     Color(0xFF1DA1F3),
                     Colors.white,
-                    null,
-                    null,
+                    (){},
+                    Container(),
                     //  isTwitterLoggedIn!=true   ?   isfacebookLoggedIn==false  ?()  async {
                     //                             initiateFacebookTwitter();
                     //        setState(() {
@@ -569,7 +573,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   ),
                 ),
                 Spacer(),
-                isLoggedIn == true ? widget : Container(),
+                widget,
               ],
             ),
             textColor: textColor,

@@ -7,6 +7,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 class WebviewSc extends StatefulWidget {
   final String url;
   final String texttitle;
+
   WebviewSc({Key key, this.url, this.texttitle}) : super(key: key);
 
   @override
@@ -16,7 +17,8 @@ class WebviewSc extends StatefulWidget {
 class _WebviewScState extends State<WebviewSc> {
   final TrackingScrollController _trackingScrollController =
       TrackingScrollController();
-
+  bool isLoading = true;
+  final _key = UniqueKey();
   @override
   void dispose() {
     _trackingScrollController.dispose();
@@ -42,9 +44,29 @@ class _WebviewScState extends State<WebviewSc> {
                   color: MColors.textDark),
             ),
           ),
-          body: WebView(
-            initialUrl: widget.url,
-            javascriptMode: JavascriptMode.unrestricted,
+          body: Stack(
+            children: <Widget>[
+              WebView(
+                key: _key,
+                initialUrl: widget.url,
+                javascriptMode: JavascriptMode.unrestricted,
+                onPageFinished: (finish) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                },
+                
+              ),
+              isLoading
+                  ? LinearProgressIndicator(
+                      backgroundColor: Colors.red,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        MColors.primaryColor,
+                      ),
+                      value: 0.8,
+                    )
+                  : Stack(),
+            ],
           ),
         ),
       ),

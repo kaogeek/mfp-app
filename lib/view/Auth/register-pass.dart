@@ -291,11 +291,6 @@ class _RegisterpasswordState extends State<Registerpassword> {
                     ],
                   ),
                 ),
-                Container(
-                  //color: Colors.black,
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  width: MediaQuery.of(context).size.width * 0.86,
-                ),
                 _isButtonDisabled == true
                     ? Container(
                         width: MediaQuery.of(context).size.width * 0.9,

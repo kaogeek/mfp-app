@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';

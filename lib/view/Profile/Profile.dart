@@ -102,11 +102,14 @@ class _ProfileScState extends State<ProfileSc> {
 
   @override
   Widget build(BuildContext context) {
-    return displayName1 == ""
-        ? Container(
+    return displayName1 == ""? Container(
             color: Colors.white,
-            child: Center(child: CupertinoActivityIndicator()))
-        : SafeArea(
+            child: Center(
+              child: CircularProgressIndicator(
+                color: MColors.primaryColor,
+              ),
+            ))
+        :  SafeArea(
             top: false,
             bottom: false,
             child: Scaffold(
@@ -175,27 +178,27 @@ class _ProfileScState extends State<ProfileSc> {
                                         const SizedBox(
                                           width: 5,
                                         ),
-                                        mode == "FB"
-                                            ? Container(
-                                                color: MColors.textDark,
-                                                child: Image.asset(
-                                                  'images/facebook.png',
-                                                  width: 20,
-                                                  height: 20,
-                                                ))
-                                            : Container(),
-                                        mode == "EMAIL"
-                                            ? Container(
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                  color: MColors.textDark,
-                                                )),
-                                                child: Image.asset(
-                                                  'images/Email.png',
-                                                  width: 20,
-                                                  height: 20,
-                                                ))
-                                            : Container(),
+                                        // mode == "FB"
+                                        //     ? Container(
+                                        //         color: MColors.textDark,
+                                        //         child: Image.asset(
+                                        //           'images/facebook.png',
+                                        //           width: 20,
+                                        //           height: 20,
+                                        //         ))
+                                        //     : Container(),
+                                        // mode == "EMAIL"
+                                        //     ? Container(
+                                        //         decoration: BoxDecoration(
+                                        //             border: Border.all(
+                                        //           color: MColors.primaryWhite,
+                                        //         )),
+                                        //         child: Image.asset(
+                                        //           'images/Email.png',
+                                        //           width: 20,
+                                        //           height: 20,
+                                        //         ))
+                                        //     : Container(),
                                         //  mode=="EMAIL"?   Container(
                                         // color: MColors.textDark,
                                         // child: Image.asset('images/twitter.png',width: 20,height: 20,))

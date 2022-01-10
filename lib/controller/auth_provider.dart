@@ -20,6 +20,7 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    
     emailController = TextEditingController();
     passController = TextEditingController();
     // login(emailController.text, passController.text);
@@ -82,7 +83,7 @@ class AuthController extends GetxController {
         token = jsonResponse["data"]["token"];
 
         if (jsonResponse['status'] == 1) {
-          print(jsonResponse['message']);
+          // print(jsonResponse['message']);
           var msgres = jsonResponse['message'];
           if (jsonResponse != null) {
             sharedPreferences.setString(
@@ -124,7 +125,7 @@ class AuthController extends GetxController {
         if (jsonResponse['status'] == 0) {
           iserror.value = true;
           msg = jsonResponse['message'];
-          print(jsonResponse['message']);
+          // print(jsonResponse['message']);
           if (msg == "Invalid Password") {
             msg = "รหัสผ่านไม่ถูกต้อง";
           }

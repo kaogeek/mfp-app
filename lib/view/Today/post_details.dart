@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mfp_app/Api/Api.dart';
+import 'package:mfp_app/allWidget/CarouselsLoading.dart';
 import 'package:mfp_app/allWidget/PostButton.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/allWidget/fontsize.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/commentlistmodel.dart';
+import 'package:mfp_app/model/post_details_model.dart';
 import 'package:mfp_app/model/searchpostlistModel.dart';
 import 'package:http/http.dart' as Http;
 import 'package:mfp_app/utils/router.dart';
@@ -86,7 +88,9 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
   var postimage = "";
 
   var userprofileimage = "";
+  Future futuregetpostdetiail;
 
+  bool postloading=true;
   @override
   void dispose() {
     _trackingScrollController.dispose();
@@ -97,18 +101,24 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
   var dataht;
 
   List<CommentlistModel> listModel = [];
+  List<PostDetailsModel> postdetailslist = [];
+
   TextEditingController _commentController = TextEditingController();
   TextEditingController _commenteditController = TextEditingController();
+
   bool islikepost = false;
   bool idedit = false;
   var jsonResponse;
   bool onref = false;
-  StreamController _postsController;
+  StreamController _commerntController;
+  StreamController _postdetailController;
+  var pagename="";
 
   @override
   void didChangeDependencies() {
     setState(() {
       Api.getcommentlist(widget.postid, userid, token);
+       Api.getstory(widget.postid);
     });
 
     super.didChangeDependencies();
@@ -155,6 +165,35 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                 }),
               }
           }));
+      //--
+   await Api.getstory(widget.postid).then((responseData) async => ({
+     setState(() {
+                  postloading = true;
+                }),
+            if (responseData.statusCode == 200){
+                jsonResponse = jsonDecode(responseData.body),
+                print('jsonResponse$jsonResponse'),
+                for (Map i in jsonResponse["data"])
+                  {
+                    setState(() {
+                        pagename =i['page'][0]['name'];
+                    }),
+                  
+                    postdetailslist.add(PostDetailsModel.fromJson(i)),
+                     _postdetailController.add(responseData),
+
+
+                    // var stroycoverImage= i["coverImage"];
+                  },
+                // print("Response  :$storytestreplaceAll"),
+                // print('titalpost$titalpost'),
+                setState(() {
+                  postloading = false;
+                }),
+              }
+            else if (responseData.statusCode == 400)
+              {}
+          }));
       //--getcommentlist
       await Api.getcommentlist(widget.postid, userid, token)
           .then((responseData) => ({
@@ -170,7 +209,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                       {
                         setState(() {
                           listModel.add(CommentlistModel.fromJson(i));
-                          _postsController.add(responseData);
+                          _commerntController.add(responseData);
                         }),
                         print('listModel${listModel.length}'),
                       },
@@ -209,7 +248,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                   }
               }));
     });
-    _postsController = new StreamController();
+    _commerntController = new StreamController();
+    _postdetailController= new StreamController();
     super.initState();
   }
 
@@ -265,8 +305,10 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
               for (Map i in dataht["data"])
                 {
                   setState(() {
+
+
                     listModel.add(CommentlistModel.fromJson(i));
-                    _postsController.add(responseData);
+                    _commerntController.add(responseData);
                   }),
                   print('listModel${listModel.length}'),
                 },
@@ -283,6 +325,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
     if (onref == true) {
       _handleRefresh();
     }
+    print(pagename);
     return loading == true
         ? Container(
             color: Colors.white,
@@ -318,7 +361,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                       AppBardetail(
                         context,
                         "โพสของ",
-                        widget.authorposttext,
+                        pagename==""?"":pagename,
                         IconButton(
                           icon: Icon(
                             Icons.arrow_back_ios,
@@ -331,24 +374,43 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                       ),
 
                       ///-----------APPBAR-----------------//
-                      SliverToBoxAdapter(
-                        child: PostList(
-                            widget.posttitle,
-                            widget.subtitle,
-                            widget.authorposttext,
-                            widget.dateTime,
-                            widget.gallery,
-                            widget.likeCount,
-                            widget.commentCount,
-                            widget.shareCoun,
-                            widget.pageid,
-                            widget.pageimage,
-                            widget.pagename,
-                            widget.isFollow,
-                            widget.pageUsername,
-                            widget.isOfficial,
-                            widget.story),
+                  postloading==true?SliverToBoxAdapter(child: CarouselLoading()):    SliverToBoxAdapter(
+                        child: StreamBuilder(
+                          stream: _postdetailController.stream,
+                          builder: (BuildContext context, AsyncSnapshot snapshot) {
+                           return Builder(
+                             builder:(BuildContext context){
+                               return ListView.builder(
+                                   physics: ClampingScrollPhysics(),
+                                    shrinkWrap: true,
+                                    // padding: const EdgeInsets.all(8.0),
+                                    scrollDirection: Axis.vertical,
+                              itemCount: postdetailslist.length,
+                              itemBuilder: (BuildContext context, int index) {
+                          final  datapostdetail = postdetailslist[index];
+                              // pagename=datapostdetail.page[index].name;
+
+                                return  PostList(
+                                  
+                              datapostdetail.title,
+                              datapostdetail.detail,
+                              datapostdetail.page,
+                              datapostdetail.createdDate,
+                              datapostdetail.gallery,
+                              datapostdetail.likeCount,
+                              datapostdetail.commentCount,
+                              datapostdetail.shareCount,
+                              widget.story);
+                              },
+                            );
+
+                             });
+                          },
+                        ),
                       ),
+                      // SliverToBoxAdapter(
+                      //   child: 
+                      // ),
                       SliverToBoxAdapter(
                         child: _buildCommentList(),
                       ),
@@ -363,19 +425,21 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
   Widget PostList(
       String posttitle,
       String subtitle,
-      String authorposttext,
+      List page,
       DateTime dateTime,
       List gallery,
       int likeCount,
       int commentCount,
       int shareCount,
-      String pageid,
-      String pageimage,
-      String pagename,
-      bool isFollow,
-      String pageUsername,
-      bool isOfficial,
+      // String pageid,
+      // String pageimage,
+      // String pagename,
+      // bool isFollow,
+      // String pageUsername,
+      // bool isOfficial,
       story) {
+              
+      
     return InkWell(
       onTap: () {},
       child: Container(
@@ -384,30 +448,30 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            gallery[0].signUrl != null
-                ? gallery[0].imageUrl != null
-                    ? Hero(
-                        tag: "image" + gallery[0].signUrl,
-                        child: CachedNetworkImage(
-                          imageUrl: gallery[0].signUrl,
-                          placeholder: (context, url) =>
-                              new CupertinoActivityIndicator(),
-                          errorWidget: (context, url, error) => Container(
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
-                            ),
-                            child: new Image.network(
-                              gallery[0].signUrl,
-                              filterQuality: FilterQuality.low,
-                            ),
-                          ),
-                        ),
-                      )
-                    : SizedBox.shrink()
-                : SizedBox.shrink(),
+            // gallery[0].signUrl != null
+            //     ? gallery[0].imageUrl != null
+            //         ? Hero(
+            //             tag: "image" + gallery[0].signUrl,
+            //             child: CachedNetworkImage(
+            //               imageUrl: gallery[0].signUrl,
+            //               placeholder: (context, url) =>
+            //                   new CupertinoActivityIndicator(),
+            //               errorWidget: (context, url, error) => Container(
+            //                 decoration: BoxDecoration(
+            //                   borderRadius:
+            //                       BorderRadius.all(Radius.circular(8)),
+            //                 ),
+            //                 child: new Image.network(
+            //                   gallery[0].signUrl,
+            //                   filterQuality: FilterQuality.low,
+            //                 ),
+            //               ),
+            //             ),
+            //           )
+            //         : SizedBox.shrink()
+            //     : SizedBox.shrink(),
             gallery[0].imageUrl != null
-                ? gallery[0].signUrl == null
+                
                     ? Hero(
                         tag: "image" + gallery[0].imageUrl,
                         child: CachedNetworkImage(
@@ -427,7 +491,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                           ),
                         ),
                       )
-                    : SizedBox.shrink()
+                   
                 : SizedBox.shrink(),
             // gallery.length != 0 ? _myAlbumCard(gallery) : SizedBox.shrink(),
             // Image.network(gallery[0].signUrl),
@@ -459,8 +523,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                       imagUrl: gallery,
                                       type: widget.type,
                                       createdDate: dateTime,
-                                      postby: pagename,
-                                      imagepage: pageimage,
+                                      postby: page[0].name,
+                                      imagepage: page[0].imageUrl,
                                       likeCount: likeCount,
                                       commentCount: commentCount,
                                       shareCount: shareCount,
@@ -478,15 +542,15 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     children: [
                       fixtextauthor(),
                       authorpost(
-                          authorposttext,
+                          page[0].name,
                           context,
                           dateTime,
                           widget.pageid,
-                          pageimage,
-                          pagename,
-                          isFollow,
-                          pageUsername,
-                          isOfficial,
+                         page[0].imageUrl,
+                          page[0].name,
+                          false,
+                          "pageUsername",
+                          false,
                           userid,
                           true),
                       SizedBox(
@@ -516,7 +580,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                     : Icons.favorite,
                                 color: MColors.primaryBlue,
                               ),
-                              label: '${widget.likeCount} ถูกใจ',
+                              label: '$likeCount ถูกใจ',
                               width: 8.0,
                               onTap: () async {
                                 HapticFeedback.lightImpact();
@@ -537,12 +601,14 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                       "Like Post Success")
                                                     {
                                                       setState(() {
-                                                        islikepost =
-                                                            jsonResponse['data']
+                                                        islikepost =jsonResponse['data']
                                                                 ['isLike'];
+                                                        // ignore: unnecessary_statements
+                                                        likeCount+1;
 
-                                                        widget.likeCount++;
                                                       }),
+                                                         
+
                                                     }
                                                   else if (jsonResponse[
                                                           'message'] ==
@@ -553,7 +619,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                             jsonResponse['data']
                                                                 ['isLike'];
 
-                                                        --widget.likeCount;
+                                                        likeCount--;
                                                       }),
                                                     }
                                                 }
@@ -671,7 +737,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
 
   Widget _buildCommentList() {
     return StreamBuilder(
-      stream: _postsController.stream,
+      stream: _commerntController.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return ListView.builder(
           physics: ClampingScrollPhysics(),

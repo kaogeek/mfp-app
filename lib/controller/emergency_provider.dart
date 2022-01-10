@@ -27,6 +27,7 @@ class EmergencyController extends GetxController {
       if (emergencys != null) {
         emergencyevList.addAll(emergencys);
         isLoading(false);
+        update();
       }
     } finally {
       isLoading(false);

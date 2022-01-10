@@ -35,14 +35,13 @@ dependencies:
   font_awesome_flutter: ^8.12.0
   carousel_slider: ^3.0.0
   http: ^0.13.0
-  shared_preferences: ^0.5.12+4
+  shared_preferences: ^2.0.11
   shimmer: ^1.1.2
-  auto_size_text: ^2.1.0
   cached_network_image: ^2.5.1
   splashscreen: ^1.3.5
-  webview_flutter: ^1.0.6
+  webview_flutter: ^3.0.0
   flutter_svg: ^0.19.3
-  url_launcher: ^5.7.10
+  url_launcher: ^6.0.17
   flutter_screenutil: ^4.0.4+1
   simple_animations: ^1.3.3
   page_transition: ^1.1.7+6
@@ -54,9 +53,12 @@ dependencies:
   flutter_html: ^0.8.2
   flutter_facebook_login: ^3.0.0
   get: ^3.26.0
-  get_storage: ^1.4.0
+  # get_storage: ^1.4.0
   twitter_login: ^3.0.2
-  flutter_easyloading: ^2.2.2
+  jiffy: ^3.0.1
+  auto_size_text: ^2.1.0
+  path_provider: ^2.0.8
+
 
   
 

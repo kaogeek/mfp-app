@@ -228,6 +228,7 @@ class _LoginemailState extends State<Loginemail> {
                                 color: Colors.white,
                               ),
                               onPressed: () {
+                                  Get.reset();
                                 Navigator.pop(context);
                                 print('กด');
                               },

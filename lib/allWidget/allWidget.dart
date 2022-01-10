@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart';
@@ -110,7 +109,6 @@ Widget myAlbumCard(List<GalleryPostSearchModel> list, BuildContext context) {
     return Container(
       height: 340,
       width: double.infinity,
-      color: Colors.black,
       child: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +124,6 @@ Widget myAlbumCard(List<GalleryPostSearchModel> list, BuildContext context) {
     );
   } else if (list.length >= 1) {
     return Container(
-      color: Colors.blue,
       width: double.infinity,
       child: Center(
         child: Column(
@@ -467,7 +464,7 @@ Widget primaryAppBar(
 }
 
 Widget AppBardetail(
-    context, String authorposttext, String lable, IconButton icon) {
+    context, String lable, String authorposttext, IconButton icon) {
   return SliverAppBar(
       brightness: Brightness.light,
       backgroundColor: Colors.white,

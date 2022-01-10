@@ -1,14 +1,22 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:mfp_app/Api/Api.dart';
+import 'package:mfp_app/allWidget/CarouselsLoading.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/model/pagemodel.dart';
+import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/internetConnectivity.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
 import 'package:mfp_app/view/Profile/profile.dart';
 import 'package:mfp_app/view/Search/search.dart';
+import 'package:mfp_app/view/Today/webview_emergency.dart';
 
 class DoingSC extends StatefulWidget {
   // DoingSC({Key? key}) : super(key: key);
@@ -31,69 +39,194 @@ class _DoingSCState extends State<DoingSC> {
 
   var image;
 
+  bool pageObjloading;
+
+  var jsonResponse;
+  List<PageObjective> pageobjslist = [];
+  List<PageObjective> pagedoingobjslist = [];
+
+  StreamController _pageobjController;
+  StreamController _pagedoingobjController;
+
+  Future getpageObj;
+  DateTime backward;
+  int _currentMax = 0;
+  var msg = "";
+
+  @override
+  void initState() {
+    DateTime currentDate = DateTime.now();
+
+    Api.gettoke().then((value) => value({
+          setState(() {
+            token = value;
+          }),
+          print('token$token'),
+        }));
+    //--
+    Api.getmyuid().then((value) => ({
+          setState(() {
+            userid = value;
+          }),
+          print('userid$userid'),
+        }));
+    _trackingScrollController.addListener(_loadMore);
+
+    Future.delayed(Duration.zero, () async {
+      print('delayedgetpost');
+
+      //--
+      await Api.getuserprofile("$userid").then((responseData) async => ({
+            if (responseData.statusCode == 200)
+              {
+                datagetuserprofile = jsonDecode(responseData.body),
+                setState(() {
+                  image = datagetuserprofile["data"]["imageURL"];
+                }),
+                print('image$image'),
+              }
+          }));
+      //--\
+      await Api.getimageURL().then((value) => ({
+            setState(() {
+              userimageUrl = value;
+            }),
+            print('userimageUrl$userimageUrl'),
+          }));
+      //--
+    });
+    getpageObj = Api.getdoing(Jiffy(currentDate).subtract(months: 1))
+        .then((responseData) async => ({
+              print('getdoing'),
+              setState(() {
+                pageObjloading = true;
+              }),
+              if (responseData.statusCode == 200)
+                {
+                  jsonResponse = jsonDecode(responseData.body),
+                  print('jsonResponse$jsonResponse'),
+                  for (Map i in jsonResponse["data"])
+                    {
+                      setState(() {
+                        // pagename =i['page'][0]['name'];
+                      }),
+
+                      pageobjslist.add(PageObjective.fromJson(i)),
+                      _pageobjController.add(responseData),
+
+                      // var stroycoverImage= i["coverImage"];
+                    },
+                  // print("Response  :$storytestreplaceAll"),
+                  // print('titalpost$titalpost'),
+                  setState(() {
+                    pageObjloading = false;
+                  }),
+                }
+              else if (responseData.statusCode == 400)
+                {}
+            }));
+    Api.getobjectivdoinge(0).then((responseData) async => ({
+          print('getdoing'),
+          setState(() {
+            pageObjloading = true;
+          }),
+          if (responseData.statusCode == 200)
+            {
+              jsonResponse = jsonDecode(responseData.body),
+              print('jsonResponse$jsonResponse'),
+              for (Map i in jsonResponse["data"])
+                {
+                  setState(() {
+                    // pagename =i['page'][0]['name'];
+                  }),
+
+                  pagedoingobjslist.add(PageObjective.fromJson(i)),
+                  _pagedoingobjController.add(responseData),
+
+                  // var stroycoverImage= i["coverImage"];
+                },
+              // print("Response  :$storytestreplaceAll"),
+              // print('titalpost$titalpost'),
+              setState(() {
+                pageObjloading = false;
+              }),
+            }
+          else if (responseData.statusCode == 400)
+            {}
+        }));
+    _pagedoingobjController = new StreamController();
+    _pageobjController = new StreamController();
+    print('initState');
+    super.initState();
+  }
+
   @override
   void dispose() {
     _trackingScrollController.dispose();
     super.dispose();
   }
 
-  @override
-  void initState() {
-    print('initState');
-    super.initState();
-    setState(() {
-      Api.gettoke().then((value) => value({
-            token = value,
-            print('token$token'),
-          }));
+  void _loadMore() async {
+    print('_loadMore');
+    if (_trackingScrollController.offset >=
+            _trackingScrollController.position.maxScrollExtent &&
+        !_trackingScrollController.position.outOfRange) {
+      print('AT end');
 
-      Api.getmyuid().then((value) => ({
-            setState(() {
-              userid = value;
-            }),
-            Api.getuserprofile("$userid").then((responseData) async => ({
-                  if (responseData.statusCode == 200)
+      setState(() {
+        _currentMax = _currentMax + 5;
+        // Display a progress indicator at the bottom
+      });
+
+      try {
+        print('_loadMoregetpost');
+        await Api.getobjectivdoinge(_currentMax).then((responseData) async => ({
+              print('getdoing'),
+              setState(() {
+                pageObjloading = true;
+              }),
+              if (responseData.statusCode == 200)
+                {
+                  jsonResponse = jsonDecode(responseData.body),
+                  print('jsonResponse$jsonResponse'),
+
+                  for (Map i in jsonResponse["data"])
                     {
-                      datagetuserprofile = jsonDecode(responseData.body),
                       setState(() {
-                        // displayName1 =
-                        //     datagetuserprofile["data"]
-                        //         ["displayName"];
-                        // gender = datagetuserprofile["data"]
-                        //     ["gender"];
-                        // firstName = datagetuserprofile["data"]
-                        //     ["firstName"];
-                        // lastName = datagetuserprofile["data"]
-                        //     ["lastName"];
-                        // id = datagetuserprofile["data"]["id"];
-                        // email =
-                        //     datagetuserprofile["data"]["email"];
-                        image = datagetuserprofile["data"]["imageURL"];
+                        // pagename =i['page'][0]['name'];
                       }),
-                      // print('displayName1$displayName1'),
-                      // print('gender$gender'),
-                      // print('firstName$firstName'),
-                      // print('lastName$lastName'),
-                      // print('id$id'),
-                      // print('email$email'),
-                      print('image$image'),
-                    }
-                })),
-            print('userid$userid'),
-          }));
-      Api.getimageURL().then((value) => ({
-            setState(() {
-              userimageUrl = value;
-            }),
-            print('userimageUrl$userimageUrl'),
-          }));
-    });
+
+                      pagedoingobjslist.add(PageObjective.fromJson(i)),
+                      _pagedoingobjController.add(responseData),
+
+                      // var stroycoverImage= i["coverImage"];
+                    },
+                  if (jsonResponse["message"] == "Cannot Search PageObjective")
+                    {
+                      setState(() {
+                        msg = "ไม่มีข้อมูล";
+                      }),
+                    },
+                  // print("Response  :$storytestreplaceAll"),
+                  // print('titalpost$titalpost'),
+                  setState(() {
+                    pageObjloading = false;
+                  }),
+                }
+              else if (responseData.statusCode == 400)
+                {}
+            }));
+      } catch (err) {
+        print('Something went wrong!');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     var hight = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+    Size size = MediaQuery.of(context).size;
 
     return Container(
       color: Colors.white,
@@ -101,7 +234,10 @@ class _DoingSCState extends State<DoingSC> {
         child: Scaffold(
           body: CustomScrollView(
             controller: _trackingScrollController,
-            slivers: [
+            physics: AlwaysScrollableScrollPhysics(),
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            slivers: <Widget>[
               primaryAppBar(
                   context,
                   token,
@@ -118,14 +254,14 @@ class _DoingSCState extends State<DoingSC> {
                   height: 60,
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
-                    child: Text(
+                    child: AutoSizeText(
                       'สิ่งที่ "พรรคก้าวไกล" กำลังทำอยู่',
                       maxLines: 2,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'Anakotmai',
+                          fontFamily: AppTheme.FontAnakotmaiMedium,
                           fontSize: 19),
                     ),
                   ),
@@ -136,211 +272,119 @@ class _DoingSCState extends State<DoingSC> {
                   color: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.all(18.0),
-                    child: Text(
+                    child: AutoSizeText(
                       'สิ่งที่กำลังทำใน 1 เดือนที่ผ่านมา',
                       maxLines: 2,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                           color: MColors.primaryBlue,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'Anakotmai',
+                          fontFamily: AppTheme.FontAnakotmaiMedium,
                           fontSize: 17),
                     ),
                   ),
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Center(
-                  child: Container(
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 19, top: 8),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: width / 2.3,
-                                height: hight / 5.4,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Colors.grey[100],
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(1),
-                                        blurRadius: 0.5,
-                                        spreadRadius: 0.5,
+              SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 1),
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    return FutureBuilder(
+                      future: Future.wait([getpageObj]),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (!snapshot.hasData) {
+                          return CarouselLoading();
+                        }
+                        return GridView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: 4,
+                          scrollDirection: Axis.vertical,
+                          padding: EdgeInsets.all(5),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2),
+                          itemBuilder: (BuildContext context, int index) {
+                            var e = pageobjslist[index];
+
+                            return InkWell(
+                              onTap: ()async{
+                                Navigator.of(context).push(CupertinoPageRoute(
+                                      builder: (BuildContext context) {
+                                    return Webview_EmergencySC(
+                                      url:
+                                          "https://today.moveforwardparty.org/objective/${e.id}",
+                                      texttitle: e.title,
+                                      checkurl: "https://today.moveforwardparty.org/post/",
+                                    );
+                                  }));
+
+                              },
+                              child: Container(
+                                height: MediaQuery.of(context).size.height / 10,
+                                // decoration: BoxDecoration(
+                                //     borderRadius: BorderRadius.circular(8),
+                                //     color: Colors.grey[100],
+                                //     boxShadow: [
+                                //       BoxShadow(
+                                //         color: Colors.grey.withOpacity(1),
+                                //         blurRadius: 0.5,
+                                //         spreadRadius: 0.5,
+                                //       ),
+                                //     ]),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 55.0,
+                                      backgroundImage: NetworkImage(
+                                          'https://today-api.moveforwardparty.org/api${e.iconUrl}/image'),
+                                      backgroundColor: Colors.transparent,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 10, left: 15),
+                                      child: Center(
+                                        child: AutoSizeText(
+                                          e.title,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.clip,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: AppTheme.FontAnakotmaiBold,
+                                              fontSize: 15,
+                                              overflow: TextOverflow.ellipsis),
+                                        ),
                                       ),
-                                    ]),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 15.0),
-                                  child: Column(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 40.0,
-                                        backgroundImage:
-                                            AssetImage('images/morkimage1.png'),
-                                        backgroundColor: Colors.transparent,
-                                      ),
-                                      Text(
-                                        '#WaterBank',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.clip,
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Anakotmai-Bold',
-                                            fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              SizedBox(
-                                width: 12.0,
-                              ),
-                              Container(
-                                width: width / 2.3,
-                                height: hight / 5.4,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Colors.grey[100],
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(1),
-                                        blurRadius: 0.5,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ]),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 15.0),
-                                  child: Column(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 40.0,
-                                        backgroundImage:
-                                            AssetImage('images/morkimage2.png'),
-                                        backgroundColor: Colors.transparent,
-                                      ),
-                                      Text(
-                                        '# WALKTODAY',
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Anakotmai-Bold',
-                                            fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 12.0,
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                width: width / 2.3,
-                                height: hight / 5.4,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Colors.grey[100],
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(1),
-                                        blurRadius: 0.5,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ]),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 15.0),
-                                  child: Column(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 40.0,
-                                        backgroundImage:
-                                            AssetImage('images/morkimage3.png'),
-                                        backgroundColor: Colors.transparent,
-                                      ),
-                                      Text(
-                                        'มอบแรงใจสู้แรงงาน',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.clip,
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Anakotmai-Bold',
-                                            fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 12.0,
-                              ),
-                              Container(
-                                width: width / 2.3,
-                                height: hight / 5.4,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Colors.grey[100],
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(1),
-                                        blurRadius: 0.5,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ]),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 15.0),
-                                  child: Column(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 40.0,
-                                        backgroundImage:
-                                            AssetImage('images/morkimage4.png'),
-                                        backgroundColor: Colors.transparent,
-                                      ),
-                                      Text(
-                                        'ชุดยังชีพ',
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Anakotmai-Bold',
-                                            fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 30.0,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                  childCount: 1,
                 ),
               ),
               SliverToBoxAdapter(
                   child: Divider(
-                color: Colors.transparent,
+                color: Colors.grey[200],
                 height: 10,
-                thickness: 6,
+                thickness: 9,
               )),
               SliverToBoxAdapter(
                 child: Container(
                   color: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 20, left: 20),
-                    child: Text(
+                    child: AutoSizeText(
                       'สิ่งที่ทำที่เคยทำมา',
                       maxLines: 2,
                       textAlign: TextAlign.left,
@@ -348,76 +392,125 @@ class _DoingSCState extends State<DoingSC> {
                           color: MColors.primaryBlue,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Anakotmai',
-                          fontSize: 17),
+                          fontSize: 17,
+                          overflow: TextOverflow.ellipsis
+                          ),
                     ),
                   ),
                 ),
               ),
               SliverToBoxAdapter(
-                child: Container(
-                  color: Colors.white,
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.all(16),
-                        width: width,
-                        height: hight / 7.0,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.grey[50],
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                blurRadius: 0.5,
-                                spreadRadius: 0.5,
-                              ),
-                            ]),
-                        child: Stack(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(top: 16.0, left: 14.0),
-                              child: CircleAvatar(
-                                radius: 36.0,
-                                backgroundImage:
-                                    AssetImage('images/morkimage6.png'),
-                                backgroundColor: Colors.transparent,
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 18.0, left: 110),
+                child: StreamBuilder(
+                  stream: _pagedoingobjController.stream,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    return Builder(builder: (BuildContext context) {
+                      return ListView.builder(
+                        physics: ClampingScrollPhysics(),
+                        shrinkWrap: true,
+                        // padding: const EdgeInsets.all(8.0),
+                        scrollDirection: Axis.vertical,
+                        itemCount: pagedoingobjslist.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var data = pagedoingobjslist[index];
+                          return InkWell(
+                            onTap: (){
+                                Navigator.of(context).push(CupertinoPageRoute(
+                                      builder: (BuildContext context) {
+                                    return Webview_EmergencySC(
+                                      url:
+                                          "https://today.moveforwardparty.org/objective/${data.id}",
+                                      texttitle: data.title,
+                                      checkurl: "https://today.moveforwardparty.org/post/",
+                                    );
+                                  }));
+                            },
+                            child: Container(
+                              color: Colors.white,
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(
-                                    '#พรบจัดสรร',
-                                    maxLines: 2,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Anakotmai-Bold',
-                                        fontSize: 18),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    '#ร่างพระราชบัญญัการจัดสรรที่ดิน\n(ฉบับที่..) พ.ศ. ....',
-                                    maxLines: 2,
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 12,
-                                      fontFamily: 'Anakotmai',
+                                  Container(
+                                    margin: EdgeInsets.all(5),
+                                    width: MediaQuery.of(context).size.width,
+                                    height:
+                                        MediaQuery.of(context).size.height / 7.0,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.grey[50],
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.5),
+                                            blurRadius: 0.5,
+                                            spreadRadius: 0.5,
+                                          ),
+                                        ]),
+                                    child: Stack(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: 16.0, left: 14.0),
+                                          child: CircleAvatar(
+                                              radius: 36.0,
+                                              backgroundImage: NetworkImage(
+                                                  'https://today-api.moveforwardparty.org/api${data.iconUrl}/image')),
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 110),
+                                              child: AutoSizeText(
+                                                data.hashTag,
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: AppTheme
+                                                        .FontAnakotmaiBold,
+                                                    fontSize: 18,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 110),
+                                              child: AutoSizeText(
+                                                data.title,
+                                                maxLines: 2,
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 14,
+                                                  fontFamily: AppTheme
+                                                      .FontAnakotmaiMedium,
+                                                      overflow: TextOverflow.ellipsis
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                            ),
+                          );
+                        },
+                      );
+                    });
+                  },
                 ),
+              ),
+              SliverToBoxAdapter(
+                child: Text(msg),
               ),
               SliverToBoxAdapter(
                   child: Divider(

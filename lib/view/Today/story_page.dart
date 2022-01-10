@@ -165,34 +165,32 @@ class _StroyPageScState extends State<StroyPageSc> {
                   children: [
                     Stack(
                       children: [
-                        imagelist[0].signUrl != null
-                            ? imagelist[0].imageUrl != null
-                                ? Image.network(
-                                    imagelist[0].signUrl,
-                                    errorBuilder: (BuildContext context,
-                                        Object exception,
-                                        StackTrace stackTrace) {
-                                      return Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              3.0,
-                                          child: Image.asset(
-                                              'images/placeholder.jpg'));
-                                    },
-                                    color: Color.fromRGBO(255, 255, 255, 0.7),
-                                    colorBlendMode: BlendMode.dstATop,
-                                    fit: BoxFit.cover,
-                                    width: MediaQuery.of(context).size.width,
-                                    height: MediaQuery.of(context).size.height /
-                                        3.0,
-                                  )
-                                : Container()
-                            : Container(),
-                        imagelist[0].signUrl == null
-                            ? Image.network(
+                      //  imagelist[0].imageUrl != null
+                      //           ? Image.network(
+                      //               imagelist[0].signUrl,
+                      //               errorBuilder: (BuildContext context,
+                      //                   Object exception,
+                      //                   StackTrace stackTrace) {
+                      //                 return Container(
+                      //                     width:
+                      //                         MediaQuery.of(context).size.width,
+                      //                     height: MediaQuery.of(context)
+                      //                             .size
+                      //                             .height /
+                      //                         3.0,
+                      //                     child: Image.asset(
+                      //                         'images/placeholder.jpg'));
+                      //               },
+                      //               color: Color.fromRGBO(255, 255, 255, 0.7),
+                      //               colorBlendMode: BlendMode.dstATop,
+                      //               fit: BoxFit.cover,
+                      //               width: MediaQuery.of(context).size.width,
+                      //               height: MediaQuery.of(context).size.height /
+                      //                   3.0,
+                      //             )
+                      //           : Container(),
+                            
+                        Image.network(
                                 "https://today-api.moveforwardparty.org/api${imagelist[0].imageUrl}/image",
                                 errorBuilder: (BuildContext context,
                                     Object exception, StackTrace stackTrace) {
@@ -210,8 +208,8 @@ class _StroyPageScState extends State<StroyPageSc> {
                                 width: MediaQuery.of(context).size.width,
                                 height:
                                     MediaQuery.of(context).size.height / 3.0,
-                              )
-                            : Container(),
+                              ),
+                          
                         Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height / 3.0,

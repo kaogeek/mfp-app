@@ -133,73 +133,73 @@ class _PostSearchState extends State<PostSearch> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Color(0xffF47932),
-      child: SafeArea(
-        child: Scaffold(
-          // key: _scaffoldKey,
-          appBar: AppBar(
-            backgroundColor: Color(0xffF47932),
-            title: Text('${widget.label}'),
-          ),
-          body: SingleChildScrollView(
-            controller: _scrollController,
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // loading == true ? Text('${widget.label}') : Container(),
-                Obx(() {
-                  if (todayController.isLoading.value)
-                    return CarouselLoading();
-                  else
-                    return ListView.builder(
-                        physics: ClampingScrollPhysics(),
-                        shrinkWrap: true,
-                        // controller: _scrollController,
-                        scrollDirection: Axis.vertical,
-                        itemCount: todayController.serarchpostList.length,
-                        itemBuilder: (
-                          BuildContext context,
-                          int index,
-                        ) {
-                          final nDataList1 =
-                              todayController.serarchpostList[index];
+    return SafeArea(
+      top: false,
+      bottom: false,
+      maintainBottomViewPadding: true,
+      child: Scaffold(
+        // key: _scaffoldKey,
+        appBar: AppBar(
+          backgroundColor: Color(0xffF47932),
+          title: Text('${widget.label}'),
+        ),
+        body: SingleChildScrollView(
+          controller: _scrollController,
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // loading == true ? Text('${widget.label}') : Container(),
+              Obx(() {
+                if (todayController.isLoading.value)
+                  return CarouselLoading();
+                else
+                  return ListView.builder(
+                      physics: ClampingScrollPhysics(),
+                      shrinkWrap: true,
+                      // controller: _scrollController,
+                      scrollDirection: Axis.vertical,
+                      itemCount: todayController.serarchpostList.length,
+                      itemBuilder: (
+                        BuildContext context,
+                        int index,
+                      ) {
+                        final nDataList1 =
+                            todayController.serarchpostList[index];
 
-                          return postlist(
-                            nDataList1.post.title,
-                            nDataList1.post.detail,
-                            nDataList1.page.name ?? "",
-                            nDataList1.post.createdDate,
-                            nDataList1.post.gallery,
-                            nDataList1.post.likeCount,
-                            nDataList1.post.commentCount,
-                            nDataList1.post.shareCount,
-                            nDataList1.post.repostCount,
-                            nDataList1.post.id,
-                            nDataList1.page.id,
-                            nDataList1.page.imageUrl,
-                            nDataList1.page.name,
-                            false,
-                            nDataList1.page.pageUsername,
-                            nDataList1.page.isOfficial,
-                            nDataList1,
-                            nDataList1.post.type,
-                            nDataList1.post.coverImage,
-                            nDataList1.post.story,
-                          );
-                        });
-                }),
-                if (isloadmore == true)
-                  Center(
-                      child: Container(
-                    margin: EdgeInsets.only(bottom: 30),
-                    child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            MColors.primaryColor)),
-                  )),
-              ],
-            ),
+                        return postlist(
+                          nDataList1.post.title,
+                          nDataList1.post.detail,
+                          nDataList1.page.name ?? "",
+                          nDataList1.post.createdDate,
+                          nDataList1.post.gallery,
+                          nDataList1.post.likeCount,
+                          nDataList1.post.commentCount,
+                          nDataList1.post.shareCount,
+                          nDataList1.post.repostCount,
+                          nDataList1.post.id,
+                          nDataList1.page.id,
+                          nDataList1.page.imageUrl,
+                          nDataList1.page.name,
+                          false,
+                          nDataList1.page.pageUsername,
+                          nDataList1.page.isOfficial,
+                          nDataList1,
+                          nDataList1.post.type,
+                          nDataList1.post.coverImage,
+                          nDataList1.post.story,
+                        );
+                      });
+              }),
+              if (isloadmore == true)
+                Center(
+                    child: Container(
+                  margin: EdgeInsets.only(bottom: 30),
+                  child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          MColors.primaryColor)),
+                )),
+            ],
           ),
         ),
       ),

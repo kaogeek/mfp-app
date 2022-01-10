@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,8 +14,8 @@ import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/allWidget/fontsize.dart';
 import 'package:mfp_app/allWidget/sizeconfig.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/model/pagemodel.dart';
 import 'package:mfp_app/model/postlistSSmodel.dart';
-import 'package:mfp_app/model/usermodel.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
@@ -25,6 +24,7 @@ import 'package:mfp_app/view/Profile/profile.dart';
 import 'package:mfp_app/view/Search/Search.dart';
 import 'package:mfp_app/view/Today/post_details.dart';
 import 'package:mfp_app/view/Today/story_page.dart';
+import 'package:mfp_app/view/Today/webview_emergency.dart';
 
 class Profliess extends StatefulWidget {
   final String id;
@@ -52,6 +52,7 @@ class _ProfliessState extends State<Profliess> {
   var dataht;
   ScrollController _scrollController = ScrollController();
   ScrollController _scrolltotopController;
+  final ScrollController _scrollHolController = ScrollController();
 
   int _currentMax = 0;
   bool islike = false;
@@ -75,9 +76,10 @@ class _ProfliessState extends State<Profliess> {
   var pageid = "";
 
   bool _showBackToTopButton = false;
+  StreamController _pageobjController;
 
   bool _hasNextPage = true;
-
+  List<PageObjective> pageobjslist = [];
   @override
   void initState() {
     print('initState');
@@ -97,14 +99,23 @@ class _ProfliessState extends State<Profliess> {
               {
                 datagetuserprofile = jsonDecode(responseData.body),
                 print('datagetuserprofile$datagetuserprofile'),
-                setState(() {
-                  pageid = datagetuserprofile["data"]["id"];
-                  pageUsername = datagetuserprofile["data"]["pageUsername"];
-                  pageprofileimage = datagetuserprofile["data"]["imageURL"];
-                  pagename = datagetuserprofile["data"]["name"];
-                  pagecoverURL = datagetuserprofile["data"]["coverURL"];
-                  pagefollowers = datagetuserprofile["data"]["followers"];
-                }),
+                for (Map i in datagetuserprofile["data"]["pageObjectives"])
+                  {
+                    setState(() {
+                      // pagename =i['page'][0]['name'];
+                      pageid = datagetuserprofile["data"]["id"];
+                      pageUsername = datagetuserprofile["data"]["pageUsername"];
+                      pageprofileimage = datagetuserprofile["data"]["imageURL"];
+                      pagename = datagetuserprofile["data"]["name"];
+                      pagecoverURL = datagetuserprofile["data"]["coverURL"];
+                      pagefollowers = datagetuserprofile["data"]["followers"];
+                    }),
+
+                    pageobjslist.add(PageObjective.fromJson(i)),
+                    // _pageobjController.add(responseData),
+
+                    // var stroycoverImage= i["coverImage"];
+                  },
                 print('pageUsername$pageUsername'),
               }
             else
@@ -343,8 +354,23 @@ class _ProfliessState extends State<Profliess> {
                             children: <Widget>[
                               pagecoverURL == null
                                   ? Container()
-                                  : Image.network(
-                                      "https://today-api.moveforwardparty.org/api$pagecoverURL/image"),
+                                  : CachedNetworkImage(
+                                      width: MediaQuery.of(context).size.width,
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              4,
+                                      imageUrl:
+                                          "https://today-api.moveforwardparty.org/api$pagecoverURL/image",
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Center(
+                                        child: CircularProgressIndicator(
+                                          color: MColors.primaryColor,
+                                        ),
+                                      ),
+                                      // errorWidget: (context, url, error) => errorWidget,
+                                    ),
+                              // Image.network(
+                              //     "https://today-api.moveforwardparty.org/api$pagecoverURL/image"),
                               // FadeInImage.assetNetwork(
                               //   placeholder: 'images/placeholder.png',
                               //   image:
@@ -354,15 +380,32 @@ class _ProfliessState extends State<Profliess> {
                               // ),
                               Positioned(
                                 bottom: -80.0,
-                                child: CircleAvatar(
-                                  radius: 70.0,
-                                  backgroundImage: pageprofileimage == null
-                                      ? NetworkImage(
-                                          'https://via.placeholder.com/150')
-                                      : NetworkImage(
-                                          "https://today-api.moveforwardparty.org/api$pageprofileimage/image"),
-                                  backgroundColor: Colors.transparent,
+                                child: ClipOval(
+                                  child: CachedNetworkImage(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.7,
+                                    height: MediaQuery.of(context).size.height /
+                                        5.5,
+                                    imageUrl:
+                                        "https://today-api.moveforwardparty.org/api$pageprofileimage/image",
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Center(
+                                      child: CircularProgressIndicator(
+                                        color: MColors.primaryColor,
+                                      ),
+                                    ),
+                                    // errorWidget: (context, url, error) => errorWidget,
+                                  ),
                                 ),
+                                // CircleAvatar(
+                                //   radius: 70.0,
+                                //   backgroundImage: pageprofileimage == null
+                                //       ? NetworkImage(
+                                //           'https://via.placeholder.com/150')
+                                //       : NetworkImage(
+                                //           "https://today-api.moveforwardparty.org/api$pageprofileimage/image"),
+                                //   backgroundColor: Colors.transparent,
+                                // ),
                               )
                             ],
                           ),
@@ -539,115 +582,114 @@ class _ProfliessState extends State<Profliess> {
                       height: 5,
                     )),
                     SliverToBoxAdapter(
-                      child: Center(
-                        child: Container(
-                          color: Colors.white,
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 25, right: 25),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width /
-                                          2.4,
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                              5.8,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.withOpacity(1),
-                                              blurRadius: 0.5,
-                                              spreadRadius: 0.5,
+                      child: Builder(builder: (BuildContext context) {
+                        return SizedBox(
+                          height: 200.0,
+                          child: Scrollbar(
+                            isAlwaysShown: true,
+                            controller: _scrollHolController,
+                            child: new ListView.builder(
+                                controller: _scrollHolController,
+                                physics: ClampingScrollPhysics(),
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: pageobjslist.length,
+                                itemBuilder: (
+                                  BuildContext context,
+                                  int index,
+                                ) {
+                                  final pageobj = pageobjslist[index];
+
+                                  return InkWell(
+                                    onTap: (){
+                                       Navigator.of(context).push(CupertinoPageRoute(
+                                      builder: (BuildContext context) {
+                                    return Webview_EmergencySC(
+                                      url:
+                                          "https://today.moveforwardparty.org/objective/${pageobj.id}",
+                                      texttitle: pageobj.title,
+                                      checkurl: "https://today.moveforwardparty.org/objective/",
+                                    );
+                                  }));
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width / 2,
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                3.0,
+                                        // decoration: BoxDecoration(
+                                        //     borderRadius:
+                                        //         BorderRadius.circular(8),
+                                        //     color: Colors.white,
+                                        //     boxShadow: [
+                                        //       BoxShadow(
+                                        //         color: Colors.grey.withOpacity(1),
+                                        //         blurRadius: 0.5,
+                                        //         spreadRadius: 0.5,
+                                        //       ),
+                                        //     ]),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.only(top: 11),
+                                              child: ClipOval(
+                                                child: CachedNetworkImage(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      3,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      6,
+                                                  imageUrl:
+                                                      'https://today-api.moveforwardparty.org/api${pageobj.iconUrl}/image',
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (context, url) =>
+                                                      Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      color: MColors.primaryColor,
+                                                    ),
+                                                  ),
+                                                  // errorWidget: (context, url, error) => errorWidget,
+                                                ),
+                                              ),
+                                              // CircleAvatar(
+                                              //   radius: 60.0,
+                                              //   backgroundImage: NetworkImage(
+                                              //      'https://today-api.moveforwardparty.org/api${pageobj.iconUrl}/image'),
+                                              //   backgroundColor:
+                                              //       Colors.transparent,
+                                              // ),
                                             ),
-                                          ]),
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 11),
-                                            child: CircleAvatar(
-                                              radius: 40.0,
-                                              backgroundImage: AssetImage(
-                                                  'images/morkimage6.png'),
-                                              backgroundColor:
-                                                  Colors.transparent,
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.only(top: 10),
+                                              child: Text(
+                                                pageobj.title,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Anakotmai-Bold',
+                                                    fontSize: 16),
+                                              ),
                                             ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 10),
-                                            child: Text(
-                                              '#น้ำท่วม',
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: 'Anakotmai-Bold',
-                                                  fontSize: 14),
-                                            ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width /
-                                          2.4,
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                              5.8,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.withOpacity(1),
-                                              blurRadius: 0.5,
-                                              spreadRadius: 0.5,
-                                            ),
-                                          ]),
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 11),
-                                            child: CircleAvatar(
-                                              radius: 40.0,
-                                              backgroundImage: AssetImage(
-                                                  'images/morkimage4.png'),
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                            ),
-                                          ),
-                                          Text(
-                                            '# WALKTODAY',
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily: 'Anakotmai-Bold',
-                                                fontSize: 14),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                                  );
+                                }),
                           ),
-                        ),
-                      ),
+                        );
+                      }),
                     ),
                     SliverToBoxAdapter(
                         child: const SizedBox(
@@ -985,7 +1027,7 @@ class _ProfliessState extends State<Profliess> {
                     children: [
                       fixtextauthor(),
                       authorpost(postbyname, context, dateTime, pageid, "",
-                          "fasle", false, "false", false, "", true),
+                          "fasle", false, "false", false, "", false),
                       texttimetimestamp(dateTime),
                     ],
                   ),

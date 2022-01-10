@@ -94,6 +94,7 @@ class AppTheme {
     fontSize: SmallTextSize,
     fontWeight: FontWeight.bold,
     color: MColors.primaryBlue,
+    overflow: TextOverflow.ellipsis,
   );
 
   static const TextStyle body2 = TextStyle(

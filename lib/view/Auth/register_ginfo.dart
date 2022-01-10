@@ -90,6 +90,7 @@ class _GeneralinformationState extends State<Generalinformation> {
   bool _isButtonDisabled = true;
 
   var mybody1;
+      final f = new DateFormat('yyyy-MM-dd');
 
   bool isregisterfb = false;
   void _validateInputs() {
@@ -134,7 +135,7 @@ class _GeneralinformationState extends State<Generalinformation> {
     String firstName,
     String lastName,
     String uniqueId,
-    DateTime birthdate,
+    var birthdate,
     int gender,
     String customGender,
   ) async {
@@ -150,7 +151,8 @@ class _GeneralinformationState extends State<Generalinformation> {
         "content-type": "application/json",
       };
 
-      Map data = {
+Map data;
+    _birthday.text!=""?   data = {
         "username": username,
         "displayName": displayName,
         "firstName": firstName,
@@ -158,7 +160,18 @@ class _GeneralinformationState extends State<Generalinformation> {
         "email": email,
         "password": password,
         "uniqueId": uniqueId,
-        "birthdate": birthdate.toIso8601String(),
+        "birthdate":birthdate,
+        "gender": gender,
+        "customGender": customGender,
+        "asset": {},
+      }:data = {
+        "username": username,
+        "displayName": displayName,
+        "firstName": firstName,
+        "lastName": lastName,
+        "email": email,
+        "password": password,
+        "uniqueId": uniqueId,
         "gender": gender,
         "customGender": customGender,
         "asset": {},
@@ -205,6 +218,7 @@ class _GeneralinformationState extends State<Generalinformation> {
         }
       }
       print('msg$msg');
+         print('msg$birthdate');
 
       return responsepostRequest;
     } catch (e) {
@@ -580,7 +594,6 @@ class _GeneralinformationState extends State<Generalinformation> {
     );
     //--------------------Birthday ----------------------//
     Widget _txtBirthday() {
-      final f = new DateFormat('yyyy-MM-dd');
       return TextFormField(
         controller: _birthday,
         readOnly: true,
@@ -590,8 +603,8 @@ class _GeneralinformationState extends State<Generalinformation> {
               onTap: () {
                 DatePicker.showDatePicker(context,
                     showTitleActions: true,
-                    minTime: DateTime(2133, 3, 5),
-                    maxTime: DateTime(2564, 6, 7),
+                    // minTime: DateTime(2133, 3, 5),
+                    // maxTime: DateTime.now(),
                     theme: DatePickerTheme(
                       headerColor: Colors.white,
                       backgroundColor: Colors.white,
@@ -615,7 +628,10 @@ class _GeneralinformationState extends State<Generalinformation> {
                   _birthday.text = f.format(date).toString();
 
                   print('confirm $date');
-                }, currentTime: DateTime.now(), locale: LocaleType.th);
+                }, 
+                currentTime: DateTime.now(), 
+                locale: LocaleType.th,
+                );
               },
               child: Icon(
                 Icons.calendar_today,
@@ -627,12 +643,6 @@ class _GeneralinformationState extends State<Generalinformation> {
         ),
         keyboardType: TextInputType.text,
         autocorrect: false,
-        validator: (value) {
-          if (value.isEmpty) {
-            return 'กรุณาใส่วันเกิด';
-          }
-          return null;
-        },
       );
     }
 
@@ -841,7 +851,7 @@ class _GeneralinformationState extends State<Generalinformation> {
                             items: _genderType
                                 .map((value) => DropdownMenuItem(
                                       child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
+                                        padding: const EdgeInsets.only(left: 20.0),
                                         child: Text(
                                           value,
                                           style: TextStyle(color: Colors.black),
@@ -998,6 +1008,7 @@ class _GeneralinformationState extends State<Generalinformation> {
                                                   );
                                                 }
                                                 if (widget.mode == "EMAIL") {
+                                                if( _birthday.text!=""){  
                                                   await Register(
                                                     _email.text,
                                                     widget.password,
@@ -1006,13 +1017,30 @@ class _GeneralinformationState extends State<Generalinformation> {
                                                     _firstname.text,
                                                     _lastname.text,
                                                     _uniqueid.text,
-                                                    DateTime.parse(
-                                                        _birthday.text),
+                                                    f.format(DateTime.tryParse(
+                                                        _birthday.text)),
                                                     gendertypeint,
                                                     gendertypeint == 3
                                                         ? _customGender.text
                                                         : "",
                                                   );
+                                                }else{
+                                                    await Register(
+                                                    _email.text,
+                                                    widget.password,
+                                                    _name.text,
+                                                    _email.text,
+                                                    _firstname.text,
+                                                    _lastname.text,
+                                                    _uniqueid.text,
+                                                 null,
+                                                    gendertypeint,
+                                                    gendertypeint == 3
+                                                        ? _customGender.text
+                                                        : "",
+                                                  );
+
+                                                }
                                                 }
                                                 print('isregister$isregister');
                                                 print(
