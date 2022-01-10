@@ -5,10 +5,33 @@
 
 import 'dart:convert';
 
-PostSearchModel welcomeFromJson(String str) => PostSearchModel.fromJson(json.decode(str));
+Postslist welcomeFromJson(String str) => Postslist.fromJson(json.decode(str));
 
-String welcomeToJson(PostSearchModel data) => json.encode(data.toJson());
+String welcomeToJson(Postslist data) => json.encode(data.toJson());
 
+class Postslist {
+    Postslist({
+        this.status,
+        this.message,
+        this.data,
+    });
+
+    int status;
+    String message;
+    List<PostSearchModel> data;
+
+    factory Postslist.fromJson(Map<String, dynamic> json) => Postslist(
+        status: json["status"],
+        message: json["message"],
+        data: List<PostSearchModel>.from(json["data"].map((x) => PostSearchModel.fromJson(x))),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "status": status,
+        "message": message,
+        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+    };
+}
 
 
 
@@ -187,7 +210,7 @@ class Post {
     String referencePost;
     String rootReferencePost;
     DateTime updateDate;
-    List<Gallery> gallery;
+    List<GalleryPostSearchModel> gallery;
     List<dynamic> needs;
     List<dynamic> fulfillment;
     List<HashTag> hashTags;
@@ -220,13 +243,13 @@ class Post {
         referencePost: json["referencePost"] == null ? null : json["referencePost"],
         rootReferencePost: json["rootReferencePost"] == null ? null : json["rootReferencePost"],
         updateDate: DateTime.parse(json["updateDate"]),
-        gallery: List<Gallery>.from(json["gallery"].map((x) => Gallery.fromJson(x))),
+        gallery: List<GalleryPostSearchModel>.from(json["gallery"].map((x) => GalleryPostSearchModel.fromJson(x))),
         needs: List<dynamic>.from(json["needs"].map((x) => x)),
         fulfillment: List<dynamic>.from(json["fulfillment"].map((x) => x)),
         hashTags: List<HashTag>.from(json["hashTags"].map((x) => HashTag.fromJson(x))),
         coverImageSignUrl: json["coverImageSignURL"],
         userTags: json["userTags"] == null ? null : List<dynamic>.from(json["userTags"].map((x) => x)),
-        story: json["story"] == null ? null : Story.fromJson(json["story"]),
+           story: json["story"] == null ? null : Story.fromJson(json["story"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -264,8 +287,8 @@ class Post {
     };
 }
 
-class Gallery {
-    Gallery({
+class GalleryPostSearchModel {
+    GalleryPostSearchModel({
         this.id,
         this.post,
         this.fileId,
@@ -281,7 +304,7 @@ class Gallery {
     int ordering;
     String signUrl;
 
-    factory Gallery.fromJson(Map<String, dynamic> json) => Gallery(
+    factory GalleryPostSearchModel.fromJson(Map<String, dynamic> json) => GalleryPostSearchModel(
         id: json["_id"],
         post: json["post"],
         fileId: json["fileId"],
@@ -317,26 +340,12 @@ class HashTag {
 }
 
 class Story {
-    Story({
-        this.story,
-        this.storyAry,
-        this.coverImage,
-    });
-
-    String story;
-    List<StoryAry> storyAry;
-    String coverImage;
+    Story();
 
     factory Story.fromJson(Map<String, dynamic> json) => Story(
-        story: json["story"],
-        storyAry: List<StoryAry>.from(json["storyAry"].map((x) => StoryAry.fromJson(x))),
-        coverImage: json["coverImage"],
     );
 
     Map<String, dynamic> toJson() => {
-        "story": story,
-        "storyAry": List<dynamic>.from(storyAry.map((x) => x.toJson())),
-        "coverImage": coverImage,
     };
 }
 

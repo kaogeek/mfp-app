@@ -1,15 +1,9 @@
-// To parse this JSON data, do
-//
-//     final test = testFromJson(jsonString);
 
 import 'dart:convert';
 
-// Test testFromJson(String str) => Test.fromJson(json.decode(str));
-
-// String testToJson(Test data) => json.encode(data.toJson());
-List<Test> modelUserFromJson(String str) =>
+List<Test> testFromJson(String str) =>
     List<Test>.from(json.decode(str).map((x) => Test.fromJson(x)));
-String modelUserToJson(List<Test> data) =>
+String testToJson(List<Test> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Test {

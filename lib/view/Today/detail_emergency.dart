@@ -11,8 +11,8 @@ import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/EmergencyEventModel.dart';
 import 'package:mfp_app/model/searchpostlistModel.dart';
-import 'package:mfp_app/view/Profile/Profile.dart';
-import 'package:mfp_app/view/Search/Search.dart';
+import 'package:mfp_app/view/Profile/profile.dart';
+import 'package:mfp_app/view/Search/search.dart';
 
 class DTEmergenSc extends StatefulWidget {
   final String hashtagstitle;
@@ -25,7 +25,8 @@ class DTEmergenSc extends StatefulWidget {
     this.hashtagstitle,
     this.emergencyEventId,
     this.userimage,
-    this.token, this.userid,
+    this.token,
+    this.userid,
   }) : super(key: key);
 
   @override
@@ -40,7 +41,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
   List<EmergencyEvent> listeEmergency = [];
   List<EmergencyEventModel> listeEmergencyEventModel = [];
 
-  StreamController _postsController;
   var dataht,
       datapostlist,
       myuid,
@@ -54,6 +54,12 @@ class _DTemergenScState extends State<DTEmergenSc> {
       newicon;
   Future getDataList;
   bool isLoading = false;
+
+  var image;
+
+  var datagetuserprofile;
+
+  var userid;
 
   @override
   void initState() {
@@ -90,8 +96,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                       for (Map i in datapostlist["data"]["needItems"])
                         {
                           listeNeedModel.add(NeedItem.fromJson(i)),
-                          // _postsController.add(i),
-                          // newicon=i['standardItem']['imageURL'],
                         },
 
                       setState(() {
@@ -99,13 +103,39 @@ class _DTemergenScState extends State<DTEmergenSc> {
                       }),
                     }
                 });
+
+        Api.getmyuid().then((value) => ({
+              setState(() {
+                userid = value;
+              }),
+              Api.getuserprofile("$userid").then((responseData) async => ({
+                    if (responseData.statusCode == 200)
+                      {
+                        datagetuserprofile = jsonDecode(responseData.body),
+                        setState(() {
+                          // displayName1 =
+                          //     datagetuserprofile["data"]
+                          //         ["displayName"];
+                          // gender = datagetuserprofile["data"]
+                          //     ["gender"];
+                          // firstName = datagetuserprofile["data"]
+                          //     ["firstName"];
+                          // lastName = datagetuserprofile["data"]
+                          //     ["lastName"];
+                          // id = datagetuserprofile["data"]["id"];
+                          // email =
+                          //     datagetuserprofile["data"]["email"];
+                          image = datagetuserprofile["data"]["imageURL"];
+                        }),
+                        print('image$image'),
+                      }
+                  })),
+              print('userid$userid'),
+            }));
       } finally {
         // TODO
       }
     });
-
-    _postsController = new StreamController();
-
     super.initState();
   }
 
@@ -125,13 +155,16 @@ class _DTemergenScState extends State<DTEmergenSc> {
           body: CustomScrollView(
             controller: _trackingScrollController,
             slivers: [
-              primaryAppBar(context, widget.token, "", widget.userimage,Search(
-              userid: widget.userid,
-            ),true,
-                    ProfileSc(
-                      userid:  widget.userid,
-                      token:   widget.token,
-                    )),
+              primaryAppBar(
+                  context,
+                  widget.token,
+                  "",
+                  image,
+                  Search(),
+                  ProfileSc(
+                    userid: widget.userid,
+                    token: widget.token,
+                  )),
               AppBardetail(
                 context,
                 "เหตุการณ์ด่วน ${widget.hashtagstitle}",
@@ -158,7 +191,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                         return ListView.builder(
                             physics: ClampingScrollPhysics(),
                             shrinkWrap: true,
-                            // padding: const EdgeInsets.all(8.0),
                             scrollDirection: Axis.vertical,
                             itemCount: listeEmergency.length,
                             itemBuilder: (
@@ -167,7 +199,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                             ) {
                               final nDataList1 = listeEmergency[index];
                               print(listeEmergency.length);
-                              // print(nDataList1.hashTagName);
                               return PostList(
                                 nDataList1.hashTagName,
                                 nDataList1.coverPageUrl,
@@ -205,9 +236,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                               child: Container(
                                 color: Colors.white,
                                 width: 170,
-
-                                // height: MediaQuery.of(context).size.height / 2.0,
-                                // alignment: Alignment.center,
                                 child: Column(
                                   children: [
                                     Padding(
@@ -225,29 +253,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                                                     const CupertinoActivityIndicator()),
                                       ),
                                     ),
-
-                                    // Image.network("https://today-api.moveforwardparty.org/api/file/6034a808e1e737658b221294/image"),
-                                    // e.standardItem.imageUrl != null
-                                    //     ? new Image.network("https://today.moveforwardparty.org/assets/img/customize_item.svg")
-                                    //     // CachedNetworkImage(
-                                    //     //     imageUrl:
-                                    //     //         "https://today-api.moveforwardparty.org/api/file/6034a808e1e737658b221294/image",
-                                    //     //     placeholder: (context, url) =>
-                                    //     //         new CupertinoActivityIndicator(),
-                                    //     //     errorWidget: (context, url,
-                                    //     //             error) =>
-                                    //     //         Container(
-                                    //     //             decoration: BoxDecoration(
-                                    //     //               borderRadius:
-                                    //     //                   BorderRadius.all(
-                                    //     //                       Radius.circular(
-                                    //     //                           8)),
-                                    //     //             ),
-                                    //     //             child: new Image.asset(
-                                    //     //                 'images/placeholder.png')),
-                                    //     //   )
-                                    //     : new Image.network(
-                                    //         'https://today.moveforwardparty.org/assets/img/customize_item.svg'),
                                     Container(
                                       alignment: Alignment.topRight,
                                       child: Text(
@@ -262,7 +267,7 @@ class _DTemergenScState extends State<DTEmergenSc> {
                                       children: [
                                         Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 5),
+                                              const EdgeInsets.only(left: 25),
                                           child: Text(
                                             '${e.name == null ? "" : e.name}',
                                             overflow: TextOverflow.ellipsis,
@@ -301,14 +306,11 @@ class _DTemergenScState extends State<DTEmergenSc> {
                                                       MaterialStateProperty.all<
                                                           Color>(Colors.green),
                                                 ),
-                                                child: Text(
-                                                  'เติมเต็ม',
-                                                  style: TextStyle(
-                                                      fontSize: 13.0,
-                                                      color:
-                                                          MColors.primaryWhite),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: MColors.primaryWhite,
                                                 ),
-                                                onPressed: () {},
+                                                onPressed: null,
                                               ),
                                             ),
                                           )
@@ -398,13 +400,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
     String hashTagName,
     String coverImage,
     String title,
-    // String followedCount,
-    // String subtitle,
-    // // List<Gallery> gallery,
-    // int likeCount,
-    // int commentCount,
-    // int shareCount,
-    // String postid,
   ) {
     return InkWell(
       child: Container(
@@ -422,10 +417,6 @@ class _DTemergenScState extends State<DTEmergenSc> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
-                // child: new Image.network(
-                //  "https://today-api.moveforwardparty.org/api$coverImage/image",
-                //   filterQuality: FilterQuality.low,
-                // ),
               ),
             ),
             Column(

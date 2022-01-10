@@ -1,30 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mfp_app/utils/app_theme.dart';
-import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
 import 'package:mfp_app/view/splash_page.dart';
 
+void main()async {
 
-void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(MyApp());
+  });
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      builder: ()=> MaterialApp(
+      builder: () => MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        themeMode: ThemeMode.light, // Change it as you want
+        title: 'MFP Today',
         theme: ThemeData(
-          textTheme: AppTheme.textTheme,
-    
-      
-        
-          visualDensity: VisualDensity.adaptivePlatformDensity,
+        textTheme: AppTheme.textTheme,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        primaryColor: Colors.white,
+        primaryColorBrightness: Brightness.light,
+        brightness: Brightness.light,
+        primaryColorDark: Colors.black,
+        canvasColor: Colors.white,
         ),
+         darkTheme: ThemeData(
+        primaryColor: Colors.black,
+        primaryColorBrightness: Brightness.dark,
+        primaryColorLight: Colors.black,
+        brightness: Brightness.dark,
+        primaryColorDark: Colors.black,      
+        indicatorColor: Colors.white,
+        canvasColor: Colors.black,
+        // next line is important!
+        appBarTheme: AppBarTheme(brightness: Brightness.dark)),
         home: SplashPage(),
       ),
-      designSize: const Size(360,640),
+      designSize: const Size(360, 640),
     );
   }
 }
