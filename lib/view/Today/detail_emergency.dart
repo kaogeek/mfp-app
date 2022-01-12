@@ -72,10 +72,10 @@ class _DTemergenScState extends State<DTEmergenSc> {
                       // setState(() {
                       //   isLoading = true;
                       // }),
-                      print(value.body),
+                      //(value.body),
                       setState(() {
                         datapostlist = jsonDecode(value.body);
-                        // print(datapostlist["data"]["followedCount"]);
+                        // //(datapostlist["data"]["followedCount"]);
                         // name =
                         //     datapostlist["data"]["emergencyEvent"]["hashTagName"];
                         // coverPageUrl = datapostlist["data"]["emergencyEvent"]
@@ -127,10 +127,10 @@ class _DTemergenScState extends State<DTEmergenSc> {
                           //     datagetuserprofile["data"]["email"];
                           image = datagetuserprofile["data"]["imageURL"];
                         }),
-                        print('image$image'),
+                        //('image$image'),
                       }
                   })),
-              print('userid$userid'),
+              //('userid$userid'),
             }));
       } finally {
         // TODO
@@ -198,7 +198,7 @@ class _DTemergenScState extends State<DTEmergenSc> {
                               int index,
                             ) {
                               final nDataList1 = listeEmergency[index];
-                              print(listeEmergency.length);
+                              //print(listeEmergency.length);
                               return PostList(
                                 nDataList1.hashTagName,
                                 nDataList1.coverPageUrl,
@@ -465,8 +465,8 @@ class _DTemergenScState extends State<DTEmergenSc> {
                           int index,
                         ) {
                           final nDataList1 = listeEmergencyEventModel[index];
-                          print(listeEmergencyEventModel.length);
-                          // print(nDataList1.hashTagName);
+                          //(listeEmergencyEventModel.length);
+                          // //(nDataList1.hashTagName);
                           return Padding(
                             padding: const EdgeInsets.only(left: 45, right: 45),
                             child: Row(

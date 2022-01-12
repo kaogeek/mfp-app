@@ -53,22 +53,22 @@ class _ProfileScState extends State<ProfileSc> {
     // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero, () async {
-      print('Futuredelayed');
+      //print('Futuredelayed');
       //--token
       token = await Api.gettoke();
-      print('tokenhome$token');
+      //('tokenhome$token');
       //--mode
       mode = await Api.getmodelogin();
-      print('mode$mode');
+      //('mode$mode');
       //--userid
       userid = await Api.getmyuid();
-      print('userid$userid');
-      print('''
-         Logged in! 
-         userid: $userid
-        token: $token
-         mode: $mode
-         ''');
+      //('userid$userid');
+      //('''
+        //  Logged in! 
+        //  userid: $userid
+        // token: $token
+        //  mode: $mode
+        //  ''');
       await Api.getuserprofile("${widget.userid}").then((responseData) => ({
             if (responseData.statusCode == 200)
               {
@@ -82,13 +82,13 @@ class _ProfileScState extends State<ProfileSc> {
                   email = datagetuserprofile["data"]["email"];
                   image = datagetuserprofile["data"]["imageURL"];
                 }),
-                print('displayName1$displayName1'),
-                print('gender$gender'),
-                print('firstName$firstName'),
-                print('lastName$lastName'),
-                print('id$id'),
-                print('email$email'),
-                print('${datagetuserprofile["data"]["username"]}'),
+                //('displayName1$displayName1'),
+                //('gender$gender'),
+                //('firstName$firstName'),
+                //('lastName$lastName'),
+                //('id$id'),
+                //('email$email'),
+                //('${datagetuserprofile["data"]["username"]}'),
               }
           }));
     });

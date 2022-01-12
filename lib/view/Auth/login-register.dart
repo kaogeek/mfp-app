@@ -41,7 +41,7 @@ class _LoginregisterState extends State<Loginregister>
                       ),
                       onPressed: () {
                         Navigator.pop(context);
-                        print('กด');
+                        //('กด');
                       },
                     ),
                   ],
@@ -107,8 +107,8 @@ class _LoginregisterState extends State<Loginregister>
                   context,
                   MaterialPageRoute(builder: (context) => widget),
                 );
-                print("กด");
-                print("กด");
+                //print("กด");
+                //("กด");
               },
             ),
           )

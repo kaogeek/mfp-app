@@ -61,19 +61,19 @@ class _DoingSCState extends State<DoingSC> {
           setState(() {
             token = value;
           }),
-          print('token$token'),
+          // print('token$token'),
         }));
     //--
     Api.getmyuid().then((value) => ({
           setState(() {
             userid = value;
           }),
-          print('userid$userid'),
+          // print('userid$userid'),
         }));
     _trackingScrollController.addListener(_loadMore);
 
     Future.delayed(Duration.zero, () async {
-      print('delayedgetpost');
+      // print('delayedgetpost');
 
       //--
       await Api.getuserprofile("$userid").then((responseData) async => ({
@@ -83,7 +83,7 @@ class _DoingSCState extends State<DoingSC> {
                 setState(() {
                   image = datagetuserprofile["data"]["imageURL"];
                 }),
-                print('image$image'),
+                // print('image$image'),
               }
           }));
       //--\
@@ -91,20 +91,20 @@ class _DoingSCState extends State<DoingSC> {
             setState(() {
               userimageUrl = value;
             }),
-            print('userimageUrl$userimageUrl'),
+            // print('userimageUrl$userimageUrl'),
           }));
       //--
     });
     getpageObj = Api.getdoing(Jiffy(currentDate).subtract(months: 1))
         .then((responseData) async => ({
-              print('getdoing'),
+              // print('getdoing'),
               setState(() {
                 pageObjloading = true;
               }),
               if (responseData.statusCode == 200)
                 {
                   jsonResponse = jsonDecode(responseData.body),
-                  print('jsonResponse$jsonResponse'),
+                  // print('jsonResponse$jsonResponse'),
                   for (Map i in jsonResponse["data"])
                     {
                       setState(() {
@@ -126,14 +126,14 @@ class _DoingSCState extends State<DoingSC> {
                 {}
             }));
     Api.getobjectivdoinge(0).then((responseData) async => ({
-          print('getdoing'),
+          // print('getdoing'),
           setState(() {
             pageObjloading = true;
           }),
           if (responseData.statusCode == 200)
             {
               jsonResponse = jsonDecode(responseData.body),
-              print('jsonResponse$jsonResponse'),
+              // print('jsonResponse$jsonResponse'),
               for (Map i in jsonResponse["data"])
                 {
                   setState(() {
@@ -156,7 +156,7 @@ class _DoingSCState extends State<DoingSC> {
         }));
     _pagedoingobjController = new StreamController();
     _pageobjController = new StreamController();
-    print('initState');
+    // print('initState');
     super.initState();
   }
 
@@ -167,11 +167,11 @@ class _DoingSCState extends State<DoingSC> {
   }
 
   void _loadMore() async {
-    print('_loadMore');
+    // print('_loadMore');
     if (_trackingScrollController.offset >=
             _trackingScrollController.position.maxScrollExtent &&
         !_trackingScrollController.position.outOfRange) {
-      print('AT end');
+      // print('AT end');
 
       setState(() {
         _currentMax = _currentMax + 5;
@@ -179,16 +179,16 @@ class _DoingSCState extends State<DoingSC> {
       });
 
       try {
-        print('_loadMoregetpost');
+        // print('_loadMoregetpost');
         await Api.getobjectivdoinge(_currentMax).then((responseData) async => ({
-              print('getdoing'),
+              // print('getdoing'),
               setState(() {
                 pageObjloading = true;
               }),
               if (responseData.statusCode == 200)
                 {
                   jsonResponse = jsonDecode(responseData.body),
-                  print('jsonResponse$jsonResponse'),
+                  // print('jsonResponse$jsonResponse'),
 
                   for (Map i in jsonResponse["data"])
                     {
@@ -217,7 +217,7 @@ class _DoingSCState extends State<DoingSC> {
                 {}
             }));
       } catch (err) {
-        print('Something went wrong!');
+        // print('Something went wrong!');
       }
     }
   }

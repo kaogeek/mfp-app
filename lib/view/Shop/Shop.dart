@@ -42,12 +42,12 @@ class _ShopSCState extends State<ShopSC> {
 
   @override
   void initState() {
-    print('initState');
+    //print('initState');
     super.initState();
     setState(() {
       Api.gettoke().then((value) => value({
             token = value,
-            print('token$token'),
+            //('token$token'),
           }));
 
       Api.getmyuid().then((value) => ({
@@ -73,16 +73,16 @@ class _ShopSCState extends State<ShopSC> {
                         //     datagetuserprofile["data"]["email"];
                         image = datagetuserprofile["data"]["imageURL"];
                       }),
-                      print('image$image'),
+                      //('image$image'),
                     }
                 })),
-            print('userid$userid'),
+            //('userid$userid'),
           }));
       Api.getimageURL().then((value) => ({
             setState(() {
               userimageUrl = value;
             }),
-            print('userimageUrl$userimageUrl'),
+            //('userimageUrl$userimageUrl'),
           }));
     });
   }
@@ -531,7 +531,7 @@ class _ShopSCState extends State<ShopSC> {
                     onPressed: () async {
                       HapticFeedback.lightImpact();
 
-                      print('กด');
+                      //('กด');
                       if (Platform.isAndroid) {
                         String uri = 'https://line.me/R/ti/p/@mfpshop';
                         if (await canLaunch(uri)) {

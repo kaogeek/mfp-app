@@ -93,22 +93,22 @@ class _TodayScState extends State<TodaySc> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      print('Futuredelayed');
+      // print('Futuredelayed');
       //--token
       token = await Api.gettoke();
-      print('tokenhome$token');
+      // print('tokenhome$token');
       //--mode
       mode = await Api.getmodelogin();
-      print('mode$mode');
+      // print('mode$mode');
       //--userid
       userid = await Api.getmyuid();
-      print('userid$userid');
-      print('''
-         Logged in! 
-         userid: $userid
-        token: $token
-         mode: $mode
-         ''');
+      // print('userid$userid');
+      // print('''
+      //    Logged in! 
+      //    userid: $userid
+      //   token: $token
+      //    mode: $mode
+      //    ''');
     });
     checkInternetConnectivity().then((value) async {
       value == true
@@ -155,7 +155,7 @@ class _TodayScState extends State<TodaySc> {
                     }));
 
                 Future.delayed(Duration.zero, () async {
-                  print('delayedgetpost');
+                  // print('delayedgetpost');
                   todayController.postList.clear();
                   todayController.recompageList.clear();
                   emergencyController.emergencyevList.clear();
@@ -230,7 +230,7 @@ class _TodayScState extends State<TodaySc> {
   }
 
   Future<Null> _handleRefresh() async {
-    print('_handleRefresh');
+    // print('_handleRefresh');
     setState(() {
       emergencyController.emergencyevList.clear();
       todayController.postList.clear();
@@ -244,11 +244,11 @@ class _TodayScState extends State<TodaySc> {
   }
 
   void _loadMore() async {
-    print('_loadMore');
+    // print('_loadMore');
     if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
-      print('AT end');
+      // print('AT end');
 
       setState(() {
         _currentMax = _currentMax + 5;
@@ -259,10 +259,10 @@ class _TodayScState extends State<TodaySc> {
       });
 
       try {
-        print('_loadMoregetpost');
+        // print('_loadMoregetpost');
         await todayController.getpost(_currentMax);
       } catch (err) {
-        print('Something went wrong!');
+        // print('Something went wrong!');
       }
     }
   }
@@ -714,7 +714,7 @@ class _TodayScState extends State<TodaySc> {
                               ),
                               width: 10.0,
                               label: '$shareCount แชร์',
-                              onTap: () => print('Share'),
+                              onTap: () => {},
                             ),
                           ],
                         ),

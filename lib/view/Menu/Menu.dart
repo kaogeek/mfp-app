@@ -35,12 +35,12 @@ class _MenuSCState extends State<MenuSC> {
 
   @override
   void initState() {
-    print('initState');
+    //('initState');
     super.initState();
     setState(() {
       Api.gettoke().then((value) => value({
             token = value,
-            print('token$token'),
+            //('token$token'),
           }));
 
       Api.getmyuid().then((value) => ({
@@ -66,16 +66,16 @@ class _MenuSCState extends State<MenuSC> {
                         //     datagetuserprofile["data"]["email"];
                         image = datagetuserprofile["data"]["imageURL"];
                       }),
-                      print('image$image'),
+                      ////('image$image'),
                     }
                 })),
-            print('userid$userid'),
+            //print('userid$userid'),
           }));
       Api.getimageURL().then((value) => ({
             setState(() {
               userimageUrl = value;
             }),
-            print('userimageUrl$userimageUrl'),
+            //('userimageUrl$userimageUrl'),
           }));
     });
   }

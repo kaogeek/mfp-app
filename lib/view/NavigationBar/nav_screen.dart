@@ -135,12 +135,12 @@ class _NavScreenState extends State<NavScreen> {
             CircleButton(
               icon: Icons.search,
               iconSize: 30.0,
-              onPressed: () => print('search'),
+              onPressed: () => {},
             ),
             CircleButton(
               icon: MdiIcons.bellOutline,
               iconSize: 30.0,
-              onPressed: () => print('Messenger'),
+              onPressed: () => {},
             ),
             Padding(
               padding: const EdgeInsets.all(5.0),

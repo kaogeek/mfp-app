@@ -50,7 +50,7 @@ class _PicProfileState extends State<PicProfile> {
   }
 
   Future getImage() async {
-    print("getImage");
+    //("getImage");
     PickedFile image = await ImagePicker().getImage(
       source: ImageSource.gallery,
       maxWidth: 1800,
@@ -62,7 +62,7 @@ class _PicProfileState extends State<PicProfile> {
       });
       final bytes = File(image.path).readAsBytesSync();
       img64 = base64Encode(bytes);
-      print('img64$img64');
+      //('img64$img64');
       // iserror = true;
     }
   }
@@ -106,8 +106,8 @@ class _PicProfileState extends State<PicProfile> {
 
   @override
   Widget build(BuildContext context) {
-    print('email${widget.email}');
-    print('password${widget.password}');
+    //('email${widget.email}');
+    //print('password${widget.password}');
 
     return Scaffold(
         body: SingleChildScrollView(
@@ -136,7 +136,7 @@ class _PicProfileState extends State<PicProfile> {
                       ),
                       onPressed: () {
                         Navigator.pop(context);
-                        print('กด');
+                        //('กด');
                       },
                     ),
                     Spacer(),
@@ -223,7 +223,7 @@ class _PicProfileState extends State<PicProfile> {
                           //   context,
                           //   MaterialPageRoute(builder: (context) => Upprofile()),
                           // );
-                          print('กด');
+                          //('กด');
                         },
                       ),
                     )
@@ -257,7 +257,7 @@ class _PicProfileState extends State<PicProfile> {
                           //   context,
                           //   MaterialPageRoute(builder: (context) => Upprofile()),
                           // );
-                          print('กด');
+                          //('กด');
                         },
                       ),
                     )
@@ -313,11 +313,12 @@ class _PicProfileState extends State<PicProfile> {
                                         img64: img64,
                                         fileimg: _image,
                                         mode: "EMAIL",
+                                        isfb: true,
                                       )),
                             );
                           }
 
-                          print('กด');
+                          //('กด');
                         },
                       ),
                     )

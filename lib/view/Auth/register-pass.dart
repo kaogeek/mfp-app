@@ -28,7 +28,7 @@ class _RegisterpasswordState extends State<Registerpassword> {
 
   void _validateInputs() {
     if (_key.currentState.validate()) {
-      print('submit');
+      // print('submit');
 //    If all data are correct then save data to out variables
       _key.currentState.save();
       // Navigator.push(
@@ -36,7 +36,7 @@ class _RegisterpasswordState extends State<Registerpassword> {
       //   MaterialPageRoute(builder: (context) => PicProfile()),
       // );
     } else {
-      print(' data are not valid');
+      // print(' data are not valid');
 
 //    If all data are not valid then start auto validation.
       setState(() {

@@ -101,14 +101,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
     switch (facebookLoginResult.status) {
       case FacebookLoginStatus.error:
-        print("Error");
+        // print("Error");
         setState(() {
           isfacebookLoggedIn = false;
         });
         onLoginStatusChanged(false);
         break;
       case FacebookLoginStatus.cancelledByUser:
-        print("CancelledByUser");
+        // print("CancelledByUser");
         setState(() {
           isfacebookLoggedIn = false;
         });
@@ -116,33 +116,33 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         break;
       case FacebookLoginStatus.loggedIn:
         final FacebookAccessToken accessToken = facebookLoginResult.accessToken;
-        print('''
-         Logged in!
+        // print('''
+        //  Logged in!
          
-         Token: ${accessToken.token}
-         User id: ${accessToken.userId}
-         Expires: ${accessToken.expires}
-         Permissions: ${accessToken.permissions}
-         Declined permissions: ${accessToken.declinedPermissions}
+        //  Token: ${accessToken.token}
+        //  User id: ${accessToken.userId}
+        //  Expires: ${accessToken.expires}
+        //  Permissions: ${accessToken.permissions}
+        //  Declined permissions: ${accessToken.declinedPermissions}
 
-         ''');
+        //  ''');
 
-        print("LoggedIn");
+        // print("LoggedIn");
 
         var graphResponse = await http.get(Uri.parse(
             'https://graph.facebook.com/v10.0/me?access_token=${facebookLoginResult.accessToken.token}&fields=name,first_name,last_name,birthday,picture,email,gender&method=get&pretty=0&sdk=joey&suppress_http_code=1'));
         var profile = json.decode(graphResponse.body);
         // profileData.add(profile);
-        print(profile.toString());
-        print('Logged in as: ${profile['name']}');
+        // print(profile.toString());
+        // print('Logged in as: ${profile['name']}');
 
         onLoginStatusChanged(true, profileData: profile);
         final imgBase64Str = await networkImageToBase64(
           profileData['picture']['data']['url'],
         );
 
-        print('name${profileData['name']}');
-        print('picture${profileData['picture']['data']['url']}');
+        // print('name${profileData['name']}');
+        // print('picture${profileData['picture']['data']['url']}');
         await singinfb(accessToken.token, accessToken, imgBase64Str,
             profileData: profile);
 
@@ -173,37 +173,37 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     /// login(forceLogin: true);
     final authResult = await twitterLogin.login();
     var session = authResult.user;
-    print('''
-         Logged inTw!
+    // print('''
+    //      Logged inTw!
          
-         name: ${session.name}
-        email: ${session.email}
-         authToken: ${authResult.authToken}
+    //      name: ${session.name}
+    //     email: ${session.email}
+    //      authToken: ${authResult.authToken}
         
 
-         ''');
+    //      ''');
 
     switch (authResult.status) {
       case TwitterLoginStatus.loggedIn:
-        print('''
-         Logged inTw!
+        // print('''
+        //  Logged inTw!
          
-         name: ${session.name}
-        email: ${session.email}
-         authToken: ${authResult.authToken}
+        //  name: ${session.name}
+        // email: ${session.email}
+        //  authToken: ${authResult.authToken}
         
 
-         ''');
+        //  ''');
 
         // success
-        print('====== Login success ======');
+        // print('====== Login success ======');
         break;
       case TwitterLoginStatus.cancelledByUser:
         setState(() {
           isTwitterLoggedIn = false;
         });
         // cancel
-        print('====== Login cancel ======');
+        // print('====== Login cancel ======');
         break;
       case TwitterLoginStatus.error:
         setState(() {
@@ -222,7 +222,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   Future<http.Response> singinfb(
       String fbtoken, FacebookAccessToken accessToken, String imgBase64Str,
       {profileData}) async {
-    print('singinFB');
+    // print('singinFB');
     setState(() {
       isLoggedIn = true;
     });
@@ -238,11 +238,11 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
     var res = await http.post(url, headers: headers, body: body);
     final jsonResponse = jsonDecode(res.body);
-    print(jsonResponse);
+    // print(jsonResponse);
 
     if (res.statusCode == 200) {
       if (jsonResponse['status'] == 1) {
-        print(jsonResponse['message']);
+        // print(jsonResponse['message']);
         msg = jsonResponse['message'];
         if (jsonResponse != null) {
           sharedPreferences.setString(
@@ -256,15 +256,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           sharedPreferences?.setBool("isLoggedIn", true);
           mytoken = jsonResponse["data"]["token"];
           userid = jsonResponse["data"]["user"]["id"];
-          print("myuid$userid");
-
+          // print("myuid$userid");
           if (mytoken != null) {
             isLoggedIn = true;
           } else if (mytoken == null) {
             iserror = true;
             isLoggedIn = false;
           }
-
           Navigator.of(context).pushAndRemoveUntil(
               CupertinoPageRoute(
                   builder: (BuildContext context) => NavScreen()),
@@ -278,10 +276,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     }
     if (res.statusCode == 400) {
       if (jsonResponse['status'] == 0) {
-        print(jsonResponse['message']);
-        Navigate.pushPage(
-            context,
-            Generalinformation(
+        // print(jsonResponse['message']);
+        Navigator.of(context).pushAndRemoveUntil(
+              CupertinoPageRoute(
+                  builder: (BuildContext context) => Generalinformation(
               email: profileData['email'],
               password: "",
               img64: imgBase64Str,
@@ -292,13 +290,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               fbtoken: accessToken.token,
               mode: 'FB',
               fbexpires: accessToken.expires,
-            ));
-        // setState(() {
-        //   msg = jsonResponse['message'];
-        //   // _isloading = false;
-
-        //   iserror = true;
-        // });
+              isfb: false
+            )),
+              (Route<dynamic> route) => false);
       }
     }
   }
@@ -385,7 +379,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           onPressed: () {
                             
                             Navigator.pop(context);
-                            print('กด');
+                            // print('กด');
                           },
                         ),
                         Spacer(),

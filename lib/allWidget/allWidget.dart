@@ -415,7 +415,7 @@ Widget primaryAppBar(
         icon: MdiIcons.bellOutline,
         iconSize: 27.0,
         color: MColors.primaryBlue,
-        onPressed: () => print('Messenger'),
+        onPressed: () =>{},
       ),
       token == null || token == ""
           ? Padding(
@@ -538,7 +538,7 @@ Widget UIlikecommentshear(context, int like, int comment, int share) {
               size: 20.0,
             ),
             label: 'ถูกใจ',
-            onTap: () => print('Like'),
+            onTap: () => {},
           ),
           PostButton(
             icon: Icon(
@@ -547,7 +547,7 @@ Widget UIlikecommentshear(context, int like, int comment, int share) {
               size: 20.0,
             ),
             label: 'ความคิดเห็น',
-            onTap: () => print('Comment'),
+            onTap: () => {},
           ),
           PostButton(
             icon: Icon(
@@ -556,7 +556,7 @@ Widget UIlikecommentshear(context, int like, int comment, int share) {
               size: 25.0,
             ),
             label: 'แชร์',
-            onTap: () => print('Share'),
+            onTap: () =>{},
           )
         ],
       ),
@@ -690,7 +690,7 @@ Widget nonet(BuildContext context) {
                           dismissDirection: DismissDirection.horizontal,
                         ));
                 });
-                print('กด');
+              
               },
             ),
           ),

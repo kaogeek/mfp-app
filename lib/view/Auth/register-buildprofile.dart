@@ -50,7 +50,7 @@ class _BuildprofileState extends State<Buildprofile> {
     setState(() {
       isloading = true;
     });
-    print('singin');
+    //('singin');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     var url = Uri.parse("${Api.url}api/login");
@@ -66,7 +66,7 @@ class _BuildprofileState extends State<Buildprofile> {
 
     if (res.statusCode == 200) {
       if (jsonResponse['status'] == 1) {
-        print(jsonResponse['message']);
+        //(jsonResponse['message']);
         msgres = jsonResponse['message'];
         if (jsonResponse != null) {
           sharedPreferences.setString(
@@ -78,7 +78,7 @@ class _BuildprofileState extends State<Buildprofile> {
           sharedPreferences?.setBool("isLoggedIn", true);
           var mytoken = jsonResponse["data"]["token"];
           var userid = jsonResponse["data"]["user"]["id"];
-          print("myuid$userid");
+          //("myuid$userid");
           await getImage(widget.image, userid, mytoken);
           sharedPreferences.setString(
               "imageURL", '${jsonResponse["data"]["user"]["imageURL"]}');
@@ -100,7 +100,7 @@ class _BuildprofileState extends State<Buildprofile> {
     }
     if (res.statusCode == 400) {
       if (jsonResponse['status'] == 0) {
-        print(jsonResponse['message']);
+        //(jsonResponse['message']);
         setState(() {
           isloading = false;
 
@@ -114,12 +114,12 @@ class _BuildprofileState extends State<Buildprofile> {
   }
 
   Future getImage(File _image, String userid, String token) async {
-    print("getImage");
+    //("getImage");
 
     final bytes = _image.readAsBytesSync();
 
     String img64 = base64Encode(bytes);
-    print(img64);
+    //(img64);
     var responseProfileImage =
         await Api.updataimage(userid, img64, "basic-ios.png", token);
 
@@ -130,11 +130,11 @@ class _BuildprofileState extends State<Buildprofile> {
       if (jsonResponse['status'] == 1) {
         // _clear();
 
-        // print(jsonResponse['message']);
+        // //(jsonResponse['message']);
         setState(() {
           msg = jsonResponse['message'];
 
-          print('msg$msg');
+          //('msg$msg');
 
           // iserror = true;
         });
@@ -200,7 +200,7 @@ class _BuildprofileState extends State<Buildprofile> {
                       //   context,
                       //   MaterialPageRoute(builder: (context) => Confirmproduct()),
                       // );
-                      print("กด");
+                      //("กด");
                     },
                     child: Container(
                         //-------------------รูปโปรไฟล์----------------//
@@ -348,7 +348,7 @@ class _BuildprofileState extends State<Buildprofile> {
                                     //   context,
                                     //   MaterialPageRoute(builder: (context) => Buildprofile()),
                                     // );
-                                    print('กด');
+                                    //print('กด');
                                   },
                                 ),
                               )

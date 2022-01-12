@@ -42,7 +42,7 @@ class TodayPostController extends GetxController {
   }
 
   getpost(var offset, {var pagenumber = 0}) async {
-    print('getmergencyevents');
+    //('getmergencyevents');
     try {
       if (postList.length == 0) {
         isLoading(true);
@@ -65,8 +65,7 @@ class TodayPostController extends GetxController {
                                             .then((value) => ({
                                                   jsonResponse =
                                                       jsonDecode(value.body),
-                                                  print(
-                                                      'message${jsonResponse['message']}'),
+                                                  //('message${jsonResponse['message']}')
                                                   if (value.statusCode == 200)
                                                     {
                                                       if (jsonResponse[ 'message'] =="Like Post Success"){
@@ -91,7 +90,7 @@ class TodayPostController extends GetxController {
 
   getsearchpostList(var label, var keyword, var offset,
       {var pagenumber = 0}) async {
-    print('getsearchpostList');
+    //print('getsearchpostList');
     try {
       if (serarchpostList.length == 0 || pagenumber == 0) {
         isLoading(true);
@@ -109,7 +108,7 @@ class TodayPostController extends GetxController {
   }
 
   getrecompage() async {
-    print('getrecompage');
+    //('getrecompage');
     try {
       if (recompageList.length == 0) {
         recompageList.clear();
@@ -124,7 +123,7 @@ class TodayPostController extends GetxController {
   }
 
   getstory(String id) async {
-    print('getstory');
+    //('getstory');
     try {
       idloadingstory.value = true;
       var responseRequest = await Api.getstory(id);
@@ -137,8 +136,8 @@ class TodayPostController extends GetxController {
           storytestreplaceAll = storytest.replaceAll("<create-text>", "");
           titalpost.value = tital;
         }
-        print("Response  :$storytestreplaceAll");
-        print('titalpost$titalpost');
+        //("Response  :$storytestreplaceAll");
+        //('titalpost$titalpost');
       }
       if (responseRequest.statusCode == 400) {
         return null;

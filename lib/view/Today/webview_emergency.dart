@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
+import 'package:mfp_app/view/Profile/Profliess.dart';
+import 'package:mfp_app/view/Search/post_search.dart';
 import 'package:mfp_app/view/Today/post_details.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -13,7 +16,8 @@ class Webview_EmergencySC extends StatefulWidget {
   final String texttitle;
   final String checkurl;
 
-  Webview_EmergencySC({Key key, this.url, this.texttitle, this.checkurl}) : super(key: key);
+  Webview_EmergencySC({Key key, this.url, this.texttitle, this.checkurl})
+      : super(key: key);
 
   @override
   _Webview_EmergencySCState createState() => _Webview_EmergencySCState();
@@ -30,14 +34,14 @@ class _Webview_EmergencySCState extends State<Webview_EmergencySC> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      print('delayedgetpost');
+      //('delayedgetpost');
       await Api.gettoke().then((value) => value({
             token = value,
-            print('token$token'),
+            //('token$token'),
           }));
       await Api.getmyuid().then((value) => value({
             userid = value,
-            print('token$userid'),
+            //('token$userid'),
           }));
     });
     super.initState();
@@ -79,47 +83,121 @@ class _Webview_EmergencySCState extends State<Webview_EmergencySC> {
                     isLoading = false;
                   });
                 },
-                onWebViewCreated: (WebViewController webViewController) {
-                  _controller.complete(webViewController);
-                },
                 navigationDelegate: (action) {
-                  if (action.url == action.url) {
-                    // var str = action.url.toString();
-                    var postid = action.url.toString().replaceAll(
-                        "${widget.checkurl}", "");
-                    // var start = "https://today.moveforwardparty.org/post";
-                    // var end = "/";
+                  var postid = action.url
+                      .toString()
+                      .replaceAll("${widget.checkurl}", "");
+                  var hashtag = Uri.decodeComponent(action.url)
+                      .toString()
+                      .replaceAll(
+                          "${Uri.decodeComponent("https://today.moveforwardparty.org/search?hashtag=")}",
+                          "");
+                  var page = Uri.decodeComponent(action.url).toString().replaceAll(
+                      "${Uri.decodeComponent("https://today.moveforwardparty.org/page/")}",
+                      "");
 
-                    // final startIndex = str.indexOf(start);
-                    // final endIndex =
-                    //     str.indexOf(end, startIndex + start.length);
+                  print('page$page');
 
-                    // print(str.substring(startIndex + start.length, endIndex));
-                    print('ใช่');
-                    print(action.url);
-                    print('replaceurl$postid');
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return PostDetailsSC(
-                            onfocus: false,
-                            
-                            postid: postid,
-                          );
-                        },
-                      ),
-                    );
-                    return NavigationDecision.prevent;
+                  if (action.url.replaceAll(postid, "") == widget.checkurl) {
+                    //('ใช่');
+                    //(action.url);
+                    //('replaceurl$postid');
+                    Platform.isAndroid
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return PostDetailsSC(
+                                  onfocus: false,
+                                  postid: postid,
+                                );
+                              },
+                            ),
+                          )
+                        : postid == action.url
+                            ? () {}()
+                            : Future.delayed(Duration.zero, () async {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return PostDetailsSC(
+                                      onfocus: false,
+                                      postid: postid,
+                                    );
+                                  },
+                                ));
+                              });
+
+                    return Platform.isAndroid
+                        ? NavigationDecision.prevent
+                        : NavigationDecision.navigate;
+                  }
+                  if (Uri.decodeComponent(action.url).replaceAll(hashtag, "") ==
+                      "https://today.moveforwardparty.org/search?hashtag=") {
+                    //print('ใช่');
+                    //(action.url);
+                    //('replaceurl$postid');
+                    Platform.isAndroid
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PostSearch(
+                                      label: hashtag,
+                                    )),
+                          )
+                        : postid == action.url
+                            ? () {}()
+                            : Future.delayed(Duration.zero, () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PostSearch(
+                                            label: hashtag,
+                                          )),
+                                );
+                              });
+
+                    return Platform.isAndroid
+                        ? NavigationDecision.prevent
+                        : NavigationDecision.navigate;
+                  }
+                  if (Uri.decodeComponent(action.url).replaceAll(page, "") ==
+                      "https://today.moveforwardparty.org/page/") {
+                    //print('ใช่');
+                    //(action.url);
+                    //('replaceurl$postid');
+                    Platform.isAndroid
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Profliess(
+                                      id: page,
+                                    )),
+                          )
+                        : postid == action.url
+                            ? () {}()
+                            : Future.delayed(Duration.zero, () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Profliess(
+                                            id: page,
+                                          )),
+                                );
+                              });
+
+                    return Platform.isAndroid
+                        ? NavigationDecision.prevent
+                        : NavigationDecision.navigate;
                   } else {
-                    return NavigationDecision.navigate;
+                    return Platform.isAndroid
+                        ? NavigationDecision.prevent
+                        : NavigationDecision.prevent;
                   }
                 },
-                debuggingEnabled: true,
                 gestureNavigationEnabled: true,
               ),
               //           GestureDetector(
-              //  onTap: (()=>print('กด '))),
+              //  onTap: (()=>//('กด '))),
 
               isLoading
                   ? LinearProgressIndicator(

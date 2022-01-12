@@ -82,23 +82,23 @@ class _ProfliessState extends State<Profliess> {
   List<PageObjective> pageobjslist = [];
   @override
   void initState() {
-    print('initState');
+    //print('initState');
     _scrollController.addListener(_loadMore);
 
     Future.delayed(Duration.zero, () async {
-      print('delayedgetpost');
+      //('delayedgetpost');
       //-----token----
       token = await Api.gettoke();
-      print('token$token');
+      //('token$token');
       //----userid-----
       userid = await Api.getmyuid();
-      print('userid$userid');
+      //('userid$userid');
       //--getPage
       await Api.getPage(widget.id).then((responseData) async => ({
             if (responseData.statusCode == 200)
               {
                 datagetuserprofile = jsonDecode(responseData.body),
-                print('datagetuserprofile$datagetuserprofile'),
+                //('datagetuserprofile$datagetuserprofile'),
                 for (Map i in datagetuserprofile["data"]["pageObjectives"])
                   {
                     setState(() {
@@ -116,7 +116,7 @@ class _ProfliessState extends State<Profliess> {
 
                     // var stroycoverImage= i["coverImage"];
                   },
-                print('pageUsername$pageUsername'),
+                //('pageUsername$pageUsername'),
               }
             else
               {
@@ -164,7 +164,7 @@ class _ProfliessState extends State<Profliess> {
                         isLoading = false;
                       });
 
-                      print('isFollow$isFollow');
+                      //('isFollow$isFollow');
                     }),
                   }
               }));
@@ -199,8 +199,8 @@ class _ProfliessState extends State<Profliess> {
       body: body,
     );
 
-    print('getPostListSS');
-    print(responseData.body);
+    //('getPostListSS');
+    //(responseData.body);
     if (responseData.statusCode == 200) {
       dataht = jsonDecode(responseData.body);
       for (var i in dataht["data"]["posts"]) {
@@ -209,7 +209,7 @@ class _ProfliessState extends State<Profliess> {
           _postsController.add(dataht);
         });
 
-        print(listpostss.length);
+        //(listpostss.length);
       }
       setState(() {
         isLoading = false;
@@ -223,7 +223,7 @@ class _ProfliessState extends State<Profliess> {
     if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
-      print('AT end');
+      //('AT end');
       await new Future.delayed(const Duration(milliseconds: 100));
 
       setState(() {
@@ -236,7 +236,7 @@ class _ProfliessState extends State<Profliess> {
         try {
           _getPostListSS(pageUsername, _currentMax);
         } catch (err) {
-          print('Something went wrong!');
+          //('Something went wrong!');
         }
       });
     }
@@ -468,8 +468,7 @@ class _ProfliessState extends State<Profliess> {
                                         .then((value) => ({
                                               jsonResponse =
                                                   jsonDecode(value.body),
-                                              print(
-                                                  'message${jsonResponse['message']}'),
+                                              ////('message${jsonResponse['message']}'),
                                               if (value.statusCode == 200)
                                                 {
                                                   if (jsonResponse['message'] ==
@@ -496,7 +495,7 @@ class _ProfliessState extends State<Profliess> {
                                                     }
                                                 }
                                             }));
-                                print("กดlike");
+                                //("กดlike");
                               },
                               child: Container(
                                 width: 110.0,
@@ -1063,8 +1062,7 @@ class _ProfliessState extends State<Profliess> {
                                         .then((value) => ({
                                               jsonResponse =
                                                   jsonDecode(value.body),
-                                              print(
-                                                  'message${jsonResponse['message']}'),
+                                              ////('message${jsonResponse['message']}'),
                                               if (value.statusCode == 200)
                                                 {
                                                   if (jsonResponse['message'] ==
@@ -1092,7 +1090,7 @@ class _ProfliessState extends State<Profliess> {
                                                     }
                                                 }
                                             }));
-                                print("กดlike");
+                                //("กดlike");
                               },
                             ),
                             PostButton(
@@ -1102,7 +1100,7 @@ class _ProfliessState extends State<Profliess> {
                               ),
                               label: '${nDataList1.commentCount} ความคิดเห็น',
                               width: 4.2,
-                              onTap: () => print('Comment'),
+                              onTap: () =>{},
                             ),
                             PostButton(
                               icon: Icon(
@@ -1111,7 +1109,7 @@ class _ProfliessState extends State<Profliess> {
                               ),
                               width: 8.0,
                               label: '${nDataList1.shareCount}แชร์',
-                              onTap: () => print('Share'),
+                              onTap: () => {},
                             ),
                           ],
                         ),

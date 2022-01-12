@@ -100,18 +100,18 @@ class _StroyPageScState extends State<StroyPageSc> {
                 setState(() {
                   loading = true;
                 }),
-                print('getcommentlist'),
+                // print('getcommentlist'),
                 if (responseData.statusCode == 200)
                   {
                     dataht = jsonDecode(responseData.body),
-                    print("comlist${dataht["data"]}"),
+                    // print("comlist${dataht["data"]}"),
                     for (Map i in dataht["data"])
                       {
                         setState(() {
                           listModel.add(CommentlistModel.fromJson(i));
                           _postsController.add(responseData);
                         }),
-                        print('listModel${listModel.length}'),
+                        // print('listModel${listModel.length}'),
                       },
                     loading = false,
                   }
@@ -131,7 +131,7 @@ class _StroyPageScState extends State<StroyPageSc> {
     if (widget.type == "GENERAL") {
       type = "ทั่วไป";
     }
-    print('imagelist.length${imagelist.length}');
+    // print('imagelist.length${imagelist.length}');
 
     return Obx(() => Scaffold(
           appBar: AppBar(
@@ -279,7 +279,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                               color: Colors.white,
                             ),
                             onPressed: () {
-                              print('กด');
+                              //print('กด');
                             },
                           ),
                           Spacer(),
@@ -294,7 +294,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                               color: Colors.white,
                             ),
                             onPressed: () {
-                              print('กด');
+                              //print('กด');
                             },
                           ),
                           Spacer(),
@@ -309,7 +309,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                               color: Colors.white,
                             ),
                             onPressed: () {
-                              print('กด');
+                              //print('กด');
                             },
                           ),
                           Spacer(),
@@ -324,7 +324,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                               color: Colors.white,
                             ),
                             onPressed: () {
-                              print('กด');
+                              //print('กด');
                             },
                           ),
                           Spacer(),
@@ -426,7 +426,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                                   // padding: EdgeInsets.all(8.0),
                                   onLinkTap: (url) async {
                                     _launchURL(url);
-                                    print("Opening $url...");
+                                    //print("Opening $url...");
                                   },
                                 );
                       }),
