@@ -126,18 +126,18 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
 
   @override
   void initState() {
-    print(widget.postid);
+    ////(widget.postid);
     Future.delayed(Duration.zero, () async {
-      print('Futuredelayed');
+      // //('Futuredelayed');
       //--token
       token = await Api.gettoke();
-      print('tokenhome$token');
+      // //('tokenhome$token');
       //--mode
       mode = await Api.getmodelogin();
-      print('mode$mode');
+      // //('mode$mode');
       //--userid
       userid = await Api.getmyuid();
-      print('userid$userid');
+      // //('userid$userid');
       if (token == null) {
         setState(() {
           loading = false;
@@ -172,7 +172,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                 }),
             if (responseData.statusCode == 200){
                 jsonResponse = jsonDecode(responseData.body),
-                print('jsonResponse$jsonResponse'),
+                // //('jsonResponse$jsonResponse'),
                 for (Map i in jsonResponse["data"])
                   {
                     setState(() {
@@ -185,8 +185,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
 
                     // var stroycoverImage= i["coverImage"];
                   },
-                // print("Response  :$storytestreplaceAll"),
-                // print('titalpost$titalpost'),
+                // //("Response  :$storytestreplaceAll"),
+                // //('titalpost$titalpost'),
                 setState(() {
                   postloading = false;
                 }),
@@ -200,18 +200,18 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                 // setState(() {
                 //   loading = true;
                 // }),
-                print('getHashtagData'),
+                // //('getHashtagData'),
                 if (responseData.statusCode == 200)
                   {
                     dataht = jsonDecode(responseData.body),
-                    print("comlist${dataht["data"]}"),
+                    // //("comlist${dataht["data"]}"),
                     for (Map i in dataht["data"])
                       {
                         setState(() {
                           listModel.add(CommentlistModel.fromJson(i));
                           _commerntController.add(responseData);
                         }),
-                        print('listModel${listModel.length}'),
+                        // //('listModel${listModel.length}'),
                       },
                     // loading = false,
                   }
@@ -222,27 +222,27 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                 // setState(() {
                 //   loading = true;
                 // }),
-                print('postsearch'),
+                // //('postsearch'),
                 if (responseData.statusCode == 200)
                   {
                     datapostsearch = jsonDecode(responseData.body),
-                    print('checkislike$datapostsearch'),
+                    // //('checkislike$datapostsearch'),
                     for (Map i in dataht["data"])
                       {
-                        print('islike${i["isLike"]}'),
+                        // //('islike${i["isLike"]}'),
                         if (i["isLike"] == false)
                           {
                             setState(() {
                               islikepost = false;
                             }),
-                            print('islike$islikepost'),
+                            // //('islike$islikepost'),
                           }
                         else if (i["isLike"] == true)
                           {
                             setState(() {
                               islikepost = true;
                             }),
-                            print('islike$islikepost'),
+                            // //('islike$islikepost'),
                           }
                       },
                   }
@@ -255,7 +255,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
 
   Future sendcomment(String postid, String mytoken, String mag, String myuid,
       String mode) async {
-    print('sendcomment');
+    // //('sendcomment');
 
     var url = Uri.parse("${Api.url}api/post/$postid/comment");
     final headers = {
@@ -276,11 +276,11 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('responseDatacommentlist${responseData.body}');
+    // //('body$body');
+    // //('responseDatacommentlist${responseData.body}');
     final jsonResponse = jsonDecode(responseData.body);
     if (responseData.statusCode == 200) {
-      print(jsonResponse['status']);
+      // //(jsonResponse['status']);
       if (jsonResponse['status'] == 1) {
         setState(() {
           onref = true;
@@ -297,11 +297,11 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
           // setState(() {
           //   loading = true;
           // }),
-          print('getHashtagData'),
+          // //('getHashtagData'),
           if (responseData.statusCode == 200)
             {
               dataht = jsonDecode(responseData.body),
-              print("comlist${dataht["data"]}"),
+              // //("comlist${dataht["data"]}"),
               for (Map i in dataht["data"])
                 {
                   setState(() {
@@ -310,7 +310,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     listModel.add(CommentlistModel.fromJson(i));
                     _commerntController.add(responseData);
                   }),
-                  print('listModel${listModel.length}'),
+                  // //('listModel${listModel.length}'),
                 },
               setState(() {
                 // loading = false;
@@ -325,7 +325,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
     if (onref == true) {
       _handleRefresh();
     }
-    print(pagename);
+    // //(pagename);
     return loading == true
         ? Container(
             color: Colors.white,
@@ -340,7 +340,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
               child: Scaffold(
                 body: RefreshIndicator(
                   onRefresh: () => () async {
-                    print('RefreshIndicator');
+                    // //('RefreshIndicator');
                     HapticFeedback.mediumImpact();
 
                     _handleRefresh();
@@ -593,8 +593,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                         .then((value) => ({
                                               jsonResponse =
                                                   jsonDecode(value.body),
-                                              print(
-                                                  'message${jsonResponse['message']}'),
+                                              // //(
+                                              //     'message${jsonResponse['message']}'),
                                               if (value.statusCode == 200)
                                                 {
                                                   if (jsonResponse['message'] ==
@@ -624,7 +624,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                     }
                                                 }
                                             }));
-                                print("กดlike");
+                                //("กดlike");
                               },
                             ),
                             PostButton(
@@ -634,7 +634,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                               ),
                               width: 4.1,
                               label: '$commentCount ความคิดเห็น',
-                              onTap: () => print('Comment'),
+                              onTap: () => {},
                             ),
                             PostButton(
                               icon: Icon(
@@ -643,7 +643,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                               ),
                               width: 8.0,
                               label: '$shareCount แชร์',
-                              onTap: () => print('Share'),
+                              onTap: () =>{},
                             ),
                           ],
                         ),
@@ -687,7 +687,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                   autofocus: widget.onfocus,
                                   onChanged: (String value) {
                                     _commenteditController.text = value;
-                                    print(value);
+                                    //(value);
                                   },
                                   decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.all(20.0),
@@ -940,8 +940,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                             .then((value) => ({
                                                   jsonResponse =
                                                       jsonDecode(value.body),
-                                                  print(
-                                                      'message${jsonResponse['message']}'),
+                                                  //print('message${jsonResponse['message']}'),
                                                   if (value.statusCode == 200)
                                                     {
                                                       if (jsonResponse[

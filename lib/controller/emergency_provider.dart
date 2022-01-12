@@ -17,7 +17,7 @@ class EmergencyController extends GetxController {
   }
 
   getmergencyevents() async {
-    print('getmergencyevents');
+    // print('getmergencyevents');
     try {
       if (emergencyevList.length == 0) {
         isLoading(true);

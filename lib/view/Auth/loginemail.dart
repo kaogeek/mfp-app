@@ -37,7 +37,7 @@ class _LoginemailState extends State<Loginemail> {
   //   setState(() {
   //     _isloading = true;
   //   });
-  //   print('singin');
+  //   //('singin');
   //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   //   var url = Uri.parse("${Api.url}api/login");
@@ -53,7 +53,7 @@ class _LoginemailState extends State<Loginemail> {
 
   //   if (res.statusCode == 200) {
   //     if (jsonResponse['status'] == 1) {
-  //       print(jsonResponse['message']);
+  //       //(jsonResponse['message']);
   //       msgres = jsonResponse['message'];
   //       if (jsonResponse != null) {
   //         sharedPreferences.setString(
@@ -67,7 +67,7 @@ class _LoginemailState extends State<Loginemail> {
   //         sharedPreferences?.setBool("isLoggedIn", true);
   //         mytoken = jsonResponse["data"]["token"];
   //         userid = jsonResponse["data"]["user"]["id"];
-  //         print("myuid$userid");
+  //         //("myuid$userid");
 
   //         if (mytoken != null) {
   //           _isloading = true;
@@ -88,7 +88,7 @@ class _LoginemailState extends State<Loginemail> {
   //   }
   //   if (res.statusCode == 400) {
   //     if (jsonResponse['status'] == 0) {
-  //       print(jsonResponse['message']);
+  //       //(jsonResponse['message']);
   //       setState(() {
   //         msgres = jsonResponse['message'];
   //         _isloading = false;
@@ -193,7 +193,7 @@ class _LoginemailState extends State<Loginemail> {
     );
     // if (_emailController.text != "" && _passController.text != "") {
     //   _isEnabled = false;
-    //   print('_isEnabled$_isEnabled');
+    //   //('_isEnabled$_isEnabled');
     // }
 
     return Container(
@@ -230,7 +230,7 @@ class _LoginemailState extends State<Loginemail> {
                               onPressed: () {
                                   Get.reset();
                                 Navigator.pop(context);
-                                print('กด');
+                                //('กด');
                               },
                             ),
                             Spacer(),
@@ -315,7 +315,7 @@ class _LoginemailState extends State<Loginemail> {
                                     fontFamily: AppTheme.FontAnakotmaiLight,
                                   )),
                               onPressed: () {
-                                print('กด');
+                                //('กด');
                               },
                             ),
                           );
@@ -330,7 +330,7 @@ class _LoginemailState extends State<Loginemail> {
                                     fontFamily: AppTheme.FontAnakotmaiLight,
                                   )),
                               onPressed: () {
-                                print('กด');
+                                //('กด');
                               },
                             ),
                           );
@@ -397,7 +397,7 @@ class _LoginemailState extends State<Loginemail> {
                                             ),
                                           ),
                                           onPressed: () async {
-                                            print('กด');
+                                            ////('กด');
                                             // setState(() {
                                             //   _isloading = true;
                                             // });
@@ -405,8 +405,7 @@ class _LoginemailState extends State<Loginemail> {
                                             await authController.login(
                                                 _emailController.text,
                                                 _passController.text);
-                                            print(
-                                                'isLogin${authController.isLogin.value}');
+                                            //print('isLogin${authController.isLogin.value}');
 
                                             if (authController.isLogin.value) {
                                               return Navigator.of(context)

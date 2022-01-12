@@ -52,14 +52,14 @@ class _PostSearchState extends State<PostSearch> {
     _scrollController.addListener(() async {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        print('At the End');
+        //print('At the End');
         Text('loading');
         _loadMore();
       }
     });
 
     Future.delayed(Duration.zero, () async {
-      print('delayedgetpost');
+      //('delayedgetpost');
       Api.gettoke().then((value) => value({
             setState(() {
               token = value;
@@ -94,17 +94,17 @@ class _PostSearchState extends State<PostSearch> {
                 }),
               }
           }));
-      print('storytestreplaceAll$storytestreplaceAll');
+      //('storytestreplaceAll$storytestreplaceAll');
       await todayController.getsearchpostList(storytestreplaceAll, "", 0,
           pagenumber: 0)();
     });
   }
 
   void _loadMore() async {
-    print('_loadMore');
+    //('_loadMore');
     if (_scrollController.offset >=
         _scrollController.position.maxScrollExtent) {
-      print('AT end');
+      //('AT end');
       await new Future.delayed(const Duration(milliseconds: 100));
 
       setState(() {
@@ -115,12 +115,12 @@ class _PostSearchState extends State<PostSearch> {
       });
 
       try {
-        print('_loadMoregetpost');
+        //('_loadMoregetpost');
         await todayController.getsearchpostList(
             storytestreplaceAll, "", _currentMax,
             pagenumber: _currentMax);
       } catch (err) {
-        print('Something went wrong!');
+        //('Something went wrong!');
       }
     }
   }
@@ -359,7 +359,7 @@ class _PostSearchState extends State<PostSearch> {
                                             .then((value) => ({
                                                   jsonResponse =
                                                       jsonDecode(value.body),
-                                                  // print(
+                                                  // //(
                                                   //     'message${jsonResponse['message']}'),
                                                   if (value.statusCode == 200)
                                                     {
@@ -397,7 +397,7 @@ class _PostSearchState extends State<PostSearch> {
                                             .then((value) => ({
                                                   jsonResponse =
                                                       jsonDecode(value.body),
-                                                  // print(
+                                                  // //(
                                                   //     'message${jsonResponse['message']}'),
                                                   if (value.statusCode == 200)
                                                     {
@@ -430,7 +430,7 @@ class _PostSearchState extends State<PostSearch> {
                                                         }
                                                     }
                                                 }));
-                                // print("กดlike");
+                                // //("กดlike");
                               },
                             ),
                             PostButton(
@@ -478,7 +478,7 @@ class _PostSearchState extends State<PostSearch> {
                               ),
                               width: 8.0,
                               label: '$shareCount แชร์',
-                              onTap: () => print('Share'),
+                              onTap: () => {},
                             ),
                           ],
                         ),

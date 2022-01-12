@@ -81,11 +81,11 @@ class _SearchState extends State<Search> {
   bool listisempty = false;
   @override
   void initState() {
-    print('initState');
+    //('initState');
     super.initState();
 
     Future.delayed(Duration.zero, () async {
-      print('Futuredelayed');
+      //('Futuredelayed');
       token = await Api.gettoke();
       if (token == null) {
         setState(() {
@@ -94,10 +94,10 @@ class _SearchState extends State<Search> {
       }
       //--token
 
-      print('tokenhome$token');
+      //('tokenhome$token');
       //--userid
       userid = await Api.getmyuid();
-      print('useridsearch$userid');
+      //('useridsearch$userid');
       //--
       await Api.getuserprofile("$userid").then((responseData) async => ({
             setState(() {
@@ -110,7 +110,7 @@ class _SearchState extends State<Search> {
                   image = datagetuserprofile["data"]["imageURL"];
                   isLoading = false;
                 }),
-                print('image$image'),
+                //('image$image'),
               }
             else
               {
@@ -152,8 +152,8 @@ class _SearchState extends State<Search> {
       headers: headers,
       body: body,
     );
-    print('body$body');
-    print('responseData${responseData.body}');
+    //('body$body');
+    //('responseData${responseData.body}');
     setState(() {
       loading = true;
     });
@@ -171,8 +171,8 @@ class _SearchState extends State<Search> {
           }
         });
 
-        print('listSearchHastagจำนวน${listSearchHastag.length}');
-        print('_searchResult${_searchResult.length}');
+        //('listSearchHastagจำนวน${listSearchHastag.length}');
+        //('_searchResult${_searchResult.length}');
       }
 
       setState(() {
@@ -182,7 +182,7 @@ class _SearchState extends State<Search> {
   }
 
   getpage(String pageid) async {
-    print('getPageisvalue$pageid');
+    //('getPageisvalue$pageid');
     setState(() {
       loadingpage = true;
       _listPageModel.clear();
@@ -203,13 +203,13 @@ class _SearchState extends State<Search> {
         setState(() {
           _listPageModel.add(PageModel.fromJson(dataht1["data"]));
         });
-        print('listPageModellength${_listPageModel.length}');
+        //('listPageModellength${_listPageModel.length}');
 
         setState(() {
           loadingpage = false;
         });
-        print('body$dataht1');
-        print('responseDatagetpage${responseData.body}');
+        //('body$dataht1');
+        //('responseDatagetpage${responseData.body}');
       } else if (responseData.statusCode == 404) {
         throw Exception('Not Found');
       }
@@ -223,7 +223,7 @@ class _SearchState extends State<Search> {
     // getsearch(controller.text.toLowerCase(), userid);
     // getpage(isvalue);
 
-    print('didChangeDependencies');
+    //('didChangeDependencies');
     super.didChangeDependencies();
   }
 
@@ -270,7 +270,7 @@ class _SearchState extends State<Search> {
                           icon: MdiIcons.bellOutline,
                           color: MColors.primaryBlue,
                           iconSize: 27.0,
-                          onPressed: () => print('Messenger'),
+                          onPressed: () => {},
                         ),
                         token == null || token == ""
                             ? Padding(
@@ -360,7 +360,7 @@ class _SearchState extends State<Search> {
                                         onChanged: (text) async {
                                           if (text == "" ||
                                               controller.text == "") {
-                                            print("controllerวางจริง");
+                                            //print("controllerวางจริง");
                                             setState(() {
                                               _listPageModel.clear();
                                               controller.clear();

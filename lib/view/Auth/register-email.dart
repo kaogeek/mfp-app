@@ -25,7 +25,7 @@ class _RegisterState extends State<Register> {
   bool isregister = false;
   void _validateInputs() {
     if (_key.currentState.validate()) {
-      print('submit');
+      // print('submit');
 //    If all data are correct then save data to out variables
       _key.currentState.save();
       // Navigator.push(
@@ -33,7 +33,7 @@ class _RegisterState extends State<Register> {
       //   MaterialPageRoute(builder: (context) => PicProfile()),
       // );
     } else {
-      print(' data are not valid');
+      // print(' data are not valid');
 
 //    If all data are not valid then start auto validation.
       setState(() {
@@ -107,7 +107,7 @@ class _RegisterState extends State<Register> {
                         ),
                         onPressed: () {
                           Navigator.pop(context);
-                          print('กด');
+                          // print('กด');
                         },
                       ),
                       Spacer(),

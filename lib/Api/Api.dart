@@ -26,7 +26,7 @@ class Api {
     // preferences?.setBool("isLoggedIn", false);
     // preferences?.setString("token", "");
     // preferences?.setString("imageURL", "");
-    // print("!remover secc");
+    // //("!remover secc");
 
     // return clear;
   }
@@ -35,7 +35,7 @@ class Api {
   /*--------------------getuserprofile--------------------------------------*/
 
   static Future<Http.Response> getuserprofile(String userid) async {
-    // print('getuserprofile');
+    // //('getuserprofile');
 
     final responseData =
         await Http.get(Uri.parse("${Api.url}api/profile/$userid"));
@@ -45,7 +45,7 @@ class Api {
 
   /*--------------------ดึงค่าuserprofile--------------------------------------*/
   static Future<Http.Response> getPage(String pageid) async {
-    // print('getPage');
+    // //('getPage');
 
     final responseData =
         await Http.get(Uri.parse("${Api.url}api/page/$pageid"));
@@ -81,7 +81,7 @@ class Api {
   }
 
   static Future getPostList(int offset) async {
-    // print('getPostList');
+    // //('getPostList');
     String url = "${Api.url}api/main/content/search";
     final headers = {
       // "mode": "EMAIL",
@@ -113,7 +113,7 @@ class Api {
 
   //---------------
   static Future<List<PostSearchModel>> getpostlisttest(int offset) async {
-    // print('getPostList');
+    // //('getPostList');
     List<PostSearchModel> postlist = [];
 
     String url = "${Api.url}api/main/content/search?isHideStory=true";
@@ -179,7 +179,7 @@ class Api {
   }
 
   static Future singin(String email, String pass) async {
-    print('singin');
+    //('singin');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var mytoken;
     bool islogin = false;
@@ -217,7 +217,7 @@ class Api {
   /*--------------------getแนะนำpageUseryจาก/recommend--------------------------------------*/
   static Future<Http.Response> sendfollowPage(
       String pageid, String token, String userid) async {
-    // print('getHashtagList');
+    // //('getHashtagList');
     var url = "${Api.url}api/page/$pageid/follow";
     final headers = {
       // "mode": "EMAIL",
@@ -233,15 +233,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('headers$headers');
-    // print('responseData${responseData.body}');
+    // //('body$body');
+    // //('headers$headers');
+    // //('responseData${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> getHashtagData() async {
-    // print('getData');
+    // //('getData');
 
     final responseData =
         await Http.get(Uri.parse("${Api.url}api/main/content"));
@@ -250,7 +250,7 @@ class Api {
   }
 
   static Future<Http.Response> getHashtagList() async {
-    // print('getHashtagList');
+    // //('getHashtagList');
     var url = "${Api.url}api/hashtag/trend/";
     final headers = {
       // "mode": "EMAIL",
@@ -273,14 +273,14 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('responseData${responseData.body}');
+    // //('body$body');
+    // //('responseData${responseData.body}');
 
     return responseData;
   }
   static Future<Http.Response> getdoing(DateTime dateTime) async {
           final f = new DateFormat("yyyy-MM-ddT HH:mm:ssZ");
-    print('dateTimegetdoing${dateTime.toIso8601String()}');
+    //('dateTimegetdoing${dateTime.toIso8601String()}');
 
     var url = "${Api.url}api/objective/search?sample=5";
     final headers = {
@@ -302,8 +302,8 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    print('responseDatagetdoing${responseData.body}');
+    // //('body$body');
+    //('responseDatagetdoing${responseData.body}');
 
     return responseData;
   }
@@ -329,8 +329,8 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    print('responseDatagetdoing${responseData.body}');
+    // //('body$body');
+    //('responseDatagetdoing${responseData.body}');
 
     return responseData;
   }
@@ -351,7 +351,7 @@ class Api {
   }
 
   // static Future<Http.Response> getPostList() async {
-  //   print('getHashtagList');
+  //   //('getHashtagList');
   //   final responseData = await Http.get(
   //       "https://today-api.moveforwardparty.org/api/main/content");
 
@@ -361,7 +361,7 @@ class Api {
   static Future<List<EmergencyEventsContent>>
       getPostemergencyEventsList() async {
     List<EmergencyEventsContent> listemergencyEvents = [];
-    // print('getHashtagList');
+    // //('getHashtagList');
     final responseData =
         await Http.get(Uri.parse("${Api.url}api/main/content"));
     if (responseData.statusCode == 200) {
@@ -376,16 +376,16 @@ class Api {
   }
 
   static Future<Http.Response> getPostsectionModelsEventsList() async {
-    // print('getHashtagList');
+    // //('getHashtagList');
     final responseData =
         await Http.get(Uri.parse("${Api.url}api/main/content"));
-    // print(responseData.body);
+    // //(responseData.body);
 
     return responseData;
   }
 
   static Future<Http.Response> getPostDetailSS(String id) async {
-    // print('getPostDetailSS');
+    // //('getPostDetailSS');
 
     final responseData =
         await Http.get(Uri.parse("${Api.url}api/page/$id/post/?offset=0"));
@@ -394,7 +394,7 @@ class Api {
   }
 
   static Future<List<SearchHastag>> getHt(String query) async {
-    // print('getHashtagList');
+    // //('getHashtagList');
     var url = "${Api.url}api/hashtag/trend/";
     final headers = {
       // "mode": "EMAIL",
@@ -432,7 +432,7 @@ class Api {
   }
 
   static Future<Http.Response> mantsearch(String quer) async {
-    // print('getHashtagList');
+    // //('getHashtagList');
     var url = "https://today-api.moveforwardparty.org/api/main/search/";
     final headers = {
       // "mode": "EMAIL",
@@ -449,14 +449,14 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('responseData${responseData.body}');
+    // //('body$body');
+    // //('responseData${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> mantinitisearch(String uid) async {
-    // print('getHashtagList');
+    // //('getHashtagList');
     var url = "${Api.url}api/hashtag/trend/";
     final headers = {
       // "mode": "EMAIL",
@@ -482,8 +482,8 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('responseData${responseData.body}');
+    // //('body$body');
+    // //('responseData${responseData.body}');
 
     return responseData;
   }
@@ -492,7 +492,7 @@ class Api {
       String keyword, String hashtag, int offset) async {
     List<PostSearchModel> searchpostList = [];
 
-    // print('getHashtagList');
+    // //('getHashtagList');
     var url = "${Api.url}api/main/content/search";
     final headers = {
       // "mode": "EMAIL",
@@ -515,8 +515,8 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('responseData${responseData.body}');
+    // //('body$body');
+    // //('responseData${responseData.body}');
 
     if (responseData.statusCode == 200) {
       var datapostlist = jsonDecode(responseData.body);
@@ -531,7 +531,7 @@ class Api {
 
   static Future<Http.Response> getcommentlist(
       String postid, String uid, String token) async {
-    // print('getcommentlist');
+    // //('getcommentlist');
 
     var url = "${Api.url}api/post/$postid/comment/search";
     final headers = {
@@ -550,14 +550,14 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('responseDatacommentlist${responseData.body}');
+    // //('body$body');
+    // //('responseDatacommentlist${responseData.body}');
 
     return responseData;
   }
 
   //  static Future<Http.Response> sendcomment(String postid) async {
-  //   print('sendcomment');
+  //   //('sendcomment');
   //   var url = "https://today-api.moveforwardparty.org/api/post/$postid/comment";
   //   final headers = {
   //     "userid": "60c9cc216923656607919f06",
@@ -576,15 +576,15 @@ class Api {
   //     headers: headers,
   //     body: body,
   //   );
-  //   print('body$body');
-  //   print('responseDatacommentlist${responseData.body}');
+  //   //('body$body');
+  //   //('responseDatacommentlist${responseData.body}');
 
   //   return responseData;
   // }
 
   static Future<Http.Response> updataimage(
       String id, String base64image, String fileName, String token) async {
-    // print('updataimage');
+    // //('updataimage');
     var url = "${Api.url}api/profile/$id/image";
     final headers = {
       "userid": id,
@@ -609,15 +609,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('responseupdataimage${responseData.body}');
+    // //('body$body');
+    // //('responseupdataimage${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> repost(
       String postid, String uid, String token) async {
-    // print('repost');
+    // //('repost');
     var url = "${Api.url}api/post/$postid/repost";
     final headers = {
       "userid": uid,
@@ -635,15 +635,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('repost${responseData.body}');
+    // //('body$body');
+    // //('repost${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> repostwithdetail(
       String postid, String uid, String token, String detail) async {
-    // print('repostwithdetail');
+    // //('repostwithdetail');
     var url = "${Api.url}api/post/$postid/repost";
     final headers = {
       "userid": uid,
@@ -661,15 +661,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('repost${responseData.body}');
+    // //('body$body');
+    // //('repost${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> islike(
       String postid, String uid, String token, String mode) async {
-    // print('sendcomment');
+    // //('sendcomment');
     var url = "${Api.url}api/post/$postid/like";
     final headers = {
       "userid": uid,
@@ -694,8 +694,8 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('islike${responseData.body}');
+    // //('body$body');
+    // //('islike${responseData.body}');
 
     return responseData;
   }
@@ -719,15 +719,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('islike${responseData.body}');
+    // //('body$body');
+    // //('islike${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> islikecomment(String postid, String uid,
       String token, String commentid, String mode) async {
-    // print('islikecomment');
+    // //('islikecomment');
     var url = "${Api.url}api/post/$postid/comment/$commentid/like";
     final headers = {
       "userid": uid,
@@ -746,17 +746,17 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('headers$headers');
+    // //('body$body');
+    // //('headers$headers');
 
-    // print('islikecomment${responseData.body}');
+    // //('islikecomment${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> iseditcomment(String postid, String uid,
       String token, String commentid, String commenttext) async {
-    // print('iseditcomment');
+    // //('iseditcomment');
     var url = "${Api.url}api/post/$postid/comment/$commentid";
     final headers = {
       "userid": uid,
@@ -774,15 +774,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('iseditcomment${responseData.body}');
+    // //('body$body');
+    // //('iseditcomment${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> isfollow(
       String postid, String uid, String token, String pageid) async {
-    // print('isfollow');
+    // //('isfollow');
     var url = "${Api.url}api/page/$pageid/follow";
     final headers = {
       "userid": uid,
@@ -800,14 +800,14 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('isfollow${responseData.body}');
+    // //('body$body');
+    // //('isfollow${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> getprofilepost(String uid, String token) async {
-    // print('getprofilepost$uid');
+    // //('getprofilepost$uid');
     var url = "${Api.url}api/profile/$uid/post/search";
     final headers = {
       "authorization": "Bearer $token",
@@ -853,7 +853,7 @@ class Api {
 
   static Future<Http.Response> getpagess(
       String userid, String token, String pageid) async {
-    // print('getpagess$userid');
+    // //('getpagess$userid');
     final headers = {
       // "Authorization": "Bearer $token",
       "userId": userid,
@@ -870,7 +870,7 @@ class Api {
 
   static Future<Http.Response> setimagecover(
       String uid, String base64image, String fileName, String token) async {
-    // print('updataimage');
+    // //('updataimage');
     var url = "${Api.url}api/profile/$uid/cover";
     final headers = {
       "userid": uid,
@@ -895,15 +895,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('responseupdataimage${responseData.body}');
+    // //('body$body');
+    // //('responseupdataimage${responseData.body}');
 
     return responseData;
   }
 
   static Future<Http.Response> createpost(
       String uid, String token, String title, String detail) async {
-    // print('createpost');
+    // //('createpost');
     var url = "${Api.url}api/page/null/post";
     final headers = {
       "userid": uid,
@@ -931,15 +931,15 @@ class Api {
       headers: headers,
       body: body,
     );
-    // print('body$body');
-    // print('repost${responseData.body}');
+    // //('body$body');
+    // //('repost${responseData.body}');
 
     return responseData;
   }
 
   static Future deletecomment(String postid, String mytoken, String commentid,
       String myuid, String mode) async {
-    print('sendcomment');
+    //print('sendcomment');
 
     var url = "${Api.url}api/post/$postid/comment/$commentid";
     final headers = {
@@ -956,9 +956,9 @@ class Api {
     );
     final jsonResponse = jsonDecode(responseData.body);
     if (responseData.statusCode == 200) {
-      print(jsonResponse['status']);
+      //(jsonResponse['status']);
       if (jsonResponse['status'] == 1) {}
-      print("deletecomment สำเร็จ");
+      //("deletecomment สำเร็จ");
       return jsonResponse;
     }
   }

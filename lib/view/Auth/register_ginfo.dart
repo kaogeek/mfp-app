@@ -31,6 +31,7 @@ class Generalinformation extends StatefulWidget {
   final String mode;
   final String fbtoken;
   final DateTime fbexpires;
+  final bool isfb ;
 
   Generalinformation(
       {Key key,
@@ -45,7 +46,7 @@ class Generalinformation extends StatefulWidget {
       this.fbid,
       this.mode,
       this.fbtoken,
-      this.fbexpires})
+      this.fbexpires, this.isfb})
       : super(key: key);
 
   @override
@@ -95,7 +96,7 @@ class _GeneralinformationState extends State<Generalinformation> {
   bool isregisterfb = false;
   void _validateInputs() {
     if (_formKey.currentState.validate()) {
-      print('submit');
+      //print('submit');
 //    If all data are correct then save data to out variables
       _formKey.currentState.save();
       // Navigator.push(
@@ -103,7 +104,7 @@ class _GeneralinformationState extends State<Generalinformation> {
       //   MaterialPageRoute(builder: (context) => PicProfile()),
       // );
     } else {
-      print(' data are not valid');
+      //(' data are not valid');
 
 //    If all data are not valid then start auto validation.
       setState(() {
@@ -178,14 +179,14 @@ Map data;
       };
       //encode Map to JSON
       var body = jsonEncode(data);
-      print(body);
+      //(body);
 
       var responsepostRequest =
           await http.post(url, headers: headers, body: body);
-      print("${responsepostRequest.statusCode}");
-      print("${responsepostRequest.body}");
+      //("${responsepostRequest.statusCode}");
+      //("${responsepostRequest.body}");
       final jsonResponse = jsonDecode(responsepostRequest.body);
-      print('Registerbody${responsepostRequest.body}');
+      //('Registerbody${responsepostRequest.body}');
       msg = jsonResponse['message'];
 
       if (responsepostRequest.statusCode == 200) {
@@ -196,8 +197,8 @@ Map data;
             isregister = true;
             msg = msg;
 
-            print("Response status :${jsonResponse.statusCode}");
-            print("Response status :${jsonResponse.body}");
+            //("Response status :${jsonResponse.statusCode}");
+            //("Response status :${jsonResponse.body}");
             sharedPreferences.setString(
                 "token", '${jsonResponse["data"]["token"]}');
             mytoken = jsonResponse["data"]["token"];
@@ -217,12 +218,12 @@ Map data;
           });
         }
       }
-      print('msg$msg');
-         print('msg$birthdate');
+      //('msg$msg');
+         //('msg$birthdate');
 
       return responsepostRequest;
     } catch (e) {
-      print(e.toString());
+      //(e.toString());
       showAlertDialog(context);
       setState(() {
         isclick = false;
@@ -279,14 +280,14 @@ Map data;
       };
       //encode Map to JSON
       var body = jsonEncode(data);
-      print(body);
+      //(body);
 
       var responsepostRequest =
           await http.post(url, headers: headers, body: body);
-      print("${responsepostRequest.statusCode}");
-      print("${responsepostRequest.body}");
+      //("${responsepostRequest.statusCode}");
+      //("${responsepostRequest.body}");
       final jsonResponse = jsonDecode(responsepostRequest.body);
-      print('Registerbody${responsepostRequest.body}');
+      //('Registerbody${responsepostRequest.body}');
       msg = jsonResponse['message'];
 
       if (responsepostRequest.statusCode == 200) {
@@ -294,8 +295,8 @@ Map data;
 
         if (jsonResponse['status'] == 1) {
           setState(() {
-            print("Response status :${jsonResponse.statusCode}");
-            print("Response status :${jsonResponse.body}");
+            //("Response status :${jsonResponse.statusCode}");
+            //("Response status :${jsonResponse.body}");
             sharedPreferences.setString(
                 "token", '${jsonResponse["data"]["token"]}');
             mytoken = jsonResponse["data"]["token"];
@@ -314,11 +315,11 @@ Map data;
           });
         }
       }
-      print('msg$msg');
+      //('msg$msg');
 
       return responsepostRequest;
     } catch (e) {
-      print(e.toString());
+      //(e.toString());
       setState(() {
         isclick = false;
       });
@@ -340,14 +341,14 @@ Map data;
       };
       //encode Map to JSON
       var body = jsonEncode(data);
-      print(body);
+      //(body);
 
       var responsepostRequest =
           await http.post(url, headers: headers, body: body);
-      print("${responsepostRequest.statusCode}");
-      print("${responsepostRequest.body}");
+      //("${responsepostRequest.statusCode}");
+      //("${responsepostRequest.body}");
       final jsonResponse = jsonDecode(responsepostRequest.body);
-      print('Registerbody${responsepostRequest.body}');
+      //('Registerbody${responsepostRequest.body}');
       msg = jsonResponse['message'];
 
       if (responsepostRequest.statusCode == 200) {
@@ -358,7 +359,7 @@ Map data;
           setState(() {
             ischeckuniqueid = mybody;
           });
-          print('ischeckuniqueid$ischeckuniqueid');
+          //('ischeckuniqueid$ischeckuniqueid');
         }
         if (jsonResponse['status'] == 0) {
           if (msg == 'uniqueId can not use') {
@@ -369,7 +370,7 @@ Map data;
           setState(() {
             ischeckuniqueid = mybody1;
           });
-          print('ischeckuniqueid$ischeckuniqueid');
+          //('ischeckuniqueid$ischeckuniqueid');
         }
       }
       if (jsonResponse.statusCode == 400) {
@@ -380,7 +381,7 @@ Map data;
 
       return responsepostRequest;
     } catch (e) {
-      print(e.toString());
+      //(e.toString());
     }
   }
 
@@ -619,7 +620,7 @@ Map data;
                     //     onChanged: (date) {
                     //                         _birthday.text = f.format(date).toString();
 
-                    //   print('change $date in time zone ' +
+                    //   //('change $date in time zone ' +
                     //       date.timeZoneOffset.inHours.toString());
                     // },
                     onConfirm: (date) {
@@ -627,7 +628,7 @@ Map data;
 
                   _birthday.text = f.format(date).toString();
 
-                  print('confirm $date');
+                  //('confirm $date');
                 }, 
                 currentTime: DateTime.now(), 
                 locale: LocaleType.th,
@@ -666,7 +667,7 @@ Map data;
                       height: MediaQuery.of(context).size.height * 0.19,
                       child: Row(
                         children: [
-                          IconButton(
+                        widget.isfb==true?  IconButton(
                             icon: const Icon(
                               Icons.arrow_back_sharp,
                               size: 40,
@@ -674,9 +675,9 @@ Map data;
                             ),
                             onPressed: () {
                               Navigator.pop(context);
-                              print('กด');
+                              //('กด');
                             },
-                          ),
+                          ):Container(),
                           Spacer(),
                           Container(
                             height: 100,
@@ -864,7 +865,7 @@ Map data;
                               setState(() {
                                 _selectedValue = value;
                               });
-                              print('value');
+                              //('value');
                               if (_selectedValue == "ผู้ชาย") {
                                 setState(() {
                                   gendertypeint = 0;
@@ -880,8 +881,8 @@ Map data;
                                   gendertypeint = 3;
                                 });
                               }
-                              print(_selectedValue);
-                              print(gendertypeint);
+                              //(_selectedValue);
+                              //(gendertypeint);
                             },
                             hint: Padding(
                               padding: const EdgeInsets.only(left: 25),
@@ -1042,9 +1043,9 @@ Map data;
 
                                                 }
                                                 }
-                                                print('isregister$isregister');
-                                                print(
-                                                    'isregisterfb$isregisterfb');
+                                                //('isregister$isregister');
+                                                //(
+                                                    // 'isregisterfb$isregisterfb');
                                                 if (isregisterfb == true) {
                                                   return Navigator.of(context)
                                                       .pushAndRemoveUntil(
@@ -1084,7 +1085,7 @@ Map data;
                                                       )
                                                     : showAlertDialog(context);
 
-                                                // print('กด');
+                                                // //('กด');
                                               },
                                       ),
                                     )
