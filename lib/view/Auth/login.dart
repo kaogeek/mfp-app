@@ -118,7 +118,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         final FacebookAccessToken accessToken = facebookLoginResult.accessToken;
         // print('''
         //  Logged in!
-         
+
         //  Token: ${accessToken.token}
         //  User id: ${accessToken.userId}
         //  Expires: ${accessToken.expires}
@@ -175,11 +175,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     var session = authResult.user;
     // print('''
     //      Logged inTw!
-         
+
     //      name: ${session.name}
     //     email: ${session.email}
     //      authToken: ${authResult.authToken}
-        
 
     //      ''');
 
@@ -187,11 +186,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       case TwitterLoginStatus.loggedIn:
         // print('''
         //  Logged inTw!
-         
+
         //  name: ${session.name}
         // email: ${session.email}
         //  authToken: ${authResult.authToken}
-        
 
         //  ''');
 
@@ -278,21 +276,20 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       if (jsonResponse['status'] == 0) {
         // print(jsonResponse['message']);
         Navigator.of(context).pushAndRemoveUntil(
-              CupertinoPageRoute(
-                  builder: (BuildContext context) => Generalinformation(
-              email: profileData['email'],
-              password: "",
-              img64: imgBase64Str,
-              name: profileData['name'],
-              firstname: profileData['first_name'],
-              lastname: profileData['last_name'],
-              fbid: profileData['id'],
-              fbtoken: accessToken.token,
-              mode: 'FB',
-              fbexpires: accessToken.expires,
-              isfb: false
-            )),
-              (Route<dynamic> route) => false);
+            CupertinoPageRoute(
+                builder: (BuildContext context) => Generalinformation(
+                    email: profileData['email'],
+                    password: "",
+                    img64: imgBase64Str,
+                    name: profileData['name'],
+                    firstname: profileData['first_name'],
+                    lastname: profileData['last_name'],
+                    fbid: profileData['id'],
+                    fbtoken: accessToken.token,
+                    mode: 'FB',
+                    fbexpires: accessToken.expires,
+                    isfb: false)),
+            (Route<dynamic> route) => false);
       }
     }
   }
@@ -358,12 +355,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           width: MediaQuery.of(context).size.width * 1,
           decoration: BoxDecoration(
               image: DecorationImage(
+            colorFilter: ColorFilter.mode(Colors.grey[500], BlendMode.modulate),
             image: AssetImage('images/shutterstock_553511089.png'),
             fit: BoxFit.cover,
           )),
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(right: 15, left: 15),
+          padding: const EdgeInsets.only(left: 10, right: 10),
               child: Column(
                 children: <Widget>[
                   Container(
@@ -371,13 +369,12 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     child: Row(
                       children: [
                         IconButton(
+                          splashRadius: AppTheme.splashRadius,
                           icon: const Icon(
-                            Icons.arrow_back_sharp,
-                            size: 40,
+                            Icons.arrow_back_ios,
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            
                             Navigator.pop(context);
                             // print('กด');
                           },
@@ -426,34 +423,12 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   SizedBox(
                     height: screenhight / 6.0,
                   ),
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 35),
-                            child: Text(
-                              'เข้าสู่ระบบด้วย',
-                              style: TextStyle(
-                                  fontFamily: AppTheme.FontAnakotmaiLight,
-                                  fontSize: 18,
-                                  color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  // SizedBox(
-                  //   height: SizeConfig.screenHeight * 0.11,
-                  // ),
 
                   //-------------------------------เข้าสู่ระบบด้วย Email-------------------------------//
 
                   //------------------------------เข้าสู่ระบบด้วย Twitter------------------------------//
                   _bution(
-                    'เข้าสู่ระบบด้วยEmail',
+                    'เข้าสู่ระบบด้วย Email',
                     'images/Email.png',
                     Color(0xFFE5E5E5),
                     MColors.primaryBlue,
@@ -471,7 +446,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     Container(),
                   ),
                   _bution(
-                    'เข้าสู่ระบบด้วยFacebook',
+                    'เข้าสู่ระบบด้วย Facebook',
                     'images/facebook.png',
                     Color(0xFF1877F2),
                     Colors.white,
@@ -494,11 +469,11 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           ),
                   ),
                   _bution(
-                    'เข้าสู่ระบบด้วยTwitter',
+                    'เข้าสู่ระบบด้วย Twitter',
                     'images/twitter.png',
                     Color(0xFF1DA1F3),
                     Colors.white,
-                    (){},
+                    () {},
                     Container(),
                     //  isTwitterLoggedIn!=true   ?   isfacebookLoggedIn==false  ?()  async {
                     //                             initiateFacebookTwitter();
@@ -512,6 +487,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     // ):    CircularProgressIndicator(
                     //   color: MColors.primaryColor,
                     // ),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
 
                   Container(
@@ -548,7 +526,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               children: [
                 Container(
                   height: SizeConfig.screenHeight / 13.0,
-                  width: SizeConfig.screenWidth / 7,
+                  width: MediaQuery.of(context).size.width / 7,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(textassetimage),
@@ -557,13 +535,16 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     shape: BoxShape.circle,
                   ),
                 ),
-                Text(
-                  text,
-                  overflow: TextOverflow.clip,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontFamily: AppTheme.FontAnakotmaiLight,
+                Container(
+                  width: MediaQuery.of(context).size.width / 1.9,
+                  child: Text(
+                    text,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontFamily: AppTheme.FontAnakotmaiLight,
+                    ),
                   ),
                 ),
                 Spacer(),

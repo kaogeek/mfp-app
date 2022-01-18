@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mfp_app/Api/Api.dart';
@@ -106,52 +107,51 @@ class _MenuSCState extends State<MenuSC> {
                   spreadRadius: 0,
                   color: Colors.grey.withOpacity(.1)),
             ]),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              backgroundColor: MColors.primaryBlue.withOpacity(.05),
-              radius: 25,
-              child: Image.asset(
-                "images/Group 11925.png",
-                fit: BoxFit.fill,
-                width: 25,
-                height: 25,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: CircleAvatar(
+                  backgroundColor: MColors.primaryBlue.withOpacity(.05),
+                  radius: 25,
+                  child: Image.asset(
+                    "images/Group 11925.png",
+                    fit: BoxFit.fill,
+                    width: 25,
+                    height: 25,
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Text(text,
-                style: TextStyle(
-                    color: MColors.primaryWhite,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold)),
-            const SizedBox(
-              height: 3.5,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(text1,
-                  style: TextStyle(
-                    color: MColors.primaryWhite,
-                    fontSize: 16,
-                    fontFamily: AppTheme.FontAnakotmaiMedium,
-                  )),
-            ),
-            const SizedBox(
-              height: 3.5,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(text2,
-                  style: TextStyle(
-                    color: MColors.primaryWhite,
-                    fontSize: 16,
-                    fontFamily: AppTheme.FontAnakotmaiMedium,
-                  )),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: AutoSizeText(text1,
+                    maxLines: 5,
+                    minFontSize: 16,
+                    maxFontSize: 18,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: MColors.primaryWhite,
+                      fontSize: 16,
+                      fontFamily: AppTheme.FontAnakotmaiMedium,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: AutoSizeText(text2,
+                    maxLines: 8,
+                    minFontSize: 16,
+                    maxFontSize: 18,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: MColors.primaryWhite,
+                      fontSize: 14,
+                      fontFamily: AppTheme.FontAnakotmaiMedium,
+                    )),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -195,7 +195,7 @@ class _MenuSCState extends State<MenuSC> {
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'Anakotmai-Bold',
+                          fontFamily: AppTheme.FontAnakotmaiLight,
                           fontSize: 20),
                     ),
                   ),
@@ -236,7 +236,7 @@ class _MenuSCState extends State<MenuSC> {
                           height: 99,
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 28, left: 20),
+                          padding: EdgeInsets.only(top: 20, left: 20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -250,18 +250,20 @@ class _MenuSCState extends State<MenuSC> {
                                     fontFamily: 'Anakotmai-Bold',
                                     fontSize: 24),
                               ),
-                              SizedBox(
-                                height: 9,
+                              const SizedBox(
+                                height: 5,
                               ),
-                              Text(
-                                'ซื้อสินค้าพรรคก้าวไกล สนับสนุนการ\nทำงานเพื่อประชาธิปไตย',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: AppTheme.SmallTextSize,
-                                  fontFamily: AppTheme.FontAnakotmaiLight,
+                              Expanded(
+                                child: AutoSizeText(
+                                  'ซื้อสินค้าพรรคก้าวไกล สนับสนุนการ\nทำงานเพื่อประชาธิปไตย',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: AppTheme.SmallTextSize,
+                                    fontFamily: AppTheme.FontAnakotmaiLight,
+                                  ),
                                 ),
                               ),
                             ],
@@ -272,6 +274,7 @@ class _MenuSCState extends State<MenuSC> {
                   ),
                 ),
               ),
+              SliverToBoxAdapter(child:const SizedBox(height: 10,)),
               SliverToBoxAdapter(
                 child: InkWell(
                   onTap: () async {
@@ -284,7 +287,7 @@ class _MenuSCState extends State<MenuSC> {
                     }));
                   },
                   child: Container(
-                    margin: EdgeInsets.all(14),
+                    margin: EdgeInsets.only(left: 10, right: 10),
                     width: 100,
                     height: MediaQuery.of(context).size.height / 5.3,
                     decoration: BoxDecoration(
@@ -307,7 +310,7 @@ class _MenuSCState extends State<MenuSC> {
                           height: 99,
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 28, left: 20),
+                          padding: EdgeInsets.only(top: 20, left: 20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -321,18 +324,20 @@ class _MenuSCState extends State<MenuSC> {
                                   fontSize: AppTheme.TitleTextSize,
                                 ),
                               ),
-                              SizedBox(
-                                height: 9,
+                              const SizedBox(
+                                height: 5,
                               ),
-                              Text(
-                                'ซื้อสินค้าพรรคก้าวไกล สนับสนุนการ\nทำงานเพื่อประชาธิปไตย',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: AppTheme.SmallTextSize,
-                                  fontWeight: FontWeight.w300,
-                                  fontFamily: AppTheme.FontAnakotmaiLight,
+                              Expanded(
+                                child: Text(
+                                  'ซื้อสินค้าพรรคก้าวไกล สนับสนุนการ\nทำงานเพื่อประชาธิปไตย',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: AppTheme.SmallTextSize,
+                                    fontWeight: FontWeight.w300,
+                                    fontFamily: AppTheme.FontAnakotmaiLight,
+                                  ),
                                 ),
                               ),
                             ],
@@ -354,7 +359,7 @@ class _MenuSCState extends State<MenuSC> {
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         color: Colors.black,
-                        fontFamily: AppTheme.FontAnakotmaiMedium,
+                        fontFamily: AppTheme.FontAnakotmaiLight,
                         fontSize: AppTheme.BodyTextSize16,
                       ),
                     ),
@@ -405,17 +410,19 @@ class _MenuSCState extends State<MenuSC> {
                                         SizedBox(
                                           height: 10,
                                         ),
-                                        Text(
-                                          'ช่องทางการติดต่อ',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: MColors.primaryBlue,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily:
-                                                  AppTheme.FontAnakotmaiBold,
-                                              fontSize:
-                                                  AppTheme.BodyTextSize16),
+                                        Expanded(
+                                          child: Text(
+                                            'ช่องทางการติดต่อ',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: MColors.primaryBlue,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily:
+                                                    AppTheme.FontAnakotmaiBold,
+                                                fontSize:
+                                                    AppTheme.BodyTextSize16),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -430,7 +437,7 @@ class _MenuSCState extends State<MenuSC> {
                                     "ยังไม่เปิดให้บริการ",
                                     "",
                                     1.5,
-                                    4),
+                                    5.5),
                                 child: Container(
                                   width:
                                       MediaQuery.of(context).size.width / 2.3,
@@ -457,17 +464,19 @@ class _MenuSCState extends State<MenuSC> {
                                         SizedBox(
                                           height: 10,
                                         ),
-                                        Text(
-                                          'ร้องเรียน',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: MColors.primaryBlue,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily:
-                                                  AppTheme.FontAnakotmaiBold,
-                                              fontSize:
-                                                  AppTheme.BodyTextSize16),
+                                        Expanded(
+                                          child: Text(
+                                            'ร้องเรียน',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: MColors.primaryBlue,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily:
+                                                    AppTheme.FontAnakotmaiBold,
+                                                fontSize:
+                                                    AppTheme.BodyTextSize16),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -518,17 +527,19 @@ class _MenuSCState extends State<MenuSC> {
                                         SizedBox(
                                           height: 10,
                                         ),
-                                        Text(
-                                          'อาสาสมัคร',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: MColors.primaryBlue,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily:
-                                                  AppTheme.FontAnakotmaiBold,
-                                              fontSize:
-                                                  AppTheme.BodyTextSize16),
+                                        Expanded(
+                                          child: Text(
+                                            'อาสาสมัคร',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: MColors.primaryBlue,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily:
+                                                    AppTheme.FontAnakotmaiBold,
+                                                fontSize:
+                                                    AppTheme.BodyTextSize16),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -573,17 +584,19 @@ class _MenuSCState extends State<MenuSC> {
                                         SizedBox(
                                           height: 10,
                                         ),
-                                        Text(
-                                          'บุคลากร',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: MColors.primaryBlue,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily:
-                                                  AppTheme.FontAnakotmaiBold,
-                                              fontSize:
-                                                  AppTheme.BodyTextSize16),
+                                        Expanded(
+                                          child: Text(
+                                            'บุคลากร',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: MColors.primaryBlue,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily:
+                                                    AppTheme.FontAnakotmaiBold,
+                                                fontSize:
+                                                    AppTheme.BodyTextSize16),
+                                          ),
                                         ),
                                       ],
                                     ),

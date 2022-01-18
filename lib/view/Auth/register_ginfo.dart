@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/internetConnectivity.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/Auth/register-buildprofile.dart';
@@ -668,9 +669,9 @@ Map data;
                       child: Row(
                         children: [
                         widget.isfb==true?  IconButton(
+                          splashRadius: AppTheme.splashRadius,
                             icon: const Icon(
-                              Icons.arrow_back_sharp,
-                              size: 40,
+                              Icons.arrow_back_ios,
                               color: Colors.white,
                             ),
                             onPressed: () {

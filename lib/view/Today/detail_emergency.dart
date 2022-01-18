@@ -11,6 +11,7 @@ import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/EmergencyEventModel.dart';
 import 'package:mfp_app/model/searchpostlistModel.dart';
+import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/view/Profile/profile.dart';
 import 'package:mfp_app/view/Search/search.dart';
 
@@ -170,6 +171,7 @@ class _DTemergenScState extends State<DTEmergenSc> {
                 "เหตุการณ์ด่วน ${widget.hashtagstitle}",
                 "",
                 IconButton(
+                  splashRadius: AppTheme.splashRadius,
                   icon: Icon(
                     Icons.arrow_back_ios,
                     color: MColors.primaryColor,

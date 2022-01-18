@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
@@ -57,8 +58,8 @@ Widget texttimetimestamp(DateTime dateTime) => Text(
       TimeUtils.readTimestamp(dateTime.millisecondsSinceEpoch),
       maxLines: 1,
       style: TextStyle(
-        fontFamily: 'Anakotmai-Light',
-        fontSize: 14,
+        fontFamily: AppTheme.FontAnakotmaiLight,
+        fontSize: 15,
         fontWeight: FontWeight.w400,
         color: MColors.textGrey,
       ),
@@ -85,11 +86,21 @@ Widget authorpost(
                 id: id,
               )),
       child: Text(
-        '$string',
-        style: Theme.of(context).textTheme.bodyText2,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
+        'ผู้เขียน: $string ',
+        maxLines: 1,
+        style: TextStyle(
+          color: MColors.primaryColor,
+          fontFamily: AppTheme.FontAnakotmaiLight,
+          fontSize: 15,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
+      // Text(
+      //   '$string',
+      //   style: Theme.of(context).textTheme.bodyText2,
+      //   maxLines: 2,
+      //   overflow: TextOverflow.ellipsis,
+      // ),
     );
 Widget texthashtags(String string) => Text(
       string,
@@ -104,7 +115,7 @@ Widget textreadstory(String string) => Text(
       string,
       style: TextStyle(
         fontFamily: AppTheme.FontAnakotmaiLight,
-        fontSize: 19,
+        fontSize: 18,
         // fontWeight: FontWeight.bold,
         color: MColors.primaryColor,
       ),

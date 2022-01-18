@@ -493,7 +493,7 @@ class Api {
     List<PostSearchModel> searchpostList = [];
 
     // //('getHashtagList');
-    var url = "${Api.url}api/main/content/search";
+    var url = "${Api.url}api/main/content/search?isHideStory=true";
     final headers = {
       // "mode": "EMAIL",
       "content-type": "application/json",
@@ -517,9 +517,9 @@ class Api {
     );
     // //('body$body');
     // //('responseData${responseData.body}');
+      var datapostlist = jsonDecode(responseData.body);
 
     if (responseData.statusCode == 200) {
-      var datapostlist = jsonDecode(responseData.body);
       for (Map i in datapostlist["data"]) {
         searchpostList.add(PostSearchModel.fromJson(i));
       }
@@ -755,14 +755,16 @@ class Api {
   }
 
   static Future<Http.Response> iseditcomment(String postid, String uid,
-      String token, String commentid, String commenttext) async {
+      String token, String commentid, String commenttext,String mode) async {
     // //('iseditcomment');
     var url = "${Api.url}api/post/$postid/comment/$commentid";
     final headers = {
       "userid": uid,
       "authorization": "Bearer $token",
       "content-type": "application/json",
-      "accept": "application/json"
+      "accept": "application/json",
+            "mode": mode,
+
       // "whereConditions": {"isHideStory": false},
     };
     Map data = {"comment": commenttext};

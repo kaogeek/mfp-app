@@ -10,6 +10,7 @@ import 'package:mfp_app/allWidget/circle_button.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/pagemodel.dart';
 import 'package:mfp_app/model/searchhastag.dart';
+import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
 import 'package:mfp_app/view/Profile/Profile.dart';
@@ -160,6 +161,7 @@ class _SearchState extends State<Search> {
 
     if (responseData.statusCode == 200) {
       dataht = jsonDecode(responseData.body);
+      print('dataht$dataht');
 
       for (Map i in dataht["data"]["result"]) {
         setState(() {
@@ -171,7 +173,7 @@ class _SearchState extends State<Search> {
           }
         });
 
-        //('listSearchHastagจำนวน${listSearchHastag.length}');
+        print('listSearchHastagจำนวน${listSearchHastag.length}');
         //('_searchResult${_searchResult.length}');
       }
 
@@ -279,6 +281,7 @@ class _SearchState extends State<Search> {
                                   radius: 25.0,
                                   backgroundColor: Colors.white70,
                                   child: IconButton(
+                                    splashRadius: AppTheme.splashRadius,
                                     iconSize: 30,
                                     icon: (Icon(
                                       CupertinoIcons.person_crop_circle,
@@ -319,123 +322,122 @@ class _SearchState extends State<Search> {
                       thickness: 6.0,
                     )),
                     SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 5, right: 5),
-                        child: Container(
-                          color: Colors.white,
-                          child: Column(
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Container(
-                                      height: 60.0,
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(8),
-                                      color: Colors.white,
-                                      child: TextField(
-                                        controller: controller,
-                                        autofocus: false,
-                                        decoration: InputDecoration(
-                                          // labelText: 'Search Something',
-                                          prefixIcon: Icon(
-                                            Icons.search,
-                                            color: MColors.textDark,
-                                          ),
-                                          filled: true,
-                                          fillColor: Colors.grey[200],
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            borderSide:
-                                                BorderSide(color: Colors.white),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            borderSide:
-                                                BorderSide(color: Colors.white),
-                                          ),
-                                        ),
-                                        onChanged: (text) async {
-                                          if (text == "" ||
-                                              controller.text == "") {
-                                            //print("controllerวางจริง");
-                                            setState(() {
-                                              _listPageModel.clear();
-                                              controller.clear();
-                                              listSearchHastag.clear();
-                                              _searchResult.clear();
-                                            });
-                                          }
-                                          _debouncer.run(() async {
-                                            _searchResult =
-                                                listSearchHastag.where((ht) {
-                                              var htlable =
-                                                  ht.label.toLowerCase();
-                                              return htlable.contains(controller
-                                                  .text
-                                                  .toLowerCase());
-                                            }).toList();
-                                            await getsearch(
-                                                text.toLowerCase(), userid);
-                                          });
-                                        },
-                                      ),
-                                    ),
+                      child: Row(
+                        mainAxisAlignment:MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10.0,right: 10),
+                              child: TextField(
+                                controller: controller,
+                                autofocus: false,
+                                maxLines: 1,
+                                decoration: InputDecoration(
+                                  // labelText: 'Search Something',
+                                   contentPadding: EdgeInsets.all(13),
+                                   
+                                  prefixIcon: Icon(
+                                    Icons.search,
+                                    color: MColors.textDark,
+                                    size: 20,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(6.0),
-                                    child: InkWell(
-                                      onTap: () async {
-                                        listSearchHastag.clear();
-                                        _listPageModel.clear();
-                                        setState(() {
-                                          loading = true;
-                                        });
-                                        if (controller.text.isEmpty) {
-                                          listSearchHastag.clear();
-                                          _listPageModel.clear();
-                                          isvalue = "";
-                                        }
-
-                                        if (listSearchHastag.length != 0 ||
-                                            _listPageModel.length != 0) {
-                                          listSearchHastag.clear();
-                                          _listPageModel.clear();
-                                        }
-                                        await getsearch(
-                                            controller.text.toLowerCase(),
-                                            userid);
-                                      },
-                                      child: Container(
-                                        height: 38,
-                                        width: 60,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            color: primaryColor,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color:
-                                                    Colors.grey.withOpacity(1),
-                                                blurRadius: 0.5,
-                                                spreadRadius: 0.5,
-                                              ),
-                                            ]),
-                                        child: Icon(
-                                          Icons.arrow_forward_ios_rounded,
-                                          size: 18,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(20),
+                                    borderSide:
+                                        BorderSide(color: Colors.white),
                                   ),
-                                ],
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(20),
+                                    borderSide:
+                                        BorderSide(color: Colors.white),
+                                  ),
+                                ),
+                                onChanged: (text) async {
+                                  if (text == "" ||
+                                      controller.text == "") {
+                                    //print("controllerวางจริง");
+                                    setState(() {
+                                      _listPageModel.clear();
+                                      controller.clear();
+                                      listSearchHastag.clear();
+                                      _searchResult.clear();
+                                    });
+                                  }
+                                  _debouncer.run(() async {
+                                    _searchResult =
+                                        listSearchHastag.where((ht) {
+                                      var htlable =
+                                          ht.label.toLowerCase();
+                                      return htlable.contains(controller
+                                          .text
+                                          .toLowerCase());
+                                    }).toList();
+                                    await getsearch(
+                                        text.toLowerCase(), userid);
+                                  });
+                                },
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 1.0,right: 10),
+                            child: Container(
+                               height: MediaQuery.of(context).size.height/16,
+                            width: MediaQuery.of(context).size.width/6,
+                            
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(21),
+                                color: primaryColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color:
+                                        Colors.grey.withOpacity(1),
+                                    blurRadius: 0.5,
+                                    spreadRadius: 0.5,
+                                  ),
+                                ]),
+                              child:  IconButton(
+        
+        icon: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 19,
+                                  color: Colors.white,
+                                ),
+        padding:EdgeInsets.zero,
+        onPressed: ()async {
+                              listSearchHastag.clear();
+                              _listPageModel.clear();
+                              setState(() {
+                                loading = true;
+                              });
+                              if (controller.text.isEmpty) {
+                                listSearchHastag.clear();
+                                _listPageModel.clear();
+                                isvalue = "";
+                              }
+
+                              if (listSearchHastag.length != 0 ||
+                                  _listPageModel.length != 0) {
+                                listSearchHastag.clear();
+                                _listPageModel.clear();
+                              }
+                              await getsearch(
+                                  controller.text.toLowerCase(),
+                                  userid);
+                            },
+       splashRadius: AppTheme.splashRadius,
+      ),
+                                
+                             
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     SliverToBoxAdapter(
@@ -448,66 +450,61 @@ class _SearchState extends State<Search> {
                     //     ? SliverToBoxAdapter(
                     //         child: Center(child: CupertinoActivityIndicator()))
                     //     :
-                    controller.text != ""
-                        ? listSearchHastag.length != 0 || controller.text != ""
-                            ? SliverToBoxAdapter(
-                                child: new Builder(
-                                    builder: (BuildContext context) {
-                                  return ListView.builder(
-                                    physics: ClampingScrollPhysics(),
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: listSearchHastag.length,
-                                    itemBuilder: (context, i) {
-                                      var data = listSearchHastag[i];
-                                      return InkWell(
-                                        onTap: () {
-                                          if (data.type == "HASHTAG") {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PostSearch(
-                                                        label: data.label,
-                                                      )),
-                                            );
-                                          }
-                                          if (data.type == "PAGE") {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Profliess(
-                                                        id: data.value,
-                                                      )),
-                                            );
-                                          }
-                                        },
-                                        child: Card(
-                                          // shape: RoundedRectangleBorder(
-                                          //     borderRadius: const BorderRadius.all(
-                                          //   Radius.circular(15.0),
-                                          // )),
-                                          child: new ListTile(
-                                            leading: data.historyId != null
-                                                ? Icon(Icons.timer_outlined)
-                                                : Icon(Icons.search_outlined),
-                                            title: new Text('${data.label}'),
-                                            trailing: Icon(
-                                              Icons.arrow_forward_ios_rounded,
-                                              size: 18,
-                                              color: MColors.textDark,
-                                            ),
-                                            // subtitle: new Text('>>>${data.type}'),
-                                          ),
-                                          margin: const EdgeInsets.all(2.0),
-                                        ),
-                                      );
+                    controller.text != "" && listSearchHastag.length != 0
+                        ? SliverToBoxAdapter(
+                            child: new Builder(builder: (BuildContext context) {
+                              return ListView.builder(
+                                physics: ClampingScrollPhysics(),
+                                shrinkWrap: true,
+                                scrollDirection: Axis.vertical,
+                                itemCount: listSearchHastag.length,
+                                itemBuilder: (context, i) {
+                                  var data = listSearchHastag[i];
+                                  return InkWell(
+                                    onTap: () {
+                                      if (data.type == "HASHTAG") {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => PostSearch(
+                                                    label: data.label,
+                                                  )),
+                                        );
+                                      }
+                                      if (data.type == "PAGE") {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Profliess(
+                                                    id: data.value,
+                                                  )),
+                                        );
+                                      }
                                     },
+                                    child: Card(
+                                      // shape: RoundedRectangleBorder(
+                                      //     borderRadius: const BorderRadius.all(
+                                      //   Radius.circular(15.0),
+                                      // )),
+                                      child: new ListTile(
+                                        leading: data.historyId != null
+                                            ? Icon(Icons.timer_outlined)
+                                            : Icon(Icons.search_outlined),
+                                        title: new Text('${data.label}'),
+                                        trailing: Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          size: 18,
+                                          color: MColors.textDark,
+                                        ),
+                                        // subtitle: new Text('>>>${data.type}'),
+                                      ),
+                                      margin: const EdgeInsets.all(2.0),
+                                    ),
                                   );
-                                }),
-                              )
-                            : SliverToBoxAdapter(child: Container())
+                                },
+                              );
+                            }),
+                          )
                         : SliverToBoxAdapter(
                             child: Center(
                                 child: Text('ไม่พบข้อมูล',

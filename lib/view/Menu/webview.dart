@@ -59,7 +59,7 @@ class _WebviewScState extends State<WebviewSc> {
               ),
               isLoading
                   ? LinearProgressIndicator(
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.transparent,
                       valueColor: AlwaysStoppedAnimation<Color>(
                         MColors.primaryColor,
                       ),

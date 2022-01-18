@@ -137,6 +137,7 @@ class _StroyPageScState extends State<StroyPageSc> {
           appBar: AppBar(
             backgroundColor: MColors.primaryWhite,
             elevation: 0,
+            titleSpacing:0.0,
             centerTitle: true,
             title: todayController.idloadingstory.value
                 ? Container()
@@ -149,11 +150,13 @@ class _StroyPageScState extends State<StroyPageSc> {
                   ),
             automaticallyImplyLeading: false,
             leading: IconButton(
+              splashRadius: AppTheme.splashRadius,
               icon: Icon(
                 Icons.arrow_back_ios,
                 color: MColors.primaryColor,
               ),
               onPressed: () {
+                Get.reset();
                 Navigator.of(context).pop();
               },
             ),
@@ -274,6 +277,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                             style: TextStyle(color: Colors.white, fontSize: 18),
                           ),
                           IconButton(
+                            splashRadius: AppTheme.splashRadius,
                             icon: Icon(
                               Icons.comment,
                               color: Colors.white,
@@ -289,6 +293,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                             style: TextStyle(color: Colors.white, fontSize: 18),
                           ),
                           IconButton(
+                            splashRadius: AppTheme.splashRadius,
                             icon: Icon(
                               Icons.favorite,
                               color: Colors.white,
@@ -304,6 +309,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                             style: TextStyle(color: Colors.white, fontSize: 20),
                           ),
                           IconButton(
+                            splashRadius: AppTheme.splashRadius,
                             icon: Icon(
                               Icons.favorite_border,
                               color: Colors.white,
@@ -319,13 +325,12 @@ class _StroyPageScState extends State<StroyPageSc> {
                             style: TextStyle(color: Colors.white, fontSize: 18),
                           ),
                           IconButton(
+                            splashRadius: AppTheme.splashRadius,
                             icon: Icon(
                               Icons.share_outlined,
                               color: Colors.white,
                             ),
-                            onPressed: () {
-                              //print('กด');
-                            },
+                            onPressed: null,
                           ),
                           Spacer(),
                         ],
@@ -335,7 +340,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                       child: Text(
                         'มีการเติมเต็ม 0 รายการ',
                         style: TextStyle(
-                            fontFamily: AppTheme.FontAnakotmaiMedium,
+                            fontFamily: AppTheme.FontAnakotmaiLight,
                             color: MColors.textDark,
                             fontSize: AppTheme.BodyTextSize),
                       ),

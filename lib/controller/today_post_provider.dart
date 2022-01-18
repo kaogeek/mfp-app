@@ -14,6 +14,8 @@ class TodayPostController extends GetxController {
   var _currentMax = 0.obs;
   var isLoading = true.obs;
   var firstload = true.obs;
+    var isLoadingmore = true.obs;
+
   var idloadingstory = true.obs;
   var storycontent = "";
   var id = "";
@@ -92,14 +94,17 @@ class TodayPostController extends GetxController {
       {var pagenumber = 0}) async {
     //print('getsearchpostList');
     try {
+      print('pagenumber$pagenumber');
       if (serarchpostList.length == 0 || pagenumber == 0) {
         isLoading(true);
         serarchpostList.clear();
       }
+     
 
       var searchposts = await Api.apisearchlist(label, keyword, offset);
       if (searchposts != null) {
         serarchpostList.addAll(searchposts);
+        print('length${serarchpostList.length}');
         update();
       }
     } finally {
