@@ -123,8 +123,8 @@ class _LoginemailState extends State<Loginemail> {
         hintStyle: TextStyle(
           fontFamily: AppTheme.FontAnakotmaiLight,
         ),
-        contentPadding: EdgeInsets.only(left: 30, top: 8),
-        border: InputBorder.none,
+    contentPadding: EdgeInsets.all(13),      
+      border: InputBorder.none,
       ),
       keyboardType: TextInputType.emailAddress,
       autocorrect: false,
@@ -160,14 +160,12 @@ class _LoginemailState extends State<Loginemail> {
         hintText: 'รหัสผ่าน',
         suffixIcon: InkWell(
             onTap: _togglePasswordView,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 13),
-              child: Icon(isHiddenPassword == true
-                  ? Icons.visibility_off_outlined
-                  : Icons.visibility),
-            )),
-        contentPadding: EdgeInsets.only(left: 30, top: 16),
+            child: Icon(isHiddenPassword == true
+                ? Icons.visibility_off_outlined
+                : Icons.visibility,color: MColors.primaryColor,)),
         border: InputBorder.none,
+        contentPadding: const EdgeInsets.all(13),
+
       ),
       obscureText: isHiddenPassword,
       keyboardType: TextInputType.text,
@@ -207,8 +205,8 @@ class _LoginemailState extends State<Loginemail> {
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
                 image: DecorationImage(
-                    colorFilter: ColorFilter.mode(
-                        Color(0xFF0C3455), BlendMode.softLight),
+                    colorFilter:
+                        ColorFilter.mode(Colors.grey[500], BlendMode.modulate),
                     image: AssetImage('images/shutterstock_553511089.png'),
                     fit: BoxFit.cover)),
             child: Padding(
@@ -222,13 +220,13 @@ class _LoginemailState extends State<Loginemail> {
                         child: Row(
                           children: [
                             IconButton(
+                              splashRadius: AppTheme.splashRadius,
                               icon: const Icon(
-                                Icons.arrow_back_sharp,
-                                size: 40,
+                                Icons.arrow_back_ios,
                                 color: Colors.white,
                               ),
                               onPressed: () {
-                                  Get.reset();
+                                Get.reset();
                                 Navigator.pop(context);
                                 //('กด');
                               },
@@ -250,22 +248,24 @@ class _LoginemailState extends State<Loginemail> {
                         SizedBox(
                           height: SizeConfig.screenHeight / 3.8,
                         ),
+               
 
-                      Align(
-                        alignment: Alignment.centerLeft,
+                      Container(
+                         width: MediaQuery.of(context).size.width /1,
+                   margin: EdgeInsets.only(left: 10, right: 5),
                         child: Text(
                           'เข้าสู่ระบบด้วย Email',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             color: Colors.white,
                             fontFamily: AppTheme.FontAnakotmaiLight,
                           ),
                         ),
                       ),
+                      const SizedBox(height: 10,),
                       //--------------------อีเมล----------------------//
 
                       Container(
-                        height: SizeConfig.screenHeight * 0.07,
                         margin: EdgeInsets.only(left: 10, right: 10),
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -279,9 +279,9 @@ class _LoginemailState extends State<Loginemail> {
                       SizedBox(
                         height: 10,
                       ),
+         
                       Container(
-                        height: SizeConfig.screenHeight * 0.07,
-                        margin: EdgeInsets.only(left: 10, right: 10),
+                             margin: EdgeInsets.only(left: 10, right: 10),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             border:
@@ -290,6 +290,7 @@ class _LoginemailState extends State<Loginemail> {
                                 const Radius.circular(10.0))),
                         child: _txtPassword,
                       ),
+                      
                       Obx(() {
                         if (authController.iserror.value)
                           return Padding(

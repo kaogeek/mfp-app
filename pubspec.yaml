@@ -58,6 +58,8 @@ dependencies:
   jiffy: ^3.0.1
   auto_size_text: ^2.1.0
   path_provider: ^2.0.8
+  fdottedline: ^1.0.1
+
 
 
   

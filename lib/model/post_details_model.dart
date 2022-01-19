@@ -1,5 +1,7 @@
 
 
+import 'package:mfp_app/model/gallery.dart';
+
 class PostDetailsModel {
     PostDetailsModel({
         this.id,
@@ -39,6 +41,8 @@ class PostDetailsModel {
         this.isLike,
         this.likeAsPage,
         this.isComment,
+              this.story,
+
     });
 
     String id;
@@ -78,6 +82,8 @@ class PostDetailsModel {
     bool isLike;
     bool likeAsPage;
     bool isComment;
+      Story story;
+
 
     factory PostDetailsModel.fromJson(Map<String, dynamic> json) => PostDetailsModel(
         id: json["_id"],
@@ -117,6 +123,8 @@ class PostDetailsModel {
         isLike: json["isLike"],
         likeAsPage: json["likeAsPage"],
         isComment: json["isComment"],
+                        story: json["story"] == null ? null : Story.fromJson(json["story"]),
+
     );
 
     Map<String, dynamic> toJson() => {
@@ -157,44 +165,17 @@ class PostDetailsModel {
         "isLike": isLike,
         "likeAsPage": likeAsPage,
         "isComment": isComment,
+
     };
 }
+class Story {
+  Story();
 
-class Gallery {
-    Gallery({
-        this.id,
-        this.post,
-        this.fileId,
-        this.imageUrl,
-        this.s3ImageUrl,
-        this.ordering,
-    });
+  factory Story.fromJson(Map<String, dynamic> json) => Story();
 
-    String id;
-    String post;
-    String fileId;
-    String imageUrl;
-    String s3ImageUrl;
-    int ordering;
-
-    factory Gallery.fromJson(Map<String, dynamic> json) => Gallery(
-        id: json["_id"],
-        post: json["post"],
-        fileId: json["fileId"],
-        imageUrl: json["imageURL"],
-        s3ImageUrl: json["s3ImageURL"],
-        ordering: json["ordering"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "_id": id,
-        "post": post,
-        "fileId": fileId,
-        "imageURL": imageUrl,
-        "s3ImageURL": s3ImageUrl,
-        "ordering": ordering,
-    };
+  Map<String, dynamic> toJson() => {};
 }
+
 
 class HashTag {
     HashTag({

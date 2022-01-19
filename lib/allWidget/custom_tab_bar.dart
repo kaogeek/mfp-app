@@ -61,7 +61,8 @@ class CustomTabBar extends StatelessWidget {
               ),
       ),
       labelStyle:
-          TextStyle(fontSize: 12, fontFamily: AppTheme.FontAnakotmaiMedium),
+          TextStyle(fontSize: 12, fontFamily: AppTheme.FontAnakotmaiLight,
+),
       labelColor: Colors.black,
       tabs:
           // _tabs,

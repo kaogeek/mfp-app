@@ -36,6 +36,8 @@ class AppTheme {
   static const SmallTextSize = 14.0;
 
   static const TitleTextSize = 23.0;
+  
+  static const splashRadius = 1.0;
 
   static const TextTheme textTheme = TextTheme(
     headline1: display2,
@@ -51,16 +53,14 @@ class AppTheme {
   static const TextStyle display2 = TextStyle(
     // h4 -> display1 // post titel
     fontFamily: FontAnakotmaiBold,
-    fontSize: TitleTextSize,
-    fontWeight: FontWeight.bold,
+    fontSize: BodyTextSize20,
     color: MColors.primaryBlue,
   );
 
   static const TextStyle display1 = TextStyle(
     // h4 -> display1
-    fontFamily: FontAnakotmaiMedium,
-    fontSize: BodyTextSize,
-    fontWeight: FontWeight.bold,
+    fontFamily: FontAnakotmaiLight,
+    fontSize: BodyTextSize20,
 
     color: MColors.primaryBlue,
   );
