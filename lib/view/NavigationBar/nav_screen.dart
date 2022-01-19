@@ -52,7 +52,7 @@ class _NavScreenState extends State<NavScreen> {
   }
 
   final List<String> _iconsimage = const [
-    'images/Element@2x.png',
+    'images/Today_Icon.png',
     'images/Group 10711@2x.png',
     'images/shopping basket@2x.png',
     'images/Group 11614@2x.png',

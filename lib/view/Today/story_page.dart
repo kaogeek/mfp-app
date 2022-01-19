@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
@@ -137,7 +135,7 @@ class _StroyPageScState extends State<StroyPageSc> {
           appBar: AppBar(
             backgroundColor: MColors.primaryWhite,
             elevation: 0,
-            titleSpacing:0.0,
+            titleSpacing: 0.0,
             centerTitle: true,
             title: todayController.idloadingstory.value
                 ? Container()
@@ -168,51 +166,22 @@ class _StroyPageScState extends State<StroyPageSc> {
                   children: [
                     Stack(
                       children: [
-                      //  imagelist[0].imageUrl != null
-                      //           ? Image.network(
-                      //               imagelist[0].signUrl,
-                      //               errorBuilder: (BuildContext context,
-                      //                   Object exception,
-                      //                   StackTrace stackTrace) {
-                      //                 return Container(
-                      //                     width:
-                      //                         MediaQuery.of(context).size.width,
-                      //                     height: MediaQuery.of(context)
-                      //                             .size
-                      //                             .height /
-                      //                         3.0,
-                      //                     child: Image.asset(
-                      //                         'images/placeholder.jpg'));
-                      //               },
-                      //               color: Color.fromRGBO(255, 255, 255, 0.7),
-                      //               colorBlendMode: BlendMode.dstATop,
-                      //               fit: BoxFit.cover,
-                      //               width: MediaQuery.of(context).size.width,
-                      //               height: MediaQuery.of(context).size.height /
-                      //                   3.0,
-                      //             )
-                      //           : Container(),
-                            
                         Image.network(
-                                "https://today-api.moveforwardparty.org/api${imagelist[0].imageUrl}/image",
-                                errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace stackTrace) {
-                                  return Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                              3.0,
-                                      child: Image.asset(
-                                          'images/placeholder.jpg'));
-                                },
-                                color: Color.fromRGBO(255, 255, 255, 0.7),
-                                colorBlendMode: BlendMode.dstATop,
-                                fit: BoxFit.cover,
+                          "https://today-api.moveforwardparty.org/api${imagelist[0].imageUrl}/image",
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace stackTrace) {
+                            return Container(
                                 width: MediaQuery.of(context).size.width,
                                 height:
                                     MediaQuery.of(context).size.height / 3.0,
-                              ),
-                          
+                                child: Image.asset('images/placeholder.jpg'));
+                          },
+                          color: Color.fromRGBO(255, 255, 255, 0.7),
+                          colorBlendMode: BlendMode.dstATop,
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height / 3.0,
+                        ),
                         Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height / 3.0,
@@ -352,7 +321,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                     ),
                     Container(
                       alignment: Alignment.centerLeft,
-                      width: MediaQuery.of(context).size.width ,
+                      width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height / 8.0,
                       color: Colors.grey[100],
                       child: Padding(
@@ -380,8 +349,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                                   child: Text(
                                     "$type ${TimeUtils.readTimestamp(widget.createdDate.millisecondsSinceEpoch)}",
                                     style: TextStyle(
-                                        fontFamily:
-                                            AppTheme.FontAnakotmaiBold,
+                                        fontFamily: AppTheme.FontAnakotmaiBold,
                                         color: MColors.textDark,
                                         fontSize: AppTheme.BodyTextSize),
                                   ),
@@ -389,16 +357,15 @@ class _StroyPageScState extends State<StroyPageSc> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Container(
-                                    width: MediaQuery.of(context).size.width /
-                                        2.0,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.0,
                                     child: Text(
                                       'เผยแพร่โดย:${widget.postby}',
                                       textAlign: TextAlign.left,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        fontFamily:
-                                            AppTheme.FontAnakotmaiBold,
+                                        fontFamily: AppTheme.FontAnakotmaiBold,
                                         color: MColors.textGrey,
                                         fontSize: AppTheme.BodyTextSize12,
                                       ),

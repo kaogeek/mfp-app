@@ -43,12 +43,10 @@ class _ShopSCState extends State<ShopSC> {
 
   @override
   void initState() {
-    //print('initState');
     super.initState();
     setState(() {
       Api.gettoke().then((value) => value({
             token = value,
-            //('token$token'),
           }));
 
       Api.getmyuid().then((value) => ({
@@ -60,30 +58,15 @@ class _ShopSCState extends State<ShopSC> {
                     {
                       datagetuserprofile = jsonDecode(responseData.body),
                       setState(() {
-                        // displayName1 =
-                        //     datagetuserprofile["data"]
-                        //         ["displayName"];
-                        // gender = datagetuserprofile["data"]
-                        //     ["gender"];
-                        // firstName = datagetuserprofile["data"]
-                        //     ["firstName"];
-                        // lastName = datagetuserprofile["data"]
-                        //     ["lastName"];
-                        // id = datagetuserprofile["data"]["id"];
-                        // email =
-                        //     datagetuserprofile["data"]["email"];
                         image = datagetuserprofile["data"]["imageURL"];
                       }),
-                      //('image$image'),
                     }
                 })),
-            //('userid$userid'),
           }));
       Api.getimageURL().then((value) => ({
             setState(() {
               userimageUrl = value;
             }),
-            //('userimageUrl$userimageUrl'),
           }));
     });
   }
@@ -160,17 +143,6 @@ class _ShopSCState extends State<ShopSC> {
                             child: Column(
                               children: [
                                 topImage('images/MFP-101.png'),
-                                // Container(
-                                //   height: 250.0,
-                                //   width: double.infinity,
-                                //   decoration: BoxDecoration(
-                                //     image: DecorationImage(
-                                //       image: AssetImage('images/MFP-101.png'),
-                                //       fit: BoxFit.fill,
-                                //     ),
-                                //     //shape: BoxShape.circle,
-                                //   ),
-                                // ),
                                 Container(
                                   color: Colors.grey[200],
                                   child: Padding(
@@ -217,43 +189,10 @@ class _ShopSCState extends State<ShopSC> {
                           Container(
                             child: Column(
                               children: [
-                                Row(
-                                  children: [
-                                    smallImage('images/MFP-101-IMG_8927.jpg'),
-                                    // Container(
-                                    //   height: 250.0,
-                                    //   width: MediaQuery.of(context).size.width /
-                                    //       2.0,
-                                    //   decoration: BoxDecoration(
-                                    //     color: Colors.white,
-
-                                    //     image: DecorationImage(
-                                    //       image: AssetImage(
-                                    //           'images/MFP-101-IMG_8927.jpg'),
-                                    //       fit: BoxFit.cover,
-                                    //     ),
-                                    //     //shape: BoxShape.circle,
-                                    //   ),
-                                    // ),
-                                    smallImage('images/MFP-101-IMG_8954.jpg'),
-
-                                    // Container(
-                                    //   height: 250.0,
-                                    //   width: MediaQuery.of(context).size.width /
-                                    //       2.0,
-                                    //   decoration: BoxDecoration(
-                                    //     color: Colors.white,
-
-                                    //     image: DecorationImage(
-                                    //       image: AssetImage(
-                                    //           'images/MFP-101-IMG_8954.jpg'),
-                                    //       fit: BoxFit.cover,
-                                    //     ),
-                                    //     //shape: BoxShape.circle,
-                                    //   ),
-                                    // ),
-                                  ],
-                                ),
+                                Row(children: [
+                                  smallImage('images/MFP-101-IMG_8927.jpg'),
+                                  smallImage('images/MFP-101-IMG_8954.jpg'),
+                                ]),
                                 Container(
                                   color: Colors.grey[200],
                                   child: Row(
@@ -358,46 +297,12 @@ class _ShopSCState extends State<ShopSC> {
                                 Row(
                                   children: [
                                     smallImage('images/MFP-101-IMG_9030.jpg'),
-
-                                    // Container(
-                                    //   height: 250.0,
-                                    //   width: MediaQuery.of(context).size.width /
-                                    //       2.0,
-                                    //   decoration: BoxDecoration(
-                                    //     color: Colors.white,
-
-                                    //     image: DecorationImage(
-                                    //       image: AssetImage(
-                                    //           'images/MFP-101-IMG_9030.jpg'),
-                                    //       fit: BoxFit.scaleDown,
-                                    //     ),
-                                    //     //shape: BoxShape.circle,
-                                    //   ),
-                                    // ),
                                     smallImage('images/MFP-101-IMG_9078.jpg'),
-
-                                    // Container(
-                                    //   height: 250.0,
-                                    //   width: MediaQuery.of(context).size.width /
-                                    //       2.0,
-                                    //   decoration: BoxDecoration(
-                                    //     color: Colors.white,
-
-                                    //     image: DecorationImage(
-                                    //       image: AssetImage(
-                                    //           'images/MFP-101-IMG_9078.jpg'),
-                                    //       fit: BoxFit.scaleDown,
-                                    //     ),
-                                    //     //shape: BoxShape.circle,
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
                                 Container(
                                   color: Colors.grey[200],
                                   child: Row(
-                                    // mainAxisAlignment:
-                                    //     MainAxisAlignment.spaceBetween,
                                     children: [
                                       Container(
                                         color: Colors.grey[200],
@@ -494,18 +399,6 @@ class _ShopSCState extends State<ShopSC> {
                             child: Column(
                               children: [
                                 topImage('images/MFP-101-IMG_9009.jpg'),
-                                // Container(
-                                //   height: 250.0,
-                                //   width: double.infinity,
-                                //   decoration: BoxDecoration(
-                                //     image: DecorationImage(
-                                //       image: AssetImage(
-                                //           'images/MFP-101-IMG_9009.jpg'),
-                                //       fit: BoxFit.fill,
-                                //     ),
-                                //     //shape: BoxShape.circle,
-                                //   ),
-                                // ),
                                 Container(
                                   color: Colors.grey[200],
                                   child: Padding(
@@ -518,13 +411,13 @@ class _ShopSCState extends State<ShopSC> {
                                               '79 บาท',
                                               maxLines: 1,
                                               style: TextStyle(
-                                                fontSize:
-                                                    AppTheme.BodyTextSize24,
-                                                fontFamily:
-                                                    AppTheme.FontAnakotmaiBold,
-                                                color: MColors.primaryColor,
-                                                overflow: TextOverflow.ellipsis
-                                              ),
+                                                  fontSize:
+                                                      AppTheme.BodyTextSize24,
+                                                  fontFamily: AppTheme
+                                                      .FontAnakotmaiBold,
+                                                  color: MColors.primaryColor,
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
                                             ),
                                           ),
                                           Container(
@@ -533,13 +426,14 @@ class _ShopSCState extends State<ShopSC> {
                                               'แมสก์พร้อมสายคล้องคอปรับได้',
                                               maxLines: 1,
                                               style: TextStyle(
-                                                fontSize: AppTheme.BodyTextSize,
-                                                fontWeight: FontWeight.w300,
-                                                fontFamily:
-                                                    AppTheme.FontAnakotmaiLight,
-                                                color: MColors.textDark,
-                                                overflow: TextOverflow.ellipsis
-                                              ),
+                                                  fontSize:
+                                                      AppTheme.BodyTextSize,
+                                                  fontWeight: FontWeight.w300,
+                                                  fontFamily: AppTheme
+                                                      .FontAnakotmaiLight,
+                                                  color: MColors.textDark,
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
                                             ),
                                           ),
                                         ],
@@ -610,19 +504,11 @@ class _ShopSCState extends State<ShopSC> {
                     ),
                   ),
                 )),
-                // Second child is button
               ]),
             ],
           ),
         ),
       ),
     );
-
-    // Scaffold(
-    //   appBar: AppBar(),
-
-    //   body:
-
-    // );
   }
 }

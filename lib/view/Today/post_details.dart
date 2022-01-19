@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,14 +12,11 @@ import 'package:mfp_app/allWidget/fontsize.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/commentlistmodel.dart';
 import 'package:mfp_app/model/post_details_model.dart';
-import 'package:mfp_app/model/searchpostlistModel.dart';
 import 'package:http/http.dart' as Http;
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/utils/timeutils.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
-import 'package:mfp_app/view/Profile/profile.dart';
-import 'package:mfp_app/view/Search/search.dart';
 import 'package:mfp_app/view/Today/show_full_image.dart';
 import 'package:mfp_app/view/Today/story_page.dart';
 
@@ -32,7 +27,6 @@ class PostDetailsSC extends StatefulWidget {
   final String subtitle;
   final DateTime dateTime;
   final List gallery;
-  int likeCount;
   final int commentCount;
   final int shareCoun;
   final String userimage;
@@ -54,7 +48,6 @@ class PostDetailsSC extends StatefulWidget {
       this.subtitle,
       this.dateTime,
       this.gallery,
-      this.likeCount,
       this.commentCount,
       this.shareCoun,
       this.userimage,
@@ -118,6 +111,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
   StreamController _commerntController;
   StreamController _postdetailController;
   var pagename = "";
+  var pageid = "";
+
   Future futuregetpostdetail;
 
   @override
@@ -185,12 +180,11 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                       {
                         setState(() {
                           pagename = i['page'][0]['name'];
+                          pageid = i['page'][0]['pageId'];
                         }),
 
                         postdetailslist.add(PostDetailsModel.fromJson(i)),
                         _postdetailController.add(responseData),
-
-                        // var stroycoverImage= i["coverImage"];
                       },
                     // //("Response  :$storytestreplaceAll"),
                     // //('titalpost$titalpost'),
@@ -201,6 +195,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                 else if (responseData.statusCode == 400)
                   {}
               }));
+
       //--getcommentlist
       await Api.getcommentlist(widget.postid, userid, token)
           .then((responseData) => ({
@@ -226,10 +221,6 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
       //--.
       await Api.postsearch(userid, token, widget.postid, mode)
           .then((responseData) => ({
-                // setState(() {
-                //   loading = true;
-                // }),
-                // //('postsearch'),
                 if (responseData.statusCode == 200)
                   {
                     datapostsearch = jsonDecode(responseData.body),
@@ -242,14 +233,12 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                             setState(() {
                               // islikepost = false;
                             }),
-                            // //('islike$islikepost'),
                           }
                         else if (i["isLike"] == true)
                           {
                             setState(() {
                               // islikepost = true;
                             }),
-                            // //('islike$islikepost'),
                           }
                       },
                   }
@@ -330,7 +319,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
     if (onref == true) {
       _handleRefresh();
     }
-    // //(pagename);
+
     return loading == true
         ? Container(
             color: Colors.white,
@@ -346,16 +335,6 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                 body: CustomScrollView(
                   controller: _trackingScrollController,
                   slivers: [
-                    // primaryAppBar(
-                    //     context,
-                    //     token,
-                    //     userid,
-                    //     userprofileimage,
-                    //     Search(),
-                    //     ProfileSc(
-                    //       userid: userid,
-                    //       token: token,
-                    //     )),
                     AppBardetail(
                       context,
                       "โพสต์ของ",
@@ -371,29 +350,37 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                         },
                       ),
                     ),
-
                     ///-----------APPBAR-----------------//
                     postloading == true
-                        ? SliverToBoxAdapter(child: CarouselLoading())
+                        ? SliverToBoxAdapter(
+                            child: CarouselLoading())
                         : SliverToBoxAdapter(
                             child: StreamBuilder(
                               stream: _postdetailController.stream,
+                              // future: Future.wait([
+                              //   futuregetpostdetail
+                              // ]),
                               builder: (BuildContext context,
                                   AsyncSnapshot snapshot) {
+                                // if (snapshot.connectionState ==
+                                //     ConnectionState.waiting) {
+                                //   return CarouselLoading();
+                                // }
+                                // if (snapshot.connectionState ==
+                                //     ConnectionState.done) {
+                                //   return Text('ไม่พบเพจ');
+                                // }
                                 return Builder(builder: (BuildContext context) {
                                   return ListView.builder(
                                     physics: ClampingScrollPhysics(),
                                     shrinkWrap: true,
-                                    // padding: const EdgeInsets.all(8.0),
                                     scrollDirection: Axis.vertical,
                                     itemCount: postdetailslist.length,
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       final datapostdetail =
                                           postdetailslist[index];
-                                      // pagename=datapostdetail.page[index].name;
                                       var likenumber = datapostdetail.likeCount;
-
                                       return PostList(
                                           datapostdetail.title,
                                           datapostdetail.detail,
@@ -412,9 +399,6 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                               },
                             ),
                           ),
-                    // SliverToBoxAdapter(
-                    //   child:
-                    // ),
                     SliverToBoxAdapter(
                       child: _buildCommentList(),
                     ),
@@ -509,7 +493,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                   height: 5,
                 ),
                 Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
+                  padding: const EdgeInsets.only(left: 10.0),
                   child: texttitlepost(posttitle, context),
                 ),
                 Padding(
@@ -518,7 +502,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                 ),
                 story != null
                     ? Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
+                        padding: const EdgeInsets.only(left: 10.0),
                         child: InkWell(
                             onTap: () async {
                               Navigate.pushPage(
@@ -556,9 +540,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                             page[0].id,
                             page[0].imageUrl,
                             page[0].name,
-                            false,
                             "pageUsername",
-                            false,
                             userid,
                             true),
                       ),
@@ -675,7 +657,6 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                       }
                                                   }
                                               }));
-                              // print("กดlike");
                             },
                           ),
                           PostButton(
@@ -711,11 +692,12 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                 token == "" || token == null
                     ? Container()
                     : Row(
-                      mainAxisAlignment:MainAxisAlignment.start,
-                      crossAxisAlignment :CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 10.0,bottom: 10),
+                            padding:
+                                const EdgeInsets.only(left: 10.0, bottom: 10),
                             child: CircleAvatar(
                               radius: 25.0,
                               backgroundImage: userprofileimage != null
@@ -726,7 +708,6 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                               backgroundColor: Colors.transparent,
                             ),
                           ),
-                          
                           isedit != true
                               ? Padding(
                                   padding: const EdgeInsets.only(left: 4.0),
@@ -765,7 +746,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                 tp.preferredLineHeight)
                                             .ceil();
                                         int maxLines = 10;
-                                        print('height${tp.size.height}');
+                                        // print('height${tp.size.height}');
 
                                         return TextField(
                                           controller: _commentController,
@@ -813,7 +794,6 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                               ],
                                             ),
                                           ),
-                                          // style: yourTextStyle,
                                         );
                                       }),
                                     ),
@@ -856,15 +836,12 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                 tp.preferredLineHeight)
                                             .ceil();
                                         int maxLines = 10;
-                                        print('height${tp.size.height}');
-
                                         return TextFormField(
                                           initialValue:
                                               _commenteditController.text,
                                           autofocus: widget.onfocus,
                                           onChanged: (String value) {
                                             _commenteditController.text = value;
-                                            print(value);
                                           },
                                           maxLines: lines < maxLines
                                               ? null
@@ -974,15 +951,13 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
 
             return Padding(
               padding: EdgeInsets.all(8.0),
-              // widget.data['toCommentID'] == null ? EdgeInsets.all(8.0) : EdgeInsets.fromLTRB(34.0,8.0,8.0,8.0),
               child: Stack(
                 children: <Widget>[
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(6.0, 2.0, 10.0, 2.0),
+                        padding: const EdgeInsets.fromLTRB(6.0, 2.0, 10.0, 2.0),
                         child: Container(
                           width: 48,
                           // widget.data['toCommentID'] == null ? 48 : 40,
@@ -1034,7 +1009,6 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                               ),
                             ),
                             width: MediaQuery.of(context).size.width - 90,
-                            // widget.size.width- (widget.data['toCommentID'] == null ? 90 : 110),
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: Color(0xffDEDEDE),
@@ -1090,121 +1064,131 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                           color: data.isLike == false
                                               ? MColors.primaryBlue
                                               : MColors.primaryColor),
-                                      // style:TextStyle(fontWeight: FontWeight.bold,color:_currentMyData.myLikeCommnetList != null && _currentMyData.myLikeCommnetList.contains(widget.data['commentID']) ? Colors.blue[900] : Colors.grey[700])
                                     ),
                                   ),
                                   SizedBox(
                                     width: 8,
                                   ),
-                                 data.user.id == userid
-                  ?  GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) =>
-                                              new CupertinoAlertDialog(
-                                                title: new Text(
-                                                  "ลบ คอมเม้นต์",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                actions: [
-                                                  CupertinoDialogAction(
-                                                    isDefaultAction: true,
-                                                    child: new Text("ยกเลิก"),
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            context),
-                                                  ),
-                                                  CupertinoDialogAction(
-                                                      child: new Text(
-                                                        "ลบ",
+                                  data.user.id == userid
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            showDialog(
+                                                context: context,
+                                                builder: (BuildContext
+                                                        context) =>
+                                                    new CupertinoAlertDialog(
+                                                      title: new Text(
+                                                        "ลบ คอมเม้นต์",
                                                         style: TextStyle(
-                                                            color:
-                                                                Colors.red),
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
                                                       ),
-                                                      onPressed: () async {
-                                                        Api.deletecomment(
-                                                                widget.postid,
-                                                                token,
-                                                                commentid,
-                                                                userid,
-                                                                mode)
-                                                            .then(
-                                                                (value) => ({
-                                                                      if (value['status'] ==
-                                                                          1)
-                                                                        {
-                                                                          setState(() {
-                                                                            onref = true;
-                                                                          }),
-                                                                        }
-                                                                    }));
-                                                        Navigator.pop(
-                                                            context);
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                                SnackBar(
-                                                          backgroundColor:
-                                                              Colors.green,
-                                                          content: Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons.check,
-                                                                color: MColors
-                                                                    .primaryWhite,
-                                                              ),
-                                                              SizedBox(
-                                                                width: 5,
-                                                              ),
-                                                              Text('สำเร็จ')
-                                                            ],
-                                                          ),
-                                                          duration:
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                      2500),
-                                                        ));
-                                                      }),
-                                                ],
-                                              ));
-                                    },
-                                    child: Text(
-                                      'ลบ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: MColors.primaryBlue),
-                                      // style:TextStyle(fontWeight: FontWeight.bold,color:_currentMyData.myLikeCommnetList != null && _currentMyData.myLikeCommnetList.contains(widget.data['commentID']) ? Colors.blue[900] : Colors.grey[700])
-                                    ),
-                                  ):Container(),
-                                data.user.id == userid
-                  ?   SizedBox(
-                                    width: 8,
-                                  ):SizedBox(
-                                    width: 4,
-                                  ),
-                               data.user.id == userid
-                  ?    GestureDetector(
-                                    onTap: () {
-                              setState(() {
-                                isedit = true;
-                              });
-                             
-                            },
-                                    child: Text(
-                                      'แก้ไข',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: MColors.primaryBlue),
-                                      // style:TextStyle(fontWeight: FontWeight.bold,color:_currentMyData.myLikeCommnetList != null && _currentMyData.myLikeCommnetList.contains(widget.data['commentID']) ? Colors.blue[900] : Colors.grey[700])
-                                    ),
-                                    ):Container(),
-                                 data.user.id == userid
-                  ?  SizedBox(
-                                    width: 8,
-                                  ):Container(),
+                                                      actions: [
+                                                        CupertinoDialogAction(
+                                                          isDefaultAction: true,
+                                                          child: new Text(
+                                                              "ยกเลิก"),
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  context),
+                                                        ),
+                                                        CupertinoDialogAction(
+                                                            child: new Text(
+                                                              "ลบ",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .red),
+                                                            ),
+                                                            onPressed:
+                                                                () async {
+                                                              Api.deletecomment(
+                                                                      widget
+                                                                          .postid,
+                                                                      token,
+                                                                      commentid,
+                                                                      userid,
+                                                                      mode)
+                                                                  .then(
+                                                                      (value) =>
+                                                                          ({
+                                                                            if (value['status'] ==
+                                                                                1)
+                                                                              {
+                                                                                setState(() {
+                                                                                  onref = true;
+                                                                                }),
+                                                                              }
+                                                                          }));
+                                                              Navigator.pop(
+                                                                  context);
+                                                              ScaffoldMessenger
+                                                                      .of(
+                                                                          context)
+                                                                  .showSnackBar(
+                                                                      SnackBar(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .green,
+                                                                content: Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .check,
+                                                                      color: MColors
+                                                                          .primaryWhite,
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 5,
+                                                                    ),
+                                                                    Text(
+                                                                        'สำเร็จ')
+                                                                  ],
+                                                                ),
+                                                                duration: const Duration(
+                                                                    milliseconds:
+                                                                        2500),
+                                                              ));
+                                                            }),
+                                                      ],
+                                                    ));
+                                          },
+                                          child: Text(
+                                            'ลบ',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: MColors.primaryBlue),
+                                            // style:TextStyle(fontWeight: FontWeight.bold,color:_currentMyData.myLikeCommnetList != null && _currentMyData.myLikeCommnetList.contains(widget.data['commentID']) ? Colors.blue[900] : Colors.grey[700])
+                                          ),
+                                        )
+                                      : Container(),
+                                  data.user.id == userid
+                                      ? SizedBox(
+                                          width: 8,
+                                        )
+                                      : SizedBox(
+                                          width: 4,
+                                        ),
+                                  data.user.id == userid
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              isedit = true;
+                                            });
+                                          },
+                                          child: Text(
+                                            'แก้ไข',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: MColors.primaryBlue),
+                                          ),
+                                        )
+                                      : Container(),
+                                  data.user.id == userid
+                                      ? SizedBox(
+                                          width: 8,
+                                        )
+                                      : Container(),
                                   Text(
                                     TimeUtils.readTimestamp(data
                                         .createdDate.millisecondsSinceEpoch),
@@ -1212,8 +1196,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: MColors.primaryBlue,
-                                        fontFamily:
-                                            AppTheme.FontAnakotmaiLight,
+                                        fontFamily: AppTheme.FontAnakotmaiLight,
                                         fontSize: 13,
                                         overflow: TextOverflow.ellipsis),
                                   ),

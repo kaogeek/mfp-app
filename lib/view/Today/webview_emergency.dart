@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mfp_app/Api/Api.dart';
-import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/view/Profile/Profliess.dart';
@@ -36,14 +35,11 @@ class _Webview_EmergencySCState extends State<Webview_EmergencySC> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      //('delayedgetpost');
       await Api.gettoke().then((value) => value({
             token = value,
-            //('token$token'),
           }));
       await Api.getmyuid().then((value) => value({
             userid = value,
-            //('token$userid'),
           }));
     });
     super.initState();
@@ -69,12 +65,11 @@ class _Webview_EmergencySCState extends State<Webview_EmergencySC> {
               color: Colors.black, //change your color here
             ),
             leading: IconButton(
-    icon: Icon(Icons.arrow_back_ios, color: Colors.black),
-    onPressed: () => Navigator.of(context).pop(),
-  ), 
+              icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
             title: Row(
               children: [
-                
                 CircleAvatar(
                   radius: 25.0,
                   backgroundImage: NetworkImage(
@@ -97,20 +92,7 @@ class _Webview_EmergencySCState extends State<Webview_EmergencySC> {
                 ),
               ],
             ),
-            // leading:    Row(children: [
-            //   IconButton(
-            //                 icon: const Icon(
-            //                   Icons.arrow_back_sharp,
-            //                   color: Colors.black,
-            //                 ),
-            //                 onPressed: () {
-            //                   Navigator.pop(context);
-            //                   //('กด');
-            //                 },
-            //               ),
 
-            // ],
-            // ),
             leadingWidth: 50,
           ),
           body: Stack(
@@ -136,13 +118,7 @@ class _Webview_EmergencySCState extends State<Webview_EmergencySC> {
                   var page = Uri.decodeComponent(action.url).toString().replaceAll(
                       "${Uri.decodeComponent("https://today.moveforwardparty.org/page/")}",
                       "");
-
-                  print('page$page');
-
                   if (action.url.replaceAll(postid, "") == widget.checkurl) {
-                    //('ใช่');
-                    //(action.url);
-                    //('replaceurl$postid');
                     Platform.isAndroid
                         ? Navigator.push(
                             context,
@@ -174,9 +150,7 @@ class _Webview_EmergencySCState extends State<Webview_EmergencySC> {
                   }
                   if (Uri.decodeComponent(action.url).replaceAll(hashtag, "") ==
                       "https://today.moveforwardparty.org/search?hashtag=") {
-                    //print('ใช่');
-                    //(action.url);
-                    //('replaceurl$postid');
+
                     Platform.isAndroid
                         ? Navigator.push(
                             context,
@@ -203,9 +177,6 @@ class _Webview_EmergencySCState extends State<Webview_EmergencySC> {
                   }
                   if (Uri.decodeComponent(action.url).replaceAll(page, "") ==
                       "https://today.moveforwardparty.org/page/") {
-                    //print('ใช่');
-                    //(action.url);
-                    //('replaceurl$postid');
                     Platform.isAndroid
                         ? Navigator.push(
                             context,

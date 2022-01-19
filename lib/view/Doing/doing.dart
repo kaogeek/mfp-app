@@ -291,7 +291,9 @@ class _DoingSCState extends State<DoingSC> {
                     crossAxisCount: 1,
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
-                    childAspectRatio: 1),
+                    childAspectRatio: 1,
+                    
+                    ),
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
                     return FutureBuilder(
@@ -304,13 +306,12 @@ class _DoingSCState extends State<DoingSC> {
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: 4,
                           scrollDirection: Axis.vertical,
-                          padding: EdgeInsets.all(5),
+                          padding: EdgeInsets.all(8),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2),
                           itemBuilder: (BuildContext context, int index) {
                             var e = pageobjslist[index];
-
                             return InkWell(
                               onTap: () async {
                                 Navigator.of(context).push(CupertinoPageRoute(
@@ -326,17 +327,19 @@ class _DoingSCState extends State<DoingSC> {
                                 }));
                               },
                               child: Container(
-                                height: MediaQuery.of(context).size.height / 10,
-                                // decoration: BoxDecoration(
-                                //     borderRadius: BorderRadius.circular(8),
-                                //     color: Colors.grey[100],
-                                //     boxShadow: [
-                                //       BoxShadow(
-                                //         color: Colors.grey.withOpacity(1),
-                                //         blurRadius: 0.5,
-                                //         spreadRadius: 0.5,
-                                //       ),
-                                //     ]),
+                                margin: EdgeInsets.all(5),
+                                height: MediaQuery.of(context).size.height / 15,
+                                width: MediaQuery.of(context).size.width / 15,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.grey[100],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(1),
+                                        blurRadius: 0.5,
+                                        spreadRadius: 0.5,
+                                      ),
+                                    ]),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -348,10 +351,10 @@ class _DoingSCState extends State<DoingSC> {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(
-                                          top: 10, left: 15),
+                                          top: 10),
                                       child: Center(
                                         child: Text(
-                                          e.title,
+                                          "#${e.hashTag}",
                                           maxLines: 1,
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
@@ -364,6 +367,7 @@ class _DoingSCState extends State<DoingSC> {
                                         ),
                                       ),
                                     ),
+                                    
                                   ],
                                 ),
                               ),
@@ -432,20 +436,20 @@ class _DoingSCState extends State<DoingSC> {
                               child: Column(
                                 children: <Widget>[
                                   Container(
-                                    margin: EdgeInsets.all(5),
+                                    margin: EdgeInsets.only(left: 15,right: 15,bottom: 2,top: 10),
                                     width: MediaQuery.of(context).size.width,
                                     height: MediaQuery.of(context).size.height /
                                         7.3,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.grey[50],
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.5),
-                                            blurRadius: 0.5,
-                                            spreadRadius: 0.5,
-                                          ),
-                                        ]),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.grey[100],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(1),
+                                        blurRadius: 0.5,
+                                        spreadRadius: 0.5,
+                                      ),
+                                    ]),
                                     child: Stack(
                                       children: <Widget>[
                                         Padding(

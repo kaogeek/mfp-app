@@ -45,10 +45,10 @@ class Api {
 
   /*--------------------ดึงค่าuserprofile--------------------------------------*/
   static Future<Http.Response> getPage(String pageid) async {
-    // //('getPage');
 
     final responseData =
         await Http.get(Uri.parse("${Api.url}api/page/$pageid"));
+       
 
     return responseData;
   }

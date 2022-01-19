@@ -71,9 +71,7 @@ Widget authorpost(
   String id,
   String imageUrl,
   String name,
-  bool isOfficial,
   String pageUsername,
-  bool isFollow,
   String userid,
   bool isenable,
 ) =>

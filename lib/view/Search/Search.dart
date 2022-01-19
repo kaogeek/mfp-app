@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -18,12 +17,6 @@ import 'package:mfp_app/view/Profile/Profliess.dart';
 import 'package:mfp_app/view/Search/post_search.dart';
 
 class Search extends StatefulWidget {
-// Search({
-//     Key key,
-
-//   }) : super(key: key);
-  // ShopSC({Key? key}) : super(key: key);
-
   @override
   _SearchState createState() => _SearchState();
 }
@@ -82,24 +75,17 @@ class _SearchState extends State<Search> {
   bool listisempty = false;
   @override
   void initState() {
-    //('initState');
     super.initState();
 
     Future.delayed(Duration.zero, () async {
-      //('Futuredelayed');
       token = await Api.gettoke();
       if (token == null) {
         setState(() {
           isLoading = false;
         });
       }
-      //--token
-
-      //('tokenhome$token');
-      //--userid
       userid = await Api.getmyuid();
-      //('useridsearch$userid');
-      //--
+
       await Api.getuserprofile("$userid").then((responseData) async => ({
             setState(() {
               isLoading = true;
@@ -153,15 +139,13 @@ class _SearchState extends State<Search> {
       headers: headers,
       body: body,
     );
-    //('body$body');
-    //('responseData${responseData.body}');
+
     setState(() {
       loading = true;
     });
 
     if (responseData.statusCode == 200) {
       dataht = jsonDecode(responseData.body);
-      print('dataht$dataht');
 
       for (Map i in dataht["data"]["result"]) {
         setState(() {
@@ -172,9 +156,6 @@ class _SearchState extends State<Search> {
             getpage(pageid);
           }
         });
-
-        print('listSearchHastagจำนวน${listSearchHastag.length}');
-        //('_searchResult${_searchResult.length}');
       }
 
       setState(() {
@@ -188,14 +169,8 @@ class _SearchState extends State<Search> {
     setState(() {
       loadingpage = true;
       _listPageModel.clear();
-      //  isvalue="";
     });
-    final headers = {
-      // "limit": 1,
-      // "count": false,
-      // "whereConditions": {"isHideStory": false},
-      "content-type": "application/json"
-    };
+    final headers = {"content-type": "application/json"};
     try {
       final responseData = await http
           .get(Uri.parse("${Api.url}api/page/$pageid"), headers: headers);
@@ -205,13 +180,9 @@ class _SearchState extends State<Search> {
         setState(() {
           _listPageModel.add(PageModel.fromJson(dataht1["data"]));
         });
-        //('listPageModellength${_listPageModel.length}');
-
         setState(() {
           loadingpage = false;
         });
-        //('body$dataht1');
-        //('responseDatagetpage${responseData.body}');
       } else if (responseData.statusCode == 404) {
         throw Exception('Not Found');
       }
@@ -222,10 +193,6 @@ class _SearchState extends State<Search> {
 
   @override
   void didChangeDependencies() {
-    // getsearch(controller.text.toLowerCase(), userid);
-    // getpage(isvalue);
-
-    //('didChangeDependencies');
     super.didChangeDependencies();
   }
 
@@ -323,20 +290,21 @@ class _SearchState extends State<Search> {
                     )),
                     SliverToBoxAdapter(
                       child: Row(
-                        mainAxisAlignment:MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 10.0,right: 10),
+                              padding:
+                                  const EdgeInsets.only(left: 10.0, right: 10),
                               child: TextField(
                                 controller: controller,
                                 autofocus: false,
                                 maxLines: 1,
                                 decoration: InputDecoration(
                                   // labelText: 'Search Something',
-                                   contentPadding: EdgeInsets.all(13),
-                                   
+                                  contentPadding: EdgeInsets.all(13),
+
                                   prefixIcon: Icon(
                                     Icons.search,
                                     color: MColors.textDark,
@@ -345,21 +313,16 @@ class _SearchState extends State<Search> {
                                   filled: true,
                                   fillColor: Colors.grey[200],
                                   enabledBorder: UnderlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(20),
-                                    borderSide:
-                                        BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: BorderSide(color: Colors.white),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(20),
-                                    borderSide:
-                                        BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: BorderSide(color: Colors.white),
                                   ),
                                 ),
                                 onChanged: (text) async {
-                                  if (text == "" ||
-                                      controller.text == "") {
+                                  if (text == "" || controller.text == "") {
                                     //print("controllerวางจริง");
                                     setState(() {
                                       _listPageModel.clear();
@@ -371,70 +334,61 @@ class _SearchState extends State<Search> {
                                   _debouncer.run(() async {
                                     _searchResult =
                                         listSearchHastag.where((ht) {
-                                      var htlable =
-                                          ht.label.toLowerCase();
-                                      return htlable.contains(controller
-                                          .text
-                                          .toLowerCase());
+                                      var htlable = ht.label.toLowerCase();
+                                      return htlable.contains(
+                                          controller.text.toLowerCase());
                                     }).toList();
-                                    await getsearch(
-                                        text.toLowerCase(), userid);
+                                    await getsearch(text.toLowerCase(), userid);
                                   });
                                 },
                               ),
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 1.0,right: 10),
+                            padding:
+                                const EdgeInsets.only(left: 1.0, right: 10),
                             child: Container(
-                               height: MediaQuery.of(context).size.height/16,
-                            width: MediaQuery.of(context).size.width/6,
-                            
+                              height: MediaQuery.of(context).size.height / 16,
+                              width: MediaQuery.of(context).size.width / 6,
                               decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(21),
-                                color: primaryColor,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color:
-                                        Colors.grey.withOpacity(1),
-                                    blurRadius: 0.5,
-                                    spreadRadius: 0.5,
-                                  ),
-                                ]),
-                              child:  IconButton(
-        
-        icon: Icon(
+                                  borderRadius: BorderRadius.circular(21),
+                                  color: primaryColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(1),
+                                      blurRadius: 0.5,
+                                      spreadRadius: 0.5,
+                                    ),
+                                  ]),
+                              child: IconButton(
+                                icon: Icon(
                                   Icons.arrow_forward_ios_rounded,
                                   size: 19,
                                   color: Colors.white,
                                 ),
-        padding:EdgeInsets.zero,
-        onPressed: ()async {
-                              listSearchHastag.clear();
-                              _listPageModel.clear();
-                              setState(() {
-                                loading = true;
-                              });
-                              if (controller.text.isEmpty) {
-                                listSearchHastag.clear();
-                                _listPageModel.clear();
-                                isvalue = "";
-                              }
+                                padding: EdgeInsets.zero,
+                                onPressed: () async {
+                                  listSearchHastag.clear();
+                                  _listPageModel.clear();
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  if (controller.text.isEmpty) {
+                                    listSearchHastag.clear();
+                                    _listPageModel.clear();
+                                    isvalue = "";
+                                  }
 
-                              if (listSearchHastag.length != 0 ||
-                                  _listPageModel.length != 0) {
-                                listSearchHastag.clear();
-                                _listPageModel.clear();
-                              }
-                              await getsearch(
-                                  controller.text.toLowerCase(),
-                                  userid);
-                            },
-       splashRadius: AppTheme.splashRadius,
-      ),
-                                
-                             
+                                  if (listSearchHastag.length != 0 ||
+                                      _listPageModel.length != 0) {
+                                    listSearchHastag.clear();
+                                    _listPageModel.clear();
+                                  }
+                                  await getsearch(
+                                      controller.text.toLowerCase(), userid);
+                                },
+                                splashRadius: AppTheme.splashRadius,
+                              ),
                             ),
                           ),
                         ],
@@ -482,10 +436,6 @@ class _SearchState extends State<Search> {
                                       }
                                     },
                                     child: Card(
-                                      // shape: RoundedRectangleBorder(
-                                      //     borderRadius: const BorderRadius.all(
-                                      //   Radius.circular(15.0),
-                                      // )),
                                       child: new ListTile(
                                         leading: data.historyId != null
                                             ? Icon(Icons.timer_outlined)
@@ -496,7 +446,6 @@ class _SearchState extends State<Search> {
                                           size: 18,
                                           color: MColors.textDark,
                                         ),
-                                        // subtitle: new Text('>>>${data.type}'),
                                       ),
                                       margin: const EdgeInsets.all(2.0),
                                     ),
