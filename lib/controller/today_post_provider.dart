@@ -14,7 +14,7 @@ class TodayPostController extends GetxController {
   var _currentMax = 0.obs;
   var isLoading = true.obs;
   var firstload = true.obs;
-    var isLoadingmore = true.obs;
+  var isLoadingmore = true.obs;
 
   var idloadingstory = true.obs;
   var storycontent = "";
@@ -32,7 +32,7 @@ class TodayPostController extends GetxController {
   var repostCount;
   RxString stroycoverImage = "".obs;
 
-  var islike= false.obs;
+  var islike = false.obs;
 
   var storytestreplaceAll = "";
   @override
@@ -60,34 +60,27 @@ class TodayPostController extends GetxController {
       isLoading(false);
     }
   }
-  getislike(String postid,String userid,String token,String mode)async{
+
+  getislike(String postid, String userid, String token, String mode) async {
     var jsonResponse;
     var Islike;
-    var like = await Api.islike(postid, userid, token, "")
-                                            .then((value) => ({
-                                                  jsonResponse =
-                                                      jsonDecode(value.body),
-                                                  //('message${jsonResponse['message']}')
-                                                  if (value.statusCode == 200)
-                                                    {
-                                                      if (jsonResponse[ 'message'] =="Like Post Success"){
-                                                      
-                                                           Islike=jsonResponse[ 'data']['isLike'],
-                                                            islike (true),                                              
-                                                        }
-                                                      else if (jsonResponse[
-                                                              'message'] ==
-                                                          "UnLike Post Success")
-                                                        {
-                                                      
-                                                            islike =
-                                                                jsonResponse[
-                                                                        'data']
-                                                                    ['isLike'],
-                                                            islike (false),
-                                                        }
-                                                    }
-                                                }));
+    var like = await Api.islike(postid, userid, token, "").then((value) => ({
+          jsonResponse = jsonDecode(value.body),
+          //('message${jsonResponse['message']}')
+          if (value.statusCode == 200)
+            {
+              if (jsonResponse['message'] == "Like Post Success")
+                {
+                  Islike = jsonResponse['data']['isLike'],
+                  islike(true),
+                }
+              else if (jsonResponse['message'] == "UnLike Post Success")
+                {
+                  islike = jsonResponse['data']['isLike'],
+                  islike(false),
+                }
+            }
+        }));
   }
 
   getsearchpostList(var label, var keyword, var offset,
@@ -99,7 +92,6 @@ class TodayPostController extends GetxController {
         isLoading(true);
         serarchpostList.clear();
       }
-     
 
       var searchposts = await Api.apisearchlist(label, keyword, offset);
       if (searchposts != null) {

@@ -484,7 +484,7 @@ class _ProfliessState extends State<Profliess> {
                                 //("กดlike");
                               },
                               child: Container(
-                                width: MediaQuery.of(context).size.width / 4.3,
+                                width: MediaQuery.of(context).size.width / 4.1,
                                 height: 40.0,
                                 child: Center(
                                   child: Text(
@@ -592,7 +592,6 @@ class _ProfliessState extends State<Profliess> {
                                         int index,
                                       ) {
                                         final pageobj = pageobjslist[index];
-
                                         return InkWell(
                                           onTap: () {
                                             Navigator.of(context).push(
@@ -609,7 +608,7 @@ class _ProfliessState extends State<Profliess> {
                                             }));
                                           },
                                           child: Container(
-                                            margin: EdgeInsets.all(5) ,
+                                            margin: EdgeInsets.only(left: 10,top: 10,bottom: 10),
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width /
@@ -624,8 +623,8 @@ class _ProfliessState extends State<Profliess> {
                                                 color: Colors.white,
                                                 boxShadow: [
                                                   BoxShadow(
-                                                    color:
-                                                        Colors.grey.withOpacity(1),
+                                                    color: Colors.grey
+                                                        .withOpacity(1),
                                                     blurRadius: 0.5,
                                                     spreadRadius: 0.5,
                                                   ),
@@ -639,52 +638,30 @@ class _ProfliessState extends State<Profliess> {
                                                   child: Container(
                                                       //-------------------รูปโปรไฟล์----------------//
                                                       //color: Colors.grey,
-                                                      height: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .height /
-                                                          6.5,
-                                                      width: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width *
-                                                          0.85,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height /
+                                                              6.5,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.85,
                                                       child: CircleAvatar(
                                                         radius: 20.0,
                                                         backgroundImage:
                                                             new CachedNetworkImageProvider(
                                                           'https://today-api.moveforwardparty.org/api${pageobj.iconUrl}/image',
                                                         ),
-                                                      ))
-                                                  //  new Container(
-                                                  //   width: MediaQuery.0,
-                                                  //   height: 120.0,
-                                                  //   decoration: new BoxDecoration(
-                                                  //     shape: BoxShape.circle,
-                                                  //     image: new DecorationImage(
-                                                  //       fit: BoxFit.cover,
-                                                  //       image:
-                                                  //           new CachedNetworkImageProvider(
-                                                  //         'https://today-api.moveforwardparty.org/api${pageobj.iconUrl}/image',
-                                                  //       ),
-                                                  //     ),
-                                                  //   ),
-                                                  // )
-                                                  ,
-                                                  // CircleAvatar(
-                                                  //   radius: 60.0,
-                                                  //   backgroundImage: NetworkImage(
-                                                  //      'https://today-api.moveforwardparty.org/api${pageobj.iconUrl}/image'),
-                                                  //   backgroundColor:
-                                                  //       Colors.transparent,
-                                                  // ),
+                                                      )),
                                                 ),
                                                 Padding(
                                                   padding:
                                                       const EdgeInsets.only(
-                                                          top: 10,left: 5),
+                                                          top: 10, left: 5),
                                                   child: Text(
-                                                   pageobj.title,
+                                                    pageobj.title,
                                                     maxLines: 1,
                                                     overflow:
                                                         TextOverflow.ellipsis,

@@ -400,7 +400,9 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                             ),
                           ),
                     SliverToBoxAdapter(
-                      child: _buildCommentList(),
+                      child: Container(
+                        color: Colors.grey[200],
+                        child: _buildCommentList()),
                     ),
                   ],
                 ),
@@ -714,7 +716,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                   child: Container(
                                     width:
                                         MediaQuery.of(context).size.width / 1.3,
-                                    height: maxLines * 19.0,
+                                    height: 50,
+                                    // maxLines * 18.0
                                     decoration: BoxDecoration(
                                       border: Border.all(
                                         color: Color(0xffDEDEDE),
@@ -724,9 +727,9 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                         Radius.circular(15.0),
                                       ),
                                     ),
-                                    child: new ConstrainedBox(
+                                    child: new Container(
                                       constraints: BoxConstraints(
-                                        maxHeight: 300.0,
+                                        maxHeight: double.infinity
                                       ),
                                       child: LayoutBuilder(
                                           builder: (context, size) {
@@ -734,27 +737,21 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                           text: _commentController.text,
                                           // style: yourTextStyle,
                                         );
-
                                         TextPainter tp = new TextPainter(
                                           text: text,
                                           textDirection: TextDirection.ltr,
                                           textAlign: TextAlign.left,
                                         );
                                         tp.layout(maxWidth: size.maxWidth);
-
                                         int lines = (tp.size.height /
                                                 tp.preferredLineHeight)
                                             .ceil();
                                         int maxLines = 10;
-                                        // print('height${tp.size.height}');
-
                                         return TextField(
                                           controller: _commentController,
-
                                           autofocus: widget.onfocus,
                                           onChanged: (String value) {
                                             _commenteditController.text = value;
-                                            //(value);
                                           },
                                           maxLines: lines < maxLines
                                               ? null
@@ -764,7 +761,6 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                             hintText: "เขียนความคิดเห็น",
                                             border: InputBorder.none,
                                             contentPadding: EdgeInsets.all(13),
-
                                             suffixIcon: Row(
                                               mainAxisAlignment: MainAxisAlignment
                                                   .spaceBetween, // added line
@@ -843,6 +839,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                           onChanged: (String value) {
                                             _commenteditController.text = value;
                                           },
+                                          maxLength: 1,
                                           maxLines: lines < maxLines
                                               ? null
                                               : maxLines,
@@ -950,7 +947,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
             commentid = data.id;
 
             return Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.only(top: 8.0),
               child: Stack(
                 children: <Widget>[
                   Row(
@@ -984,7 +981,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 4.0),
+                                    padding: const EdgeInsets.only(left: 4.0,bottom: 5,top: 3),
                                     child: Text(
                                       data.user.displayName,
                                       maxLines: 1,
@@ -996,7 +993,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 4.0),
+                                    padding: const EdgeInsets.only(left: 4.0,bottom: 5),
                                     child: Text(
                                       data.comment,
                                       maxLines: 1,

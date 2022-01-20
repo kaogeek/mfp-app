@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
@@ -46,7 +45,7 @@ class _PicProfileState extends State<PicProfile> {
     );
 
     setState(() {
-      _image = image as File ;
+      _image = image as File;
     });
   }
 
@@ -63,13 +62,9 @@ class _PicProfileState extends State<PicProfile> {
       });
       final bytes = File(image.path).readAsBytesSync();
       img64 = base64Encode(bytes);
-      //('img64$img64');
-      // iserror = true;
     }
   }
-  // showMessage('Profile Image not uploaded', false);
 
-  /// Remove image
   void _clear() {
     setState(() => _image = null);
   }
@@ -107,241 +102,249 @@ class _PicProfileState extends State<PicProfile> {
 
   @override
   Widget build(BuildContext context) {
-    //('email${widget.email}');
-    //print('password${widget.password}');
+
 
     return Scaffold(
         body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width * 1,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-            image: AssetImage('images/shutterstock_553511089.png'),
-            fit: BoxFit.cover,
-          )),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.19,
-                    child: Row(
-                      children: [
-                        IconButton(
-                          splashRadius: AppTheme.splashRadius,
-                          icon: const Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                            //('กด');
-                          },
-                        ),
-                        Spacer(),
-                        Container(
-                          height: 100,
-                          width: 170,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                            image: AssetImage('images/MFP-Logo-Horizontal.png'),
-                          )),
-                        ),
-                      ],
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width ,
+      decoration: BoxDecoration(
+          image: DecorationImage(
+        image: AssetImage('images/shutterstock_553511089.png'),
+                                colorFilter: ColorFilter.mode(Colors.grey[500], BlendMode.modulate),
+
+        fit: BoxFit.cover,
+      )),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.19,
+                child: Row(
+                  children: [
+                    IconButton(
+                      splashRadius: AppTheme.splashRadius,
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        //('กด');
+                      },
                     ),
-                  ),
-                  Container(
-                      //color: Colors.black,
-                      height: MediaQuery.of(context).size.height * 0.06,
-                      width: MediaQuery.of(context).size.width * 0.85,
-                      child: Center(
-                          child: Text(
-                        'อัพโหลดโปรไฟล์',
-                        style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,          fontFamily: AppTheme.FontAnakotmaiLight,
-),
-                      ))),
-                  Container(
-                    //color: Colors.black,
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    width: MediaQuery.of(context).size.width * 0.86,
-                  ),
-                  _image != null
-                      ? Container(
-                          //-------------------รูปโปรไฟล์----------------//
-                          //color: Colors.grey,
-                          height: MediaQuery.of(context).size.height * 0.3,
-                          width: MediaQuery.of(context).size.width * 0.85,
-                          child: CircleAvatar(
-                            radius: (80),
-                            backgroundColor: Colors.white,
-                            child: CircleAvatar(
-                              radius: 108.0,
-                              backgroundImage: FileImage(_image),
-                            ),
-                          ))
-                      : Container(
-                          //-------------------รูปโปรไฟล์----------------//
-                          //color: Colors.grey,
-                          height: MediaQuery.of(context).size.height * 0.3,
-                          width: MediaQuery.of(context).size.width * 0.85,
-                          child: CircleAvatar(
-                            radius: (80),
-                            backgroundColor: Colors.white,
-                            child: CircleAvatar(
-                              radius: 108.0,
-                              backgroundImage: AssetImage('images/placeholder.png'),
-                            ),
-                          )),
-                  Container(
-                    //color: Colors.black,
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.86,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: RaisedButton(
-                            padding: EdgeInsets.only(top: 15, bottom: 15),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                                side: BorderSide(color: Colors.red)),
-                            child: Text(
-                              'ถ่ายภาพ',
-                              style: TextStyle(fontSize: 20,          fontFamily: AppTheme.FontAnakotmaiLight,
-),
-                            ),
-                            textColor: Colors.white,
-                            color: MColors.primaryColor,
-                            onPressed: () {
-                              _imgFromCamera();
-                              // Navigator.of(context).pop();
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(builder: (context) => Upprofile()),
-                              // );
-                              //('กด');
-                            },
-                          ),
-                        )
-                      ],
+                    Spacer(),
+                    Container(
+                      height: 100,
+                      width: 170,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                        image: AssetImage('images/MFP-Logo-Horizontal.png'),
+                      )),
                     ),
-                  ),
-                  Container(
-                    //color: Colors.black,
-                    height: MediaQuery.of(context).size.height * 0.02,
-                    width: MediaQuery.of(context).size.width * 0.86,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: RaisedButton(
-                            padding: EdgeInsets.only(top: 15, bottom: 15),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                                side: BorderSide(color: Colors.red)),
-                            child: Text(
-                              'เลือกรูปภาพ',
-                              style: TextStyle(fontSize: 20,          fontFamily: AppTheme.FontAnakotmaiLight,
-),
-                            ),
-                            textColor: Colors.white,
-                            color: MColors.primaryColor,
-                            onPressed: () {
-                              getImage();
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(builder: (context) => Upprofile()),
-                              // );
-                              //('กด');
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    //color: Colors.black,
-                    height: MediaQuery.of(context).size.height * 0.02,
-                    width: MediaQuery.of(context).size.width * 0.86,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: RaisedButton(
-                            padding: EdgeInsets.only(top: 15, bottom: 15),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                                side: BorderSide(color: Colors.red)),
-                            child: Text(
-                              'ถัดไป',
-                              style: TextStyle(fontSize: 20,          fontFamily: AppTheme.FontAnakotmaiLight,
-),
-                            ),
-                            textColor: Colors.white,
-                            color: MColors.primaryColor.withOpacity(0.1),
-                            onPressed: () {
-                              if (_image == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  backgroundColor: Colors.red,
-                                  content: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.close,
-                                        color: MColors.primaryWhite,
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text('กรุณาใส่รูป')
-                                    ],
-                                  ),
-                                  duration: const Duration(milliseconds: 500),
-                                ));
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Generalinformation(
-                                            email: widget.email,
-                                            password: widget.password,
-                                            img64: img64,
-                                            fileimg: _image,
-                                            mode: "EMAIL",
-                                            isfb: true,
-                                          )),
-                                );
-                              }
-            
-                              //('กด');
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    //color: Colors.black,
-                    alignment: Alignment.bottomCenter,
-                    child: Text(
-                      '© 2021 พรรคก้าวไกล. ALL RIGHTS RESERVED.',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )
-                ],
+                  ],
+                ),
               ),
-            ),
+              Container(
+                  //color: Colors.black,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  width: MediaQuery.of(context).size.width * 0.85,
+                  child: Center(
+                      child: Text(
+                    'อัพโหลดโปรไฟล์',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: AppTheme.FontAnakotmaiLight,
+                    ),
+                  ))),
+              Container(
+                //color: Colors.black,
+                height: MediaQuery.of(context).size.height * 0.05,
+                width: MediaQuery.of(context).size.width * 0.86,
+              ),
+              _image != null
+                  ? Container(
+                      //-------------------รูปโปรไฟล์----------------//
+                      //color: Colors.grey,
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      child: CircleAvatar(
+                        radius: (80),
+                        backgroundColor: Colors.white,
+                        child: CircleAvatar(
+                          radius: 108.0,
+                          backgroundImage: FileImage(_image),
+                        ),
+                      ))
+                  : Container(
+                      //-------------------รูปโปรไฟล์----------------//
+                      //color: Colors.grey,
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      child: CircleAvatar(
+                        radius: (80),
+                        backgroundColor: Colors.white,
+                        child: CircleAvatar(
+                          radius: 108.0,
+                          backgroundImage: AssetImage('images/placeholder.png'),
+                        ),
+                      )),
+              Container(
+                //color: Colors.black,
+                height: MediaQuery.of(context).size.height * 0.1,
+                width: MediaQuery.of(context).size.width * 0.86,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: RaisedButton(
+                        padding: EdgeInsets.only(top: 15, bottom: 15),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                            side: BorderSide(color: Colors.red)),
+                        child: Text(
+                          'ถ่ายภาพ',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: AppTheme.FontAnakotmaiLight,
+                          ),
+                        ),
+                        textColor: Colors.white,
+                        color: MColors.primaryColor,
+                        onPressed: () {
+                          _imgFromCamera();
+                          // Navigator.of(context).pop();
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => Upprofile()),
+                          // );
+                          //('กด');
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                //color: Colors.black,
+                height: MediaQuery.of(context).size.height * 0.02,
+                width: MediaQuery.of(context).size.width * 0.86,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: RaisedButton(
+                        padding: EdgeInsets.only(top: 15, bottom: 15),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                            side: BorderSide(color: Colors.red)),
+                        child: Text(
+                          'เลือกรูปภาพ',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: AppTheme.FontAnakotmaiLight,
+                          ),
+                        ),
+                        textColor: Colors.white,
+                        color: MColors.primaryColor,
+                        onPressed: () {
+                          getImage();
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => Upprofile()),
+                          // );
+                          //('กด');
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                //color: Colors.black,
+                height: MediaQuery.of(context).size.height * 0.02,
+                width: MediaQuery.of(context).size.width * 0.86,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: RaisedButton(
+                        padding: EdgeInsets.only(top: 15, bottom: 15),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                            side: BorderSide(color: Colors.red)),
+                        child: Text(
+                          'ถัดไป',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: AppTheme.FontAnakotmaiLight,
+                          ),
+                        ),
+                        textColor: Colors.white,
+                        color: MColors.primaryColor.withOpacity(0.1),
+                        onPressed: () {
+                          if (_image == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Row(
+                                children: [
+                                  Icon(
+                                    Icons.close,
+                                    color: MColors.primaryWhite,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text('กรุณาใส่รูป')
+                                ],
+                              ),
+                              duration: const Duration(milliseconds: 500),
+                            ));
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Generalinformation(
+                                        email: widget.email,
+                                        password: widget.password,
+                                        img64: img64,
+                                        fileimg: _image,
+                                        mode: "EMAIL",
+                                        isfb: true,
+                                      )),
+                            );
+                          }
+
+                          //('กด');
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                //color: Colors.black,
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  '© 2021 พรรคก้าวไกล. ALL RIGHTS RESERVED.',
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+            ],
           ),
-        ));
+        ),
+      ),
+    ));
   }
 }

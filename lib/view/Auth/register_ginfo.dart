@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
@@ -32,7 +29,7 @@ class Generalinformation extends StatefulWidget {
   final String mode;
   final String fbtoken;
   final DateTime fbexpires;
-  final bool isfb ;
+  final bool isfb;
 
   Generalinformation(
       {Key key,
@@ -47,7 +44,8 @@ class Generalinformation extends StatefulWidget {
       this.fbid,
       this.mode,
       this.fbtoken,
-      this.fbexpires, this.isfb})
+      this.fbexpires,
+      this.isfb})
       : super(key: key);
 
   @override
@@ -92,22 +90,13 @@ class _GeneralinformationState extends State<Generalinformation> {
   bool _isButtonDisabled = true;
 
   var mybody1;
-      final f = new DateFormat('yyyy-MM-dd');
+  final f = new DateFormat('yyyy-MM-dd');
 
   bool isregisterfb = false;
   void _validateInputs() {
     if (_formKey.currentState.validate()) {
-      //print('submit');
-//    If all data are correct then save data to out variables
       _formKey.currentState.save();
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => PicProfile()),
-      // );
     } else {
-      //(' data are not valid');
-
-//    If all data are not valid then start auto validation.
       setState(() {
         _autoValidate = true;
       });
@@ -153,41 +142,40 @@ class _GeneralinformationState extends State<Generalinformation> {
         "content-type": "application/json",
       };
 
-Map data;
-    _birthday.text!=""?   data = {
-        "username": username,
-        "displayName": displayName,
-        "firstName": firstName,
-        "lastName": lastName,
-        "email": email,
-        "password": password,
-        "uniqueId": uniqueId,
-        "birthdate":birthdate,
-        "gender": gender,
-        "customGender": customGender,
-        "asset": {},
-      }:data = {
-        "username": username,
-        "displayName": displayName,
-        "firstName": firstName,
-        "lastName": lastName,
-        "email": email,
-        "password": password,
-        "uniqueId": uniqueId,
-        "gender": gender,
-        "customGender": customGender,
-        "asset": {},
-      };
+      Map data;
+      _birthday.text != ""
+          ? data = {
+              "username": username,
+              "displayName": displayName,
+              "firstName": firstName,
+              "lastName": lastName,
+              "email": email,
+              "password": password,
+              "uniqueId": uniqueId,
+              "birthdate": birthdate,
+              "gender": gender,
+              "customGender": customGender,
+              "asset": {},
+            }
+          : data = {
+              "username": username,
+              "displayName": displayName,
+              "firstName": firstName,
+              "lastName": lastName,
+              "email": email,
+              "password": password,
+              "uniqueId": uniqueId,
+              "gender": gender,
+              "customGender": customGender,
+              "asset": {},
+            };
       //encode Map to JSON
       var body = jsonEncode(data);
-      //(body);
 
       var responsepostRequest =
           await http.post(url, headers: headers, body: body);
-      //("${responsepostRequest.statusCode}");
-      //("${responsepostRequest.body}");
+
       final jsonResponse = jsonDecode(responsepostRequest.body);
-      //('Registerbody${responsepostRequest.body}');
       msg = jsonResponse['message'];
 
       if (responsepostRequest.statusCode == 200) {
@@ -197,9 +185,6 @@ Map data;
           setState(() {
             isregister = true;
             msg = msg;
-
-            //("Response status :${jsonResponse.statusCode}");
-            //("Response status :${jsonResponse.body}");
             sharedPreferences.setString(
                 "token", '${jsonResponse["data"]["token"]}');
             mytoken = jsonResponse["data"]["token"];
@@ -212,19 +197,11 @@ Map data;
           setState(() {
             isregister = false;
             msg = msg;
-
-            // _isloading = false;
-
-            // iserror = true;
           });
         }
       }
-      //('msg$msg');
-         //('msg$birthdate');
-
       return responsepostRequest;
     } catch (e) {
-      //(e.toString());
       showAlertDialog(context);
       setState(() {
         isclick = false;
@@ -281,14 +258,11 @@ Map data;
       };
       //encode Map to JSON
       var body = jsonEncode(data);
-      //(body);
 
       var responsepostRequest =
           await http.post(url, headers: headers, body: body);
-      //("${responsepostRequest.statusCode}");
-      //("${responsepostRequest.body}");
+
       final jsonResponse = jsonDecode(responsepostRequest.body);
-      //('Registerbody${responsepostRequest.body}');
       msg = jsonResponse['message'];
 
       if (responsepostRequest.statusCode == 200) {
@@ -296,8 +270,6 @@ Map data;
 
         if (jsonResponse['status'] == 1) {
           setState(() {
-            //("Response status :${jsonResponse.statusCode}");
-            //("Response status :${jsonResponse.body}");
             sharedPreferences.setString(
                 "token", '${jsonResponse["data"]["token"]}');
             mytoken = jsonResponse["data"]["token"];
@@ -309,18 +281,12 @@ Map data;
         if (jsonResponse['status'] == 0) {
           setState(() {
             isregisterfb = false;
-
-            // _isloading = false;
-
-            // iserror = true;
           });
         }
       }
-      //('msg$msg');
 
       return responsepostRequest;
     } catch (e) {
-      //(e.toString());
       setState(() {
         isclick = false;
       });
@@ -340,16 +306,11 @@ Map data;
       Map data = {
         "uniqueId": uniqueId,
       };
-      //encode Map to JSON
       var body = jsonEncode(data);
-      //(body);
 
       var responsepostRequest =
           await http.post(url, headers: headers, body: body);
-      //("${responsepostRequest.statusCode}");
-      //("${responsepostRequest.body}");
       final jsonResponse = jsonDecode(responsepostRequest.body);
-      //('Registerbody${responsepostRequest.body}');
       msg = jsonResponse['message'];
 
       if (responsepostRequest.statusCode == 200) {
@@ -393,16 +354,11 @@ Map data;
   }
 
   showAlertDialog(BuildContext context) {
-    // set up the buttons
     Widget continueButton = TextButton(
       child: Text("Close"),
       onPressed: () {
         Navigator.of(context).pop();
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => MyApp()),
-        //   );
+
       },
     );
 
@@ -603,36 +559,37 @@ Map data;
           hintText: 'วันเกิด',
           suffixIcon: InkWell(
               onTap: () {
-                DatePicker.showDatePicker(context,
-                    showTitleActions: true,
-                    // minTime: DateTime(2133, 3, 5),
-                    // maxTime: DateTime.now(),
-                    theme: DatePickerTheme(
-                      headerColor: Colors.white,
-                      backgroundColor: Colors.white,
-                      itemStyle: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                      doneStyle: TextStyle(color: Colors.black, fontSize: 16),
-                      cancelStyle: TextStyle(color: Colors.black, fontSize: 16),
-                    ),
+                DatePicker.showDatePicker(
+                  context,
+                  showTitleActions: true,
+                  // minTime: DateTime(2133, 3, 5),
+                  // maxTime: DateTime.now(),
+                  theme: DatePickerTheme(
+                    headerColor: Colors.white,
+                    backgroundColor: Colors.white,
+                    itemStyle: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                    doneStyle: TextStyle(color: Colors.black, fontSize: 16),
+                    cancelStyle: TextStyle(color: Colors.black, fontSize: 16),
+                  ),
 
-                    //     onChanged: (date) {
-                    //                         _birthday.text = f.format(date).toString();
+                  //     onChanged: (date) {
+                  //                         _birthday.text = f.format(date).toString();
 
-                    //   //('change $date in time zone ' +
-                    //       date.timeZoneOffset.inHours.toString());
-                    // },
-                    onConfirm: (date) {
-                  date = date;
+                  //   //('change $date in time zone ' +
+                  //       date.timeZoneOffset.inHours.toString());
+                  // },
+                  onConfirm: (date) {
+                    date = date;
 
-                  _birthday.text = f.format(date).toString();
+                    _birthday.text = f.format(date).toString();
 
-                  //('confirm $date');
-                }, 
-                currentTime: DateTime.now(), 
-                locale: LocaleType.th,
+                    //('confirm $date');
+                  },
+                  currentTime: DateTime.now(),
+                  locale: LocaleType.th,
                 );
               },
               child: Icon(
@@ -653,10 +610,12 @@ Map data;
       child: Scaffold(
         body: Container(
             height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width * 1,
+            width: MediaQuery.of(context).size.width ,
             decoration: BoxDecoration(
                 image: DecorationImage(
               image: AssetImage('images/shutterstock_553511089.png'),
+                                              colorFilter: ColorFilter.mode(Colors.grey[500], BlendMode.modulate),
+
               fit: BoxFit.cover,
             )),
             child: SingleChildScrollView(
@@ -668,17 +627,19 @@ Map data;
                       height: MediaQuery.of(context).size.height * 0.19,
                       child: Row(
                         children: [
-                        widget.isfb==true?  IconButton(
-                          splashRadius: AppTheme.splashRadius,
-                            icon: const Icon(
-                              Icons.arrow_back_ios,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                              //('กด');
-                            },
-                          ):Container(),
+                          widget.isfb == true
+                              ? IconButton(
+                                  splashRadius: AppTheme.splashRadius,
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    //('กด');
+                                  },
+                                )
+                              : Container(),
                           Spacer(),
                           Container(
                             height: 100,
@@ -853,7 +814,8 @@ Map data;
                             items: _genderType
                                 .map((value) => DropdownMenuItem(
                                       child: Padding(
-                                        padding: const EdgeInsets.only(left: 20.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 20.0),
                                         child: Text(
                                           value,
                                           style: TextStyle(color: Colors.black),
@@ -1010,43 +972,40 @@ Map data;
                                                   );
                                                 }
                                                 if (widget.mode == "EMAIL") {
-                                                if( _birthday.text!=""){  
-                                                  await Register(
-                                                    _email.text,
-                                                    widget.password,
-                                                    _name.text,
-                                                    _email.text,
-                                                    _firstname.text,
-                                                    _lastname.text,
-                                                    _uniqueid.text,
-                                                    f.format(DateTime.tryParse(
-                                                        _birthday.text)),
-                                                    gendertypeint,
-                                                    gendertypeint == 3
-                                                        ? _customGender.text
-                                                        : "",
-                                                  );
-                                                }else{
+                                                  if (_birthday.text != "") {
                                                     await Register(
-                                                    _email.text,
-                                                    widget.password,
-                                                    _name.text,
-                                                    _email.text,
-                                                    _firstname.text,
-                                                    _lastname.text,
-                                                    _uniqueid.text,
-                                                 null,
-                                                    gendertypeint,
-                                                    gendertypeint == 3
-                                                        ? _customGender.text
-                                                        : "",
-                                                  );
-
+                                                      _email.text,
+                                                      widget.password,
+                                                      _name.text,
+                                                      _email.text,
+                                                      _firstname.text,
+                                                      _lastname.text,
+                                                      _uniqueid.text,
+                                                      f.format(
+                                                          DateTime.tryParse(
+                                                              _birthday.text)),
+                                                      gendertypeint,
+                                                      gendertypeint == 3
+                                                          ? _customGender.text
+                                                          : "",
+                                                    );
+                                                  } else {
+                                                    await Register(
+                                                      _email.text,
+                                                      widget.password,
+                                                      _name.text,
+                                                      _email.text,
+                                                      _firstname.text,
+                                                      _lastname.text,
+                                                      _uniqueid.text,
+                                                      null,
+                                                      gendertypeint,
+                                                      gendertypeint == 3
+                                                          ? _customGender.text
+                                                          : "",
+                                                    );
+                                                  }
                                                 }
-                                                }
-                                                //('isregister$isregister');
-                                                //(
-                                                    // 'isregisterfb$isregisterfb');
                                                 if (isregisterfb == true) {
                                                   return Navigator.of(context)
                                                       .pushAndRemoveUntil(

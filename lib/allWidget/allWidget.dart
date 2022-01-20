@@ -1,51 +1,19 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:full_screen_image/full_screen_image.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/PostButton.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/gallery.dart';
-import 'package:mfp_app/model/postModel.dart';
 import 'package:mfp_app/allWidget/circle_button.dart';
-import 'package:mfp_app/model/searchpostlist.dart';
-import 'package:mfp_app/model/searchpostlistModel.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/internetConnectivity.dart';
 import 'package:mfp_app/utils/router.dart';
-import 'package:mfp_app/utils/style.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
-import 'package:mfp_app/view/Profile/profile.dart';
-import 'package:mfp_app/view/Search/search.dart';
-// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 //APPBARS-------------------------------------
 
-// Widget primaryAppBar(
-//   Widget leading,
-//   Widget title,
-//   Color backgroundColor,
-//   PreferredSizeWidget bottom,
-//   bool centerTile,
-//   List<Widget> actions,
-// ) {
-//   return AppBar(
-//     brightness: Brightness.light,
-//     elevation: 0.0,
-//     backgroundColor: backgroundColor,
-//     leading: leading,
-//     title: title,
-//     bottom: bottom,
-//     centerTitle: centerTile,
-//     actions: actions,
-//   );
-// }
 Widget myAlbumCard(List<Gallery> list, BuildContext context) {
   if (list.length >= 4) {
     return Container(
@@ -132,7 +100,8 @@ Widget myAlbumCard(List<Gallery> list, BuildContext context) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-             Image.network("https://today-api.moveforwardparty.org/api${list[0].imageUrl}/image"),
+            Image.network(
+                "https://today-api.moveforwardparty.org/api${list[0].imageUrl}/image"),
             // list[0].signUrl != null
             //     ? topImage(
             //         "https://today-api.moveforwardparty.org/api${list[0].imageUrl}/image",
@@ -149,7 +118,8 @@ Widget myAlbumCard(List<Gallery> list, BuildContext context) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Image.network("https://today-api.moveforwardparty.org/api${list[0].imageUrl}/image"),
+            Image.network(
+                "https://today-api.moveforwardparty.org/api${list[0].imageUrl}/image"),
             // topImage(
             //   ,
             // )
@@ -170,13 +140,21 @@ Widget searchAlbumCard(List<Gallery> list, BuildContext context) {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             getItems(
-                list[0].signUrl != null ? list[0].signUrl : "https://today-api.moveforwardparty.org/api${list[0].imageUrl}/image",
-                list[1].signUrl != null ? list[1].signUrl : "https://today-api.moveforwardparty.org/api${list[1].imageUrl}/image",
+                list[0].signUrl != null
+                    ? list[0].signUrl
+                    : "https://today-api.moveforwardparty.org/api${list[0].imageUrl}/image",
+                list[1].signUrl != null
+                    ? list[1].signUrl
+                    : "https://today-api.moveforwardparty.org/api${list[1].imageUrl}/image",
                 0,
                 context),
             getItems(
-                list[2].signUrl != null ? list[2].signUrl :  "https://today-api.moveforwardparty.org/api${list[2].imageUrl}/image",
-                list[3].signUrl != null ? list[3].signUrl :  "https://today-api.moveforwardparty.org/api${list[3].imageUrl}/image",
+                list[2].signUrl != null
+                    ? list[2].signUrl
+                    : "https://today-api.moveforwardparty.org/api${list[2].imageUrl}/image",
+                list[3].signUrl != null
+                    ? list[3].signUrl
+                    : "https://today-api.moveforwardparty.org/api${list[3].imageUrl}/image",
                 list.length - 4,
                 context),
           ],
@@ -244,9 +222,11 @@ Widget searchAlbumCard(List<Gallery> list, BuildContext context) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            
-           Image.network("https://today-api.moveforwardparty.org/api${list[0].imageUrl}/image",fit: BoxFit.cover,filterQuality:FilterQuality .low ,),
-              
+            Image.network(
+              "https://today-api.moveforwardparty.org/api${list[0].imageUrl}/image",
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.low,
+            ),
           ],
         ),
       ),
@@ -418,7 +398,7 @@ Widget primaryAppBar(
         icon: MdiIcons.bellOutline,
         iconSize: 27.0,
         color: MColors.primaryBlue,
-        onPressed: () =>{},
+        onPressed: () => {},
       ),
       token == null || token == ""
           ? Padding(
@@ -427,13 +407,11 @@ Widget primaryAppBar(
                 radius: 25.0,
                 backgroundColor: Colors.white70,
                 child: IconButton(
-                  
                   iconSize: 27,
                   splashRadius: AppTheme.splashRadius,
                   icon: (Icon(
                     CupertinoIcons.person_crop_circle,
                     color: MColors.primaryBlue,
-                    
                   )),
                   onPressed: () {
                     Navigate.pushPage(context, Loginregister());
@@ -474,8 +452,7 @@ Widget AppBardetail(
   return SliverAppBar(
       brightness: Brightness.light,
       backgroundColor: Colors.white,
-          titleSpacing: 0.0,
-
+      titleSpacing: 0.0,
       title: Text('$lable $authorposttext',
           style: TextStyle(
               fontSize: 16,
@@ -564,7 +541,7 @@ Widget UIlikecommentshear(context, int like, int comment, int share) {
               size: 25.0,
             ),
             label: 'แชร์',
-            onTap: () =>{},
+            onTap: () => {},
           )
         ],
       ),
@@ -573,34 +550,7 @@ Widget UIlikecommentshear(context, int like, int comment, int share) {
       ),
     ],
   );
-  // Row(
-  //   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //   children: <Widget>[
-  //     IconButton(
-  //       padding: EdgeInsets.all(2.0),
-  //         icon: Icon(
-  //           Icons.favorite_outline,
-  //           color: MColors.primaryBlue,
-  //         ),
-  //         onPressed: () {}),
-  //     Text(
-  //       '${like.toString()} ถูกใจ',
-  //       style: Theme.of(context).textTheme.subtitle1,
-  //     ),
-  //     Spacer(),
-  //     IconButton(icon: Icon(Icons.comment_outlined), onPressed: () {}),
-  //     Text(
-  //       '${comment.toString()} ความคิดเห็น',
-  //       style: Theme.of(context).textTheme.subtitle1,
-  //     ),
-  //     Spacer(),
-  //     IconButton(icon: Icon(Icons.share), onPressed: () {}),
-  //     Text(
-  //       '${share.toString()} แชร์',
-  //       style: Theme.of(context).textTheme.subtitle1,
-  //     ),
-  //   ],
-  // );
+  
 }
 
 void showNoInternetSnack(
@@ -698,7 +648,6 @@ Widget nonet(BuildContext context) {
                           dismissDirection: DismissDirection.horizontal,
                         ));
                 });
-              
               },
             ),
           ),

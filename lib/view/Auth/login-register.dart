@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mfp_app/allWidget/sizeconfig.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
@@ -65,8 +62,9 @@ class _LoginregisterState extends State<Loginregister>
               Column(
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(left: 15,right: 15),
-                    child: _Buttion('เข้าสู่ระบบ', Login(), MColors.primaryColor),
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child:
+                        _Buttion('เข้าสู่ระบบ', Login(), MColors.primaryColor),
                   ),
                   SizedBox(
                     height: 5,
@@ -83,8 +81,7 @@ class _LoginregisterState extends State<Loginregister>
                         style: TextStyle(
                             fontSize: 16,
                             fontFamily: AppTheme.FontAnakotmaiLight,
-                            color: MColors.primaryColor,
-                            fontWeight: FontWeight.bold),
+                            color: MColors.primaryBlue,),
                       ))
                 ],
               ),

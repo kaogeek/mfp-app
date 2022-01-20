@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +11,6 @@ import 'package:mfp_app/view/Profile/profile.dart';
 import 'package:mfp_app/view/Search/search.dart';
 
 class MenuSC extends StatefulWidget {
-  // MenuSC({Key? key}) : super(key: key);
-
   @override
   _MenuSCState createState() => _MenuSCState();
 }
@@ -36,12 +33,10 @@ class _MenuSCState extends State<MenuSC> {
 
   @override
   void initState() {
-    //('initState');
     super.initState();
     setState(() {
       Api.gettoke().then((value) => value({
             token = value,
-            //('token$token'),
           }));
 
       Api.getmyuid().then((value) => ({
@@ -53,30 +48,16 @@ class _MenuSCState extends State<MenuSC> {
                     {
                       datagetuserprofile = jsonDecode(responseData.body),
                       setState(() {
-                        // displayName1 =
-                        //     datagetuserprofile["data"]
-                        //         ["displayName"];
-                        // gender = datagetuserprofile["data"]
-                        //     ["gender"];
-                        // firstName = datagetuserprofile["data"]
-                        //     ["firstName"];
-                        // lastName = datagetuserprofile["data"]
-                        //     ["lastName"];
-                        // id = datagetuserprofile["data"]["id"];
-                        // email =
-                        //     datagetuserprofile["data"]["email"];
                         image = datagetuserprofile["data"]["imageURL"];
                       }),
                       ////('image$image'),
                     }
                 })),
-            //print('userid$userid'),
           }));
       Api.getimageURL().then((value) => ({
             setState(() {
               userimageUrl = value;
             }),
-            //('userimageUrl$userimageUrl'),
           }));
     });
   }
@@ -274,7 +255,10 @@ class _MenuSCState extends State<MenuSC> {
                   ),
                 ),
               ),
-              SliverToBoxAdapter(child:const SizedBox(height: 10,)),
+              SliverToBoxAdapter(
+                  child: const SizedBox(
+                height: 10,
+              )),
               SliverToBoxAdapter(
                 child: InkWell(
                   onTap: () async {

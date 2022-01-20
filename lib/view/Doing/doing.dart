@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +10,6 @@ import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/pagemodel.dart';
 import 'package:mfp_app/utils/app_theme.dart';
-import 'package:mfp_app/utils/internetConnectivity.dart';
-import 'package:mfp_app/utils/router.dart';
-import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
 import 'package:mfp_app/view/Profile/profile.dart';
 import 'package:mfp_app/view/Search/search.dart';
 import 'package:mfp_app/view/Today/webview_emergency.dart';
@@ -62,20 +57,16 @@ class _DoingSCState extends State<DoingSC> {
           setState(() {
             token = value;
           }),
-          // print('token$token'),
         }));
     //--
     Api.getmyuid().then((value) => ({
           setState(() {
             userid = value;
           }),
-          // print('userid$userid'),
         }));
     _trackingScrollController.addListener(_loadMore);
 
     Future.delayed(Duration.zero, () async {
-      // print('delayedgetpost');
-
       //--
       await Api.getuserprofile("$userid").then((responseData) async => ({
             if (responseData.statusCode == 200)
@@ -84,7 +75,6 @@ class _DoingSCState extends State<DoingSC> {
                 setState(() {
                   image = datagetuserprofile["data"]["imageURL"];
                 }),
-                // print('image$image'),
               }
           }));
       //--\
@@ -92,33 +82,23 @@ class _DoingSCState extends State<DoingSC> {
             setState(() {
               userimageUrl = value;
             }),
-            // print('userimageUrl$userimageUrl'),
           }));
       //--
     });
     getpageObj = Api.getdoing(Jiffy(currentDate).subtract(months: 1))
         .then((responseData) async => ({
-              // print('getdoing'),
               setState(() {
                 pageObjloading = true;
               }),
               if (responseData.statusCode == 200)
                 {
                   jsonResponse = jsonDecode(responseData.body),
-                  // print('jsonResponse$jsonResponse'),
                   for (Map i in jsonResponse["data"])
                     {
-                      setState(() {
-                        // pagename =i['page'][0]['name'];
-                      }),
-
+                      setState(() {}),
                       pageobjslist.add(PageObjective.fromJson(i)),
                       _pageobjController.add(responseData),
-
-                      // var stroycoverImage= i["coverImage"];
                     },
-                  // print("Response  :$storytestreplaceAll"),
-                  // print('titalpost$titalpost'),
                   setState(() {
                     pageObjloading = false;
                   }),
@@ -127,7 +107,6 @@ class _DoingSCState extends State<DoingSC> {
                 {}
             }));
     Api.getobjectivdoinge(0).then((responseData) async => ({
-          // print('getdoing'),
           setState(() {
             pageObjloading = true;
           }),
@@ -137,17 +116,11 @@ class _DoingSCState extends State<DoingSC> {
               // print('jsonResponse$jsonResponse'),
               for (Map i in jsonResponse["data"])
                 {
-                  setState(() {
-                    // pagename =i['page'][0]['name'];
-                  }),
-
+                  setState(() {}),
                   pagedoingobjslist.add(PageObjective.fromJson(i)),
                   _pagedoingobjController.add(responseData),
-
-                  // var stroycoverImage= i["coverImage"];
                 },
-              // print("Response  :$storytestreplaceAll"),
-              // print('titalpost$titalpost'),
+
               setState(() {
                 pageObjloading = false;
               }),
@@ -157,7 +130,6 @@ class _DoingSCState extends State<DoingSC> {
         }));
     _pagedoingobjController = new StreamController();
     _pageobjController = new StreamController();
-    // print('initState');
     super.initState();
   }
 
@@ -168,21 +140,15 @@ class _DoingSCState extends State<DoingSC> {
   }
 
   void _loadMore() async {
-    // print('_loadMore');
     if (_trackingScrollController.offset >=
             _trackingScrollController.position.maxScrollExtent &&
         !_trackingScrollController.position.outOfRange) {
-      // print('AT end');
-
       setState(() {
         _currentMax = _currentMax + 5;
-        // Display a progress indicator at the bottom
       });
 
       try {
-        // print('_loadMoregetpost');
         await Api.getobjectivdoinge(_currentMax).then((responseData) async => ({
-              // print('getdoing'),
               setState(() {
                 pageObjloading = true;
               }),
@@ -193,14 +159,9 @@ class _DoingSCState extends State<DoingSC> {
 
                   for (Map i in jsonResponse["data"])
                     {
-                      setState(() {
-                        // pagename =i['page'][0]['name'];
-                      }),
-
+                      setState(() {}),
                       pagedoingobjslist.add(PageObjective.fromJson(i)),
                       _pagedoingobjController.add(responseData),
-
-                      // var stroycoverImage= i["coverImage"];
                     },
                   if (jsonResponse["message"] == "Cannot Search PageObjective")
                     {
@@ -208,8 +169,6 @@ class _DoingSCState extends State<DoingSC> {
                         msg = "ไม่มีข้อมูล";
                       }),
                     },
-                  // print("Response  :$storytestreplaceAll"),
-                  // print('titalpost$titalpost'),
                   setState(() {
                     pageObjloading = false;
                   }),
@@ -217,9 +176,7 @@ class _DoingSCState extends State<DoingSC> {
               else if (responseData.statusCode == 400)
                 {}
             }));
-      } catch (err) {
-        // print('Something went wrong!');
-      }
+      } catch (err) {}
     }
   }
 
@@ -288,12 +245,11 @@ class _DoingSCState extends State<DoingSC> {
               ),
               SliverGrid(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 1,
-                    
-                    ),
+                  crossAxisCount: 1,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                  childAspectRatio: 1,
+                ),
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
                     return FutureBuilder(
@@ -350,8 +306,7 @@ class _DoingSCState extends State<DoingSC> {
                                       backgroundColor: Colors.transparent,
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 10),
+                                      padding: const EdgeInsets.only(top: 10),
                                       child: Center(
                                         child: Text(
                                           "#${e.hashTag}",
@@ -367,7 +322,6 @@ class _DoingSCState extends State<DoingSC> {
                                         ),
                                       ),
                                     ),
-                                    
                                   ],
                                 ),
                               ),
@@ -390,7 +344,8 @@ class _DoingSCState extends State<DoingSC> {
                 child: Container(
                   color: Colors.white,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 20,bottom: 10),
+                    padding:
+                        const EdgeInsets.only(top: 20, left: 20, bottom: 10),
                     child: Text(
                       'สิ่งที่ทำที่เคยทำมา',
                       maxLines: 2,
@@ -436,28 +391,33 @@ class _DoingSCState extends State<DoingSC> {
                               child: Column(
                                 children: <Widget>[
                                   Container(
-                                    margin: EdgeInsets.only(left: 15,right: 15,bottom: 2,top: 10),
+                                    margin: EdgeInsets.only(
+                                        left: 15,
+                                        right: 15,
+                                        bottom: 2,
+                                        top: 10),
                                     width: MediaQuery.of(context).size.width,
                                     height: MediaQuery.of(context).size.height /
                                         7.3,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Colors.grey[100],
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(1),
-                                        blurRadius: 0.5,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ]),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Colors.grey[100],
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(1),
+                                            blurRadius: 0.5,
+                                            spreadRadius: 0.5,
+                                          ),
+                                        ]),
                                     child: Stack(
                                       children: <Widget>[
                                         Padding(
                                           padding: EdgeInsets.all(12),
                                           child: CircleAvatar(
                                               radius: 36.0,
-                                              backgroundImage: CachedNetworkImageProvider(
-                                                  'https://today-api.moveforwardparty.org/api${data.iconUrl}/image')),
+                                              backgroundImage:
+                                                  CachedNetworkImageProvider(
+                                                      'https://today-api.moveforwardparty.org/api${data.iconUrl}/image')),
                                         ),
                                         Column(
                                           crossAxisAlignment:
@@ -468,9 +428,9 @@ class _DoingSCState extends State<DoingSC> {
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 110),
-                                              child:Text(
-                                                data.hashTag,
+                                                  left: 95),
+                                              child: Text(
+                                                "#${data.hashTag}",
                                                 maxLines: 1,
                                                 style: TextStyle(
                                                   color: Colors.black,
@@ -486,10 +446,10 @@ class _DoingSCState extends State<DoingSC> {
                                             Expanded(
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
-                                                    left: 110),
+                                                    left: 95),
                                                 child: Text(
                                                   data.title,
-                                                  maxLines:2,
+                                                  maxLines: 2,
                                                   style: TextStyle(
                                                       color: Colors.grey,
                                                       fontSize: 15,

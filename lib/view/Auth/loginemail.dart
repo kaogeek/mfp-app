@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,82 +20,14 @@ class Loginemail extends StatefulWidget {
 
 class _LoginemailState extends State<Loginemail> {
   bool isHiddenPassword = true;
-  // bool _isloading = false;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passController = TextEditingController();
   final AuthController authController = Get.put(AuthController());
-
   var tokenvalue;
   var mytoken, userid;
   bool iserror = false;
   bool _isEnabled = true;
   String msgres = "";
-  // Future<http.Response> singin(String email, String pass) async {
-  //   final datacount = GetStorage();
-  //   setState(() {
-  //     _isloading = true;
-  //   });
-  //   //('singin');
-  //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-  //   var url = Uri.parse("${Api.url}api/login");
-  //   Map data = {"username": email, "password": pass};
-  //   final headers = {
-  //     "mode": "EMAIL",
-  //     "content-type": "application/json",
-  //   };
-  //   var body = jsonEncode(data);
-
-  //   var res = await http.post(url, headers: headers, body: body);
-  //   final jsonResponse = jsonDecode(res.body);
-
-  //   if (res.statusCode == 200) {
-  //     if (jsonResponse['status'] == 1) {
-  //       //(jsonResponse['message']);
-  //       msgres = jsonResponse['message'];
-  //       if (jsonResponse != null) {
-  //         sharedPreferences.setString(
-  //             "token", '${jsonResponse["data"]["token"]}');
-  //         datacount.write("token", '${jsonResponse["data"]["token"]}');
-  //         sharedPreferences.setString(
-  //             "myuid", '${jsonResponse["data"]["user"]["id"]}');
-  //         sharedPreferences.setString(
-  //             "imageURL", '${jsonResponse["data"]["user"]["imageURL"]}');
-
-  //         sharedPreferences?.setBool("isLoggedIn", true);
-  //         mytoken = jsonResponse["data"]["token"];
-  //         userid = jsonResponse["data"]["user"]["id"];
-  //         //("myuid$userid");
-
-  //         if (mytoken != null) {
-  //           _isloading = true;
-  //         } else if (mytoken == null) {
-  //           iserror = true;
-  //         }
-
-  //         Navigator.of(context).pushAndRemoveUntil(
-  //             CupertinoPageRoute(
-  //                 builder: (BuildContext context) => NavScreen()),
-  //             (Route<dynamic> route) => false);
-  //       } else {
-  //         setState(() {
-  //           _isloading = false;
-  //         });
-  //       }
-  //     }
-  //   }
-  //   if (res.statusCode == 400) {
-  //     if (jsonResponse['status'] == 0) {
-  //       //(jsonResponse['message']);
-  //       setState(() {
-  //         msgres = jsonResponse['message'];
-  //         _isloading = false;
-
-  //         iserror = true;
-  //       });
-  //     }
-  //   }
-  // }
   @override
   void initState() {
     // TODO: implement initState
@@ -123,8 +53,8 @@ class _LoginemailState extends State<Loginemail> {
         hintStyle: TextStyle(
           fontFamily: AppTheme.FontAnakotmaiLight,
         ),
-    contentPadding: EdgeInsets.all(13),      
-      border: InputBorder.none,
+        contentPadding: EdgeInsets.all(13),
+        border: InputBorder.none,
       ),
       keyboardType: TextInputType.emailAddress,
       autocorrect: false,
@@ -160,12 +90,14 @@ class _LoginemailState extends State<Loginemail> {
         hintText: 'รหัสผ่าน',
         suffixIcon: InkWell(
             onTap: _togglePasswordView,
-            child: Icon(isHiddenPassword == true
-                ? Icons.visibility_off_outlined
-                : Icons.visibility,color: MColors.primaryColor,)),
+            child: Icon(
+              isHiddenPassword == true
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility,
+              color: MColors.primaryColor,
+            )),
         border: InputBorder.none,
         contentPadding: const EdgeInsets.all(13),
-
       ),
       obscureText: isHiddenPassword,
       keyboardType: TextInputType.text,
@@ -185,14 +117,7 @@ class _LoginemailState extends State<Loginemail> {
       onSaved: (value) {
         authController.passController.text = value;
       },
-      // validator: (value) {
-      //   return authController.validatepassword(value);
-      // },
     );
-    // if (_emailController.text != "" && _passController.text != "") {
-    //   _isEnabled = false;
-    //   //('_isEnabled$_isEnabled');
-    // }
 
     return Container(
       color: MColors.primaryWhite,
@@ -205,8 +130,8 @@ class _LoginemailState extends State<Loginemail> {
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
                 image: DecorationImage(
-                    colorFilter:
-                        ColorFilter.mode(Colors.grey[500], BlendMode.modulate),
+                              colorFilter: ColorFilter.mode(Colors.grey[500], BlendMode.modulate),
+
                     image: AssetImage('images/shutterstock_553511089.png'),
                     fit: BoxFit.cover)),
             child: Padding(
@@ -248,11 +173,10 @@ class _LoginemailState extends State<Loginemail> {
                         SizedBox(
                           height: SizeConfig.screenHeight / 3.8,
                         ),
-               
 
                       Container(
-                         width: MediaQuery.of(context).size.width /1,
-                   margin: EdgeInsets.only(left: 10, right: 5),
+                        width: MediaQuery.of(context).size.width / 1,
+                        margin: EdgeInsets.only(left: 10, right: 5),
                         child: Text(
                           'เข้าสู่ระบบด้วย Email',
                           style: TextStyle(
@@ -262,7 +186,9 @@ class _LoginemailState extends State<Loginemail> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10,),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       //--------------------อีเมล----------------------//
 
                       Container(
@@ -279,9 +205,9 @@ class _LoginemailState extends State<Loginemail> {
                       SizedBox(
                         height: 10,
                       ),
-         
+
                       Container(
-                             margin: EdgeInsets.only(left: 10, right: 10),
+                        margin: EdgeInsets.only(left: 10, right: 10),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             border:
@@ -290,11 +216,11 @@ class _LoginemailState extends State<Loginemail> {
                                 const Radius.circular(10.0))),
                         child: _txtPassword,
                       ),
-                      
+
                       Obx(() {
                         if (authController.iserror.value)
                           return Padding(
-                            padding: const EdgeInsets.only(left: 10),
+                            padding: const EdgeInsets.only(left: 10,top: 15),
                             child: Text(
                               authController.msg,
                               style: TextStyle(fontSize: 16, color: Colors.red),
