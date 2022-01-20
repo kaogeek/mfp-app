@@ -25,17 +25,8 @@ class _RegisterState extends State<Register> {
   bool isregister = false;
   void _validateInputs() {
     if (_key.currentState.validate()) {
-      // print('submit');
-//    If all data are correct then save data to out variables
       _key.currentState.save();
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => PicProfile()),
-      // );
     } else {
-      // print(' data are not valid');
-
-//    If all data are not valid then start auto validation.
       setState(() {
         _autoValidate = true;
       });
@@ -44,16 +35,18 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
+        final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
+
     //--------------------อีเมล----------------------//
     final TextFormField _txtEmail = TextFormField(
       controller: _email,
-      style:TextStyle(fontSize: 14,fontFamily: AppTheme.FontAnakotmaiLight),
+      style: TextStyle(fontSize: 14, fontFamily: AppTheme.FontAnakotmaiLight),
       decoration: InputDecoration(
         hintText: 'Email',
-        hintStyle: TextStyle(fontSize: 14,fontFamily: AppTheme.FontAnakotmaiLight),
+        hintStyle:
+            TextStyle(fontSize: 14, fontFamily: AppTheme.FontAnakotmaiLight),
         contentPadding: EdgeInsets.all(13),
         border: InputBorder.none,
-        
         suffixIcon: InkWell(
             // onTap: _togglePasswordView,
             child: Padding(
@@ -84,17 +77,18 @@ class _RegisterState extends State<Register> {
     return Form(
       key: _key,
       child: Scaffold(
-          body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width * 1,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-          image: AssetImage('images/shutterstock_553511089.png'),
-          fit: BoxFit.cover,
-        )),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: SingleChildScrollView(
+          body: SingleChildScrollView(
+            child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(
+              image: DecorationImage(
+            image: AssetImage('images/shutterstock_553511089.png'),
+                        colorFilter: ColorFilter.mode(Colors.grey[500], BlendMode.modulate),
+
+            fit: BoxFit.cover,
+                  )),
+                  child: Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: Column(
               children: [
                 Container(
@@ -125,8 +119,8 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
                 Container(
-                  // color: Colors.black,
-                  height: MediaQuery.of(context).size.height / 4.0,
+                  padding: EdgeInsets.only(left: 10),
+                  height: MediaQuery.of(context).size.height / 6.0,
                   width: MediaQuery.of(context).size.width / 1,
                   child: Column(
                     children: [
@@ -145,7 +139,7 @@ class _RegisterState extends State<Register> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
-                          width: MediaQuery.of(context).size.width/2.0,
+                          width: MediaQuery.of(context).size.width / 2.0,
                           child: Text(
                             'ยินดีต้อนรับเข้าสู่ แพลตฟอร์ม',
                             maxLines: 1,
@@ -172,38 +166,47 @@ class _RegisterState extends State<Register> {
                     ],
                   ),
                 ),
+                 if (!isKeyboard)
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 9.0,
+                        ),
+          
                 Container(
-                  width: MediaQuery.of(context).size.width /1,
-                   margin: EdgeInsets.only(left: 5, right: 5),
+                  width: MediaQuery.of(context).size.width / 1,
+                  margin: EdgeInsets.only(left: 5, right: 5),
                   child: Text(
                     'กรุณาใส่ Email ที่คุณจะใช้ในการสมัคร',
                     maxLines: 1,
-                    style: TextStyle(fontSize: 17, color: Colors.white70,overflow: TextOverflow.ellipsis),
+                    style: TextStyle(
+                        fontSize: 17,
+                        color: Colors.white70,
+                        overflow: TextOverflow.ellipsis),
                   ),
                 ),
-                const SizedBox(height: 8,),
-                
+                const SizedBox(
+                  height: 8,
+                ),
+          
                 //--------------------อีเมล----------------------//
                 Container(
-                 margin: EdgeInsets.only(left: 5, right: 5),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            border:
-                                Border.all(width: 1.2, color: Colors.black12),
-                            borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0))),
+                  margin: EdgeInsets.only(left: 5, right: 5),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 1.2, color: Colors.black12),
+                      borderRadius:
+                          const BorderRadius.all(const Radius.circular(10.0))),
                   child: _txtEmail,
                 ),
                 iserror == true
                     ? Padding(
-                        padding: const EdgeInsets.only(left: 10),
+                        padding: const EdgeInsets.only(left: 10,top: 15),
                         child: Text(
                           msg,
                           style: TextStyle(fontSize: 16, color: Colors.red),
                         ),
                       )
                     : Container(),
-
+          
                 Container(
                   // color: Colors.black,
                   height: MediaQuery.of(context).size.height / 10.0,
@@ -221,7 +224,7 @@ class _RegisterState extends State<Register> {
                                       side: BorderSide(color: Colors.red)),
                                   child: Text(
                                     'ถัดไป',
-                                    style: TextStyle(fontSize: 20),
+                                    style: TextStyle(fontSize: 20,fontFamily:AppTheme.FontAnakotmaiLight ),
                                   ),
                                   textColor: Colors.white,
                                   color: MColors.primaryColor.withOpacity(0.5),
@@ -253,10 +256,6 @@ class _RegisterState extends State<Register> {
                                         ? nextpage()
                                         : _validateInputs();
                                   }
-                                  //             Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(builder: (context) => Registerpassword()),
-                                  // );
                                 },
                               ),
                             )
@@ -264,9 +263,9 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                 const SizedBox(
-                  height: 10,
+                  height: 15,
                 ),
-
+          
                 Container(
                   width: MediaQuery.of(context).size.width / 1,
                   alignment: Alignment.bottomCenter,
@@ -285,9 +284,9 @@ class _RegisterState extends State<Register> {
                 ),
               ],
             ),
-          ),
-        ),
-      )),
+                  ),
+                ),
+          )),
     );
   }
 

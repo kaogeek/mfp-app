@@ -36,7 +36,7 @@ class AppTheme {
   static const SmallTextSize = 14.0;
 
   static const TitleTextSize = 23.0;
-  
+
   static const splashRadius = 1.0;
 
   static const TextTheme textTheme = TextTheme(

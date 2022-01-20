@@ -45,10 +45,8 @@ class Api {
 
   /*--------------------ดึงค่าuserprofile--------------------------------------*/
   static Future<Http.Response> getPage(String pageid) async {
-
     final responseData =
         await Http.get(Uri.parse("${Api.url}api/page/$pageid"));
-       
 
     return responseData;
   }
@@ -106,7 +104,6 @@ class Api {
       headers: headers,
       body: body,
     );
-
 
     return responseData;
   }
@@ -278,8 +275,9 @@ class Api {
 
     return responseData;
   }
+
   static Future<Http.Response> getdoing(DateTime dateTime) async {
-          final f = new DateFormat("yyyy-MM-ddT HH:mm:ssZ");
+    final f = new DateFormat("yyyy-MM-ddT HH:mm:ssZ");
     //('dateTimegetdoing${dateTime.toIso8601String()}');
 
     var url = "${Api.url}api/objective/search?sample=5";
@@ -291,8 +289,7 @@ class Api {
       "filter": {
         "limit": 4,
         "offset": 0,
-        "whereConditions": {"createdDate":dateTime.toIso8601String()},
-   
+        "whereConditions": {"createdDate": dateTime.toIso8601String()},
       }
     };
     var body = jsonEncode(data);
@@ -307,8 +304,8 @@ class Api {
 
     return responseData;
   }
-   static Future<Http.Response> getobjectivdoinge(var offset ) async {
 
+  static Future<Http.Response> getobjectivdoinge(var offset) async {
     var url = "${Api.url}api/objective/search";
     final headers = {
       // "mode": "EMAIL",
@@ -318,8 +315,7 @@ class Api {
       "filter": {
         "limit": 5,
         "offset": offset,
-        "orderBy": {"createdDate":-1},
-   
+        "orderBy": {"createdDate": -1},
       }
     };
     var body = jsonEncode(data);
@@ -517,7 +513,7 @@ class Api {
     );
     // //('body$body');
     // //('responseData${responseData.body}');
-      var datapostlist = jsonDecode(responseData.body);
+    var datapostlist = jsonDecode(responseData.body);
 
     if (responseData.statusCode == 200) {
       for (Map i in datapostlist["data"]) {
@@ -755,7 +751,7 @@ class Api {
   }
 
   static Future<Http.Response> iseditcomment(String postid, String uid,
-      String token, String commentid, String commenttext,String mode) async {
+      String token, String commentid, String commenttext, String mode) async {
     // //('iseditcomment');
     var url = "${Api.url}api/post/$postid/comment/$commentid";
     final headers = {
@@ -763,7 +759,7 @@ class Api {
       "authorization": "Bearer $token",
       "content-type": "application/json",
       "accept": "application/json",
-            "mode": mode,
+      "mode": mode,
 
       // "whereConditions": {"isHideStory": false},
     };

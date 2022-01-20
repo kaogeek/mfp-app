@@ -20,7 +20,7 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    
+
     emailController = TextEditingController();
     passController = TextEditingController();
     // login(emailController.text, passController.text);

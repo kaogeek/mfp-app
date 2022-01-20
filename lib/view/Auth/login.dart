@@ -361,7 +361,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           )),
           child: SingleChildScrollView(
             child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
+              padding: const EdgeInsets.only(left: 10, right: 10),
               child: Column(
                 children: <Widget>[
                   Container(
@@ -456,10 +456,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             setState(() {
                               isfacebookLoggedIn = true;
                             });
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => widget),
-                            // );
                           }
                         : null,
                     isfacebookLoggedIn == false
@@ -473,8 +469,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     'images/twitter.png',
                     Color(0xFF1DA1F3),
                     Colors.white,
-                    isfacebookLoggedIn != true
-                        ? () {}:null,
+                    isfacebookLoggedIn != true ? () {} : null,
                     Container(),
                     //  isTwitterLoggedIn!=true   ?   isfacebookLoggedIn==false  ?()  async {
                     //                             initiateFacebookTwitter();

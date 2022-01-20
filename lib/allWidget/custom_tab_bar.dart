@@ -21,26 +21,6 @@ class CustomTabBar extends StatelessWidget {
     this.iconsimage,
   }) : super(key: key);
 
-  final List<Tab> _tabs = [
-    Tab(
-        icon: Icon(
-          Icons.account_circle,
-          color: Colors.black,
-        ),
-        text: 'User Info'),
-    Tab(
-      icon: Icon(Icons.chat_bubble),
-      text: 'Messages',
-    ),
-    Tab(
-      icon: Icon(Icons.photo_size_select_actual),
-      text: 'Multimedia',
-    ),
-    Tab(
-      icon: Icon(Icons.show_chart),
-      text: 'Statistics',
-    ),
-  ];
   @override
   Widget build(BuildContext context) {
     return TabBar(
@@ -60,9 +40,10 @@ class CustomTabBar extends StatelessWidget {
                 ),
               ),
       ),
-      labelStyle:
-          TextStyle(fontSize: 12, fontFamily: AppTheme.FontAnakotmaiLight,
-),
+      labelStyle: TextStyle(
+        fontSize: 12,
+        fontFamily: AppTheme.FontAnakotmaiLight,
+      ),
       labelColor: Colors.black,
       tabs:
           // _tabs,
@@ -81,13 +62,6 @@ class CustomTabBar extends StatelessWidget {
                         width: 21,
                         height: 21,
                       ),
-                      // Icon(
-                      //   e,
-                      //   color: i == selectedIndex
-                      //       ? MColors.primaryColor
-                      //       : Colors.grey[500],
-                      //   size: 30.0,
-                      // ),
                       text: lable[i],
                     ),
                   ))

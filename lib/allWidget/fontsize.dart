@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
@@ -93,12 +92,6 @@ Widget authorpost(
           overflow: TextOverflow.ellipsis,
         ),
       ),
-      // Text(
-      //   '$string',
-      //   style: Theme.of(context).textTheme.bodyText2,
-      //   maxLines: 2,
-      //   overflow: TextOverflow.ellipsis,
-      // ),
     );
 Widget texthashtags(String string) => Text(
       string,
@@ -114,7 +107,6 @@ Widget textreadstory(String string) => Text(
       style: TextStyle(
         fontFamily: AppTheme.FontAnakotmaiLight,
         fontSize: 18,
-        // fontWeight: FontWeight.bold,
         color: MColors.primaryColor,
       ),
     );

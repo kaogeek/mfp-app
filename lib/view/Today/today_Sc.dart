@@ -475,7 +475,7 @@ class _TodayScState extends State<TodaySc> {
               height: 10,
             ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
+                  padding: const EdgeInsets.only(left: 10,top: 5),
                   child: InkWell(
                     onTap: (){
                         Navigator.push(
@@ -493,7 +493,7 @@ class _TodayScState extends State<TodaySc> {
                     child: texttitlepost(posttitle, context)),
                 ),
                 Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
+                        padding: const EdgeInsets.all(10),
                   child: subtexttitlepost(subtitle, context),
                 ),
                 story != null

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mfp_app/Api/Api.dart';
-import 'package:mfp_app/allWidget/allWidget.dart';
-import 'package:mfp_app/constants/colors.dart';
-import 'package:mfp_app/allWidget/circle_button.dart';
 import 'package:mfp_app/allWidget/custom_tab_bar.dart';
 import 'package:mfp_app/view/Doing/doing.dart';
 import 'package:mfp_app/view/Menu/menu.dart';
@@ -24,18 +20,13 @@ class _NavScreenState extends State<NavScreen> {
   bool taptoload = false;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    //  Api.gettoke().then((value) => value({
-    //           checktoken = value,
-    //           // print('checktoken$checktoken'),
-    //         }));
+
 
     Api.getmyuid().then((value) => ({
           setState(() {
             userid = value;
           }),
-          // print('myuidhome$userid'),
         }));
   }
 
@@ -73,24 +64,15 @@ class _NavScreenState extends State<NavScreen> {
   @override
   Widget build(BuildContext context) {
     return
-        // Platform.isAndroid?isAnd():
         DefaultTabController(
       length: _icons.length,
       child: Scaffold(
         appBar: null,
-        // CustomAppBar(
-        //           currentUser: currentUser,
-        //           icons: _icons,
-        //           selectedIndex: _selectedIndex,
-        //            onTap: (index) => setState(() => _selectedIndex = index),
-        //         ),
-
         body: IndexedStack(
           index: _selectedIndex,
           children: _screens(),
         ),
         bottomNavigationBar: Container(
-          // padding: const EdgeInsets.only(bottom: 1.0),
           color: Colors.white,
           child: CustomTabBar(
             iconsimage: _iconsimage,
@@ -102,7 +84,6 @@ class _NavScreenState extends State<NavScreen> {
                   : HapticFeedback.lightImpact();
               setState(() {
                 _selectedIndex = index;
-                // print('_selectedIndex$_selectedIndex');
               });
               if (_selectedIndex == 0) {
                 setState(() {
@@ -117,122 +98,5 @@ class _NavScreenState extends State<NavScreen> {
     );
   }
 
-  Widget isAnd() {
-    int _selectedIndex = 0;
-
-    return DefaultTabController(
-      length: 4,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: MColors.primaryWhite,
-          title: Image.asset(
-            'images/MFP-Logo-Horizontal.png',
-            width: 150,
-            height: 150,
-          ),
-          centerTitle: false,
-          actions: [
-            CircleButton(
-              icon: Icons.search,
-              iconSize: 30.0,
-              onPressed: () => {},
-            ),
-            CircleButton(
-              icon: MdiIcons.bellOutline,
-              iconSize: 30.0,
-              onPressed: () => {},
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: CircleAvatar(
-                radius: 25.0,
-                backgroundImage:
-                    NetworkImage('https://via.placeholder.com/150'),
-                backgroundColor: Colors.transparent,
-              ),
-            )
-          ],
-          bottom: new PreferredSize(
-            preferredSize: new Size(1.0, 45.0),
-            child: new Container(
-              child: new TabBar(
-                indicator: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: MColors.primaryColor,
-                      width: 3.0,
-                    ),
-                  ),
-                ),
-                tabs: [
-                  new Container(
-                    height: 45.0,
-                    child: new Tab(
-                      icon: Icon(
-                        Icons.home,
-                        color: MColors.textGrey,
-                      ),
-                    ),
-                  ),
-                  new Container(
-                    height: 45.0,
-                    child: new Tab(
-                      icon: Icon(
-                        Icons.ondemand_video,
-                        color: MColors.textGrey,
-                      ),
-                    ),
-                  ),
-                  new Container(
-                    height: 45.0,
-                    child: new Tab(
-                      icon: Icon(
-                        MdiIcons.bellOutline,
-                        color: MColors.textGrey,
-                      ),
-                    ),
-                  ),
-                  new Container(
-                    height: 45.0,
-                    child: new Tab(
-                      icon: Icon(
-                        Icons.menu,
-                        color: MColors.textGrey,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-
-        // CustomAppBar(
-        //           currentUser: currentUser,
-        //           icons: _icons,
-        //           selectedIndex: _selectedIndex,
-        //            onTap: (index) => setState(() => _selectedIndex = index),
-        //         ),
-
-        body: TabBarView(
-          children: [
-            TodaySc(),
-            DoingSC(),
-            ShopSC(),
-            MenuSC(),
-          ],
-        ),
-
-        // bottomNavigationBar: Container(
-        //   padding: const EdgeInsets.only(bottom: 13.0),
-        //   color: Colors.white,
-        //   child: CustomTabBar(
-        //     icons: _icons,
-        //     selectedIndex: _selectedIndex,
-        //     onTap: (index) => setState(() => _selectedIndex = index), lable: 'data',
-        //   ),
-        // ),
-      ),
-    );
-  }
+ 
 }

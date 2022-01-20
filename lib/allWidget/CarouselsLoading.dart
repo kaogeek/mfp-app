@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mfp_app/constants/colors.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CarouselLoading extends StatelessWidget {

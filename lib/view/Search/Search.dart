@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/circle_button.dart';
+import 'package:mfp_app/animation/FadeAnimation.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/pagemodel.dart';
 import 'package:mfp_app/model/searchhastag.dart';
@@ -73,6 +74,8 @@ class _SearchState extends State<Search> {
   bool isLoading = true;
 
   bool listisempty = false;
+
+  List list=[];
   @override
   void initState() {
     super.initState();
@@ -146,6 +149,7 @@ class _SearchState extends State<Search> {
 
     if (responseData.statusCode == 200) {
       dataht = jsonDecode(responseData.body);
+      // print('dataht$dataht');
 
       for (Map i in dataht["data"]["result"]) {
         setState(() {
@@ -176,6 +180,7 @@ class _SearchState extends State<Search> {
           .get(Uri.parse("${Api.url}api/page/$pageid"), headers: headers);
       if (responseData.statusCode == 200) {
         var dataht1 = jsonDecode(responseData.body);
+
 
         setState(() {
           _listPageModel.add(PageModel.fromJson(dataht1["data"]));
@@ -302,13 +307,12 @@ class _SearchState extends State<Search> {
                                 autofocus: false,
                                 maxLines: 1,
                                 decoration: InputDecoration(
-                                  // labelText: 'Search Something',
                                   contentPadding: EdgeInsets.all(13),
 
                                   prefixIcon: Icon(
                                     Icons.search,
                                     color: MColors.textDark,
-                                    size: 20,
+                                    // size: 22,
                                   ),
                                   filled: true,
                                   fillColor: Colors.grey[200],
@@ -322,15 +326,15 @@ class _SearchState extends State<Search> {
                                   ),
                                 ),
                                 onChanged: (text) async {
-                                  if (text == "" || controller.text == "") {
-                                    //print("controllerวางจริง");
-                                    setState(() {
-                                      _listPageModel.clear();
-                                      controller.clear();
-                                      listSearchHastag.clear();
-                                      _searchResult.clear();
-                                    });
-                                  }
+                                  // if (text == "" || controller.text == "") {
+                                  //   //print("controllerวางจริง");
+                                  //   setState(() {
+                                  //     _listPageModel.clear();
+                                  //     controller.clear();
+                                  //     listSearchHastag.clear();
+                                  //     _searchResult.clear();
+                                  //   });
+                                  // }
                                   _debouncer.run(() async {
                                     _searchResult =
                                         listSearchHastag.where((ht) {
@@ -404,7 +408,7 @@ class _SearchState extends State<Search> {
                     //     ? SliverToBoxAdapter(
                     //         child: Center(child: CupertinoActivityIndicator()))
                     //     :
-                    controller.text != "" && listSearchHastag.length != 0
+                    controller.text != "" && listSearchHastag.length!=0
                         ? SliverToBoxAdapter(
                             child: new Builder(builder: (BuildContext context) {
                               return ListView.builder(
@@ -414,7 +418,9 @@ class _SearchState extends State<Search> {
                                 itemCount: listSearchHastag.length,
                                 itemBuilder: (context, i) {
                                   var data = listSearchHastag[i];
-                                  return InkWell(
+                                  return FadeAnimation(
+                                (1.5 + i / 5),
+                                  InkWell(
                                     onTap: () {
                                       if (data.type == "HASHTAG") {
                                         Navigator.push(
@@ -449,17 +455,26 @@ class _SearchState extends State<Search> {
                                       ),
                                       margin: const EdgeInsets.all(2.0),
                                     ),
-                                  );
+                                  )
+                                
+                                );
+                                
                                 },
                               );
                             }),
                           )
                         : SliverToBoxAdapter(
-                            child: Center(
-                                child: Text('ไม่พบข้อมูล',
+                            child: Container(
+                              padding: EdgeInsets.only(top: 20),
+                              child: Center(
+                                child: Text(isLoading?'':'ไม่พบข้อมูล',
                                     style: TextStyle(
                                       fontSize: 18,
-                                    )))),
+                                    ))),
+                                )),
+                             
+
+                                 
                     loadingpage == true
                         ? SliverToBoxAdapter(
                             child: Center(child: CupertinoActivityIndicator()))
