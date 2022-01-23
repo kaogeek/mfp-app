@@ -111,7 +111,7 @@ class _ProfileScState extends State<ProfileSc> {
                     )),
                     SliverToBoxAdapter(
                       child: Container(
-                          height: MediaQuery.of(context).size.height / 8.0,
+                          height: MediaQuery.of(context).size.height / 10,
                           width: MediaQuery.of(context).size.width,
                           color: Colors.white,
                           child: Column(
@@ -171,7 +171,7 @@ class _ProfileScState extends State<ProfileSc> {
                                   Spacer(),
                                   Icon(
                                     Icons.arrow_forward_ios_sharp,
-                                    size: 28.0,
+                                    size: 25.0,
                                     color: primaryColor,
                                   ),
                                 ],
@@ -484,21 +484,18 @@ class _ProfileScState extends State<ProfileSc> {
                             child: InkWell(
                               onTap: () async {
                                 showDialog(
-                                                context: context,
-                                                builder: (BuildContext
-                                                        context) =>
-                                                    new CupertinoAlertDialog(
-                                                      title: new Text(
-                                                        "คุณต้องการออกจากระบบ",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      actions: [
-                                                        CupertinoDialogAction(
-                                                          isDefaultAction: true,
-                                                          child:Text('ยกเลิก',
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        new CupertinoAlertDialog(
+                                          title: new Text(
+                                            "คุณต้องการออกจากระบบ",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          actions: [
+                                            CupertinoDialogAction(
+                                              isDefaultAction: true,
+                                              child: Text('ยกเลิก',
                                                   style: TextStyle(
                                                       fontSize: 15,
                                                       fontFamily: AppTheme
@@ -507,19 +504,18 @@ class _ProfileScState extends State<ProfileSc> {
                                                           FontWeight.bold,
                                                       color: MColors
                                                           .primaryColor)),
-                                                          onPressed: () =>
-                                                              Navigator.pop(
-                                                                  context),
-                                                        ),
-                                                        CupertinoDialogAction(
-                                                            child: new Text('ยืนยัน',
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                            ),
+                                            CupertinoDialogAction(
+                                              child: new Text('ยืนยัน',
                                                   style: TextStyle(
                                                       fontSize: 15,
                                                       fontFamily: AppTheme
                                                           .FontAnakotmaiBold,
                                                       color: MColors
                                                           .primaryColor)),
-                                                             onPressed: () async {
+                                              onPressed: () async {
                                                 await Api.logout();
                                                 Navigator.of(context)
                                                     .pushAndRemoveUntil(
@@ -531,10 +527,9 @@ class _ProfileScState extends State<ProfileSc> {
                                                                 route) =>
                                                             false);
                                               },
-                                                                
-                                                            ),
-                                                      ],
-                                                    ));
+                                            ),
+                                          ],
+                                        ));
                               },
                               child: Container(
                                 height: 60.0,

@@ -120,7 +120,7 @@ class _RegisterState extends State<Register> {
                 ),
                 Container(
                   padding: EdgeInsets.only(left: 10),
-                  height: MediaQuery.of(context).size.height / 6.0,
+                  height: MediaQuery.of(context).size.height / 5.8,
                   width: MediaQuery.of(context).size.width / 1,
                   child: Column(
                     children: [
@@ -168,7 +168,7 @@ class _RegisterState extends State<Register> {
                 ),
                  if (!isKeyboard)
                         SizedBox(
-                          height: MediaQuery.of(context).size.height / 9.0,
+                          height: MediaQuery.of(context).size.height / 8.5,
                         ),
           
                 Container(

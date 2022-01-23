@@ -45,8 +45,10 @@ class _PicProfileState extends State<PicProfile> {
     );
 
     setState(() {
-      _image = image as File;
+      _image =  File(image.path);
     });
+     final bytes = File(image.path).readAsBytesSync();
+      img64 = base64Encode(bytes);
   }
 
   Future getImage() async {
