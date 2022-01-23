@@ -75,7 +75,7 @@ class _SearchState extends State<Search> {
 
   bool listisempty = false;
 
-  List list=[];
+  List list = [];
   @override
   void initState() {
     super.initState();
@@ -180,7 +180,6 @@ class _SearchState extends State<Search> {
           .get(Uri.parse("${Api.url}api/page/$pageid"), headers: headers);
       if (responseData.statusCode == 200) {
         var dataht1 = jsonDecode(responseData.body);
-
 
         setState(() {
           _listPageModel.add(PageModel.fromJson(dataht1["data"]));
@@ -308,7 +307,6 @@ class _SearchState extends State<Search> {
                                 maxLines: 1,
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.all(13),
-
                                   prefixIcon: Icon(
                                     Icons.search,
                                     color: MColors.textDark,
@@ -408,7 +406,7 @@ class _SearchState extends State<Search> {
                     //     ? SliverToBoxAdapter(
                     //         child: Center(child: CupertinoActivityIndicator()))
                     //     :
-                    controller.text != "" && listSearchHastag.length!=0
+                    controller.text != "" && listSearchHastag.length != 0
                         ? SliverToBoxAdapter(
                             child: new Builder(builder: (BuildContext context) {
                               return ListView.builder(
@@ -419,62 +417,59 @@ class _SearchState extends State<Search> {
                                 itemBuilder: (context, i) {
                                   var data = listSearchHastag[i];
                                   return FadeAnimation(
-                                (1.5 + i / 5),
-                                  InkWell(
-                                    onTap: () {
-                                      if (data.type == "HASHTAG") {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => PostSearch(
-                                                    label: data.label,
-                                                  )),
-                                        );
-                                      }
-                                      if (data.type == "PAGE") {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => Profliess(
-                                                    id: data.value,
-                                                  )),
-                                        );
-                                      }
-                                    },
-                                    child: Card(
-                                      child: new ListTile(
-                                        leading: data.historyId != null
-                                            ? Icon(Icons.timer_outlined)
-                                            : Icon(Icons.search_outlined),
-                                        title: new Text('${data.label}'),
-                                        trailing: Icon(
-                                          Icons.arrow_forward_ios_rounded,
-                                          size: 18,
-                                          color: MColors.textDark,
+                                      (1.5 + i / 5),
+                                      InkWell(
+                                        onTap: () {
+                                          if (data.type == "HASHTAG") {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PostSearch(
+                                                        label: data.label,
+                                                      )),
+                                            );
+                                          }
+                                          if (data.type == "PAGE") {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Profliess(
+                                                        id: data.value,
+                                                      )),
+                                            );
+                                          }
+                                        },
+                                        child: Card(
+                                          child: new ListTile(
+                                            leading: data.historyId != null
+                                                ? Icon(Icons.timer_outlined)
+                                                : Icon(Icons.search_outlined),
+                                            title: new Text('${data.label}'),
+                                            trailing: Icon(
+                                              Icons.arrow_forward_ios_rounded,
+                                              size: 18,
+                                              color: MColors.textDark,
+                                            ),
+                                          ),
+                                          margin: const EdgeInsets.all(2.0),
                                         ),
-                                      ),
-                                      margin: const EdgeInsets.all(2.0),
-                                    ),
-                                  )
-                                
-                                );
-                                
+                                      ));
                                 },
                               );
                             }),
                           )
                         : SliverToBoxAdapter(
                             child: Container(
-                              padding: EdgeInsets.only(top: 20),
-                              child: Center(
-                                child: Text(isLoading?'':'ไม่พบข้อมูล',
+                            padding: EdgeInsets.only(top: 20),
+                            child: Center(
+                                child: Text(isLoading ? '' : 'ไม่พบข้อมูล',
                                     style: TextStyle(
                                       fontSize: 18,
                                     ))),
-                                )),
-                             
+                          )),
 
-                                 
                     loadingpage == true
                         ? SliverToBoxAdapter(
                             child: Center(child: CupertinoActivityIndicator()))
