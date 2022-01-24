@@ -23,15 +23,15 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb1439136826405744</string>
-				<string>twitterket-81eBPMrAFW20CN0PRnughGs4T</string>
+				<string></string>
+				<string></string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FacebookAppID</key>
-	<string>1439136826405744</string>
+	<string></string>
 	<key>FacebookDisplayName</key>
 	<string>MFP</string>
 	<key>LSApplicationQueriesSchemes</key>
