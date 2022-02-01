@@ -216,7 +216,7 @@ class Post {
   String coverImageSignUrl;
   List<dynamic> userTags;
   Story story;
-  bool islike = false;
+  bool islike;
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
         id: json["_id"],
@@ -257,6 +257,8 @@ class Post {
             ? null
             : List<dynamic>.from(json["userTags"].map((x) => x)),
         story: json["story"] == null ? null : Story.fromJson(json["story"]),
+        islike: json["isLike"],
+
       );
 
   Map<String, dynamic> toJson() => {
@@ -294,6 +296,8 @@ class Post {
             ? null
             : List<dynamic>.from(userTags.map((x) => x)),
         "story": story == null ? null : story.toJson(),
+                "isLike": islike,
+
       };
 }
 

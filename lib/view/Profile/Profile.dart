@@ -115,6 +115,7 @@ class _ProfileScState extends State<ProfileSc> {
                           width: MediaQuery.of(context).size.width,
                           color: Colors.white,
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,

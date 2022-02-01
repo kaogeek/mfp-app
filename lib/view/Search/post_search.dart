@@ -33,7 +33,7 @@ class _PostSearchState extends State<PostSearch> {
   var token;
   ScrollController _scrollController = ScrollController();
 
-  var mode;
+  var mode="";
 
   var userid;
   bool islike = false;
@@ -373,84 +373,34 @@ class _PostSearchState extends State<PostSearch> {
                           width: 0.14,
                           containerwidth: 3.4,
                           label: '${nDataList1.post.likeCount} ถูกใจ',
-                          onTap: () async {
-                            HapticFeedback.lightImpact();
-                            var jsonResponse;
-                            token == null || token == ""
-                                ? Navigate.pushPage(context, Loginregister())
-                                : mode != "FB"
-                                    ? await Api.islike(
-                                            postid, userid, token, "")
-                                        .then((value) => ({
-                                              jsonResponse =
-                                                  jsonDecode(value.body),
-                                              // //(
-                                              //     'message${jsonResponse['message']}'),
-                                              if (value.statusCode == 200)
-                                                {
-                                                  if (jsonResponse['message'] ==
-                                                      "Like Post Success")
-                                                    {
-                                                      setState(() {
-                                                        islike =
-                                                            jsonResponse['data']
-                                                                ['isLike'];
-                                                        nDataList1
-                                                            .post.likeCount++;
-                                                      }),
-                                                    }
-                                                  else if (jsonResponse[
-                                                          'message'] ==
-                                                      "UnLike Post Success")
-                                                    {
-                                                      setState(() {
-                                                        islike =
-                                                            jsonResponse['data']
-                                                                ['isLike'];
-
-                                                        nDataList1
-                                                            .post.likeCount--;
-                                                      }),
-                                                    }
-                                                }
-                                            }))
-                                    : await Api.islike(
-                                            postid, userid, token, mode)
-                                        .then((value) => ({
-                                              jsonResponse =
-                                                  jsonDecode(value.body),
-                                              // //(
-                                              //     'message${jsonResponse['message']}'),
-                                              if (value.statusCode == 200)
-                                                {
-                                                  if (jsonResponse['message'] ==
-                                                      "Like Post Success")
-                                                    {
-                                                      setState(() {
-                                                        islike =
-                                                            jsonResponse['data']
-                                                                ['isLike'];
-                                                        nDataList1
-                                                            .post.likeCount++;
-                                                      }),
-                                                    }
-                                                  else if (jsonResponse[
-                                                          'message'] ==
-                                                      "UnLike Post Success")
-                                                    {
-                                                      setState(() {
-                                                        islike =
-                                                            jsonResponse['data']
-                                                                ['isLike'];
-
-                                                        nDataList1
-                                                            .post.likeCount--;
-                                                      }),
-                                                    }
-                                                }
-                                            }));
-                            // //("กดlike");
-                          },
+                          onTap: () {
+                          HapticFeedback.lightImpact();
+                          var jsonResponse;
+                          print(nDataList1.post.islike);
+                         token==null || token ==""?
+                             Navigate.pushPage(context, Loginregister())
+                             :mode != "FB"? setState(() {
+                            if (nDataList1.post.islike == false ||nDataList1.post.islike == null ||nDataList1.post.likeCount < 0) {
+                              nDataList1.post.islike = true;
+                              nDataList1.post.likeCount++;
+                              Api.islike(postid, userid, token, "");
+                            } else if (nDataList1.post.islike == true) {
+                              nDataList1.post.islike = false;
+                               nDataList1.post.likeCount--;
+                              Api.islike(postid, userid, token, "");
+                            }
+                          }):setState(() {
+                            if (nDataList1.post.islike == false ||nDataList1.post.islike == null ||nDataList1.post.likeCount < 0) {
+                              nDataList1.post.islike = true;
+                              nDataList1.post.likeCount++;
+                              Api.islike(postid, userid, token, "FB");
+                            } else if (nDataList1.post.islike == true) {
+                              nDataList1.post.islike = false;
+                               nDataList1.post.likeCount--;
+                              Api.islike(postid, userid, token, "FB");
+                            }
+                          });
+                        },
                         ),
                         PostButton(
                           icon: Icon(
@@ -467,21 +417,11 @@ class _PostSearchState extends State<PostSearch> {
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
                                   return PostDetailsSC(
-                                    posttitle: posttitle,
-                                    subtitle: subtitle,
-                                    authorposttext: authorposttext,
-                                    dateTime: dateTime,
+                                 
                                     gallery: gallery,
-                                    commentCount: commentCount,
-                                    shareCoun: shareCount,
+                                   
                                     postid: postid,
-                                    userimage: userprofileimage,
-                                    pageid: pageid,
-                                    pageimage: pageimage,
-                                    pagename: pagename,
-                                    isFollow: isFollow,
-                                    pageUsername: pageUsername,
-                                    isOfficial: isOfficial,
+                                   
                                     onfocus: true,
                                   );
                                 },
@@ -497,8 +437,28 @@ class _PostSearchState extends State<PostSearch> {
                           ),
                           width: 0.12,
                           containerwidth: 3.5,
-                          label: '$shareCount แชร์',
-                          onTap: null,
+                          label: ' แชร์',
+                          onTap:  () {
+                          Clipboard.setData(new ClipboardData(text: "https://today.moveforwardparty.org/post/$postid"))
+                              .then((_) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: MColors.primaryColor,
+                              content: Row(
+                                children: [
+                                  Icon(
+                                    Icons.check,
+                                    color: MColors.primaryWhite,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text('คัดลอกลิงค์',style: TextStyle(fontFamily: AppTheme.FontAnakotmaiMedium),)
+                                ],
+                              ),
+                              duration: const Duration(milliseconds: 1000),
+                            ));
+                          });
+                        },
                         ),
                       ],
                     ),

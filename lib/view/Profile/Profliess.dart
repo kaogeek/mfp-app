@@ -76,6 +76,7 @@ class _ProfliessState extends State<Profliess> {
 
   bool _hasNextPage = true;
   List<PageObjective> pageobjslist = [];
+  var mode = "";
 
   var msgres = "กำลังโหลด";
   @override
@@ -87,6 +88,8 @@ class _ProfliessState extends State<Profliess> {
       token = await Api.gettoke();
 
       userid = await Api.getmyuid();
+
+      mode = await Api.getmodelogin();
 
       await Api.getPage(widget.id).then((responseData) async => ({
             if (responseData.statusCode == 200)
@@ -450,7 +453,7 @@ class _ProfliessState extends State<Profliess> {
                                     ? Navigate.pushPage(
                                         context, Loginregister())
                                     : await Api.isfollowpage(
-                                            widget.id, userid, token)
+                                            widget.id, userid, token, mode)
                                         .then((value) => ({
                                               jsonResponse =
                                                   jsonDecode(value.body),
@@ -608,7 +611,8 @@ class _ProfliessState extends State<Profliess> {
                                             }));
                                           },
                                           child: Container(
-                                            margin: EdgeInsets.only(left: 10,top: 10,bottom: 10),
+                                            margin: EdgeInsets.only(
+                                                left: 10, top: 10, bottom: 10),
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width /
@@ -1047,44 +1051,41 @@ class _ProfliessState extends State<Profliess> {
                           width: 0.14,
                           containerwidth: 3.4,
                           label: '${nDataList1.likeCount} ถูกใจ',
-                          onTap: () async {
+                          onTap: () {
                             HapticFeedback.lightImpact();
-
                             var jsonResponse;
-                            token == "" || token == null
+                            print(nDataList1.post.islike);
+                            token == null || token == ""
                                 ? Navigate.pushPage(context, Loginregister())
-                                : await Api.islike(postid, userid, token, "")
-                                    .then((value) => ({
-                                          jsonResponse = jsonDecode(value.body),
-                                          ////('message${jsonResponse['message']}'),
-                                          if (value.statusCode == 200)
-                                            {
-                                              if (jsonResponse['message'] ==
-                                                  "Like Post Success")
-                                                {
-                                                  setState(() {
-                                                    islike =
-                                                        jsonResponse['data']
-                                                            ['isLike'];
-
-                                                    nDataList1.likeCount++;
-                                                  }),
-                                                }
-                                              else if (jsonResponse[
-                                                      'message'] ==
-                                                  "UnLike Post Success")
-                                                {
-                                                  setState(() {
-                                                    islike =
-                                                        jsonResponse['data']
-                                                            ['isLike'];
-
-                                                    nDataList1.likeCount--;
-                                                  }),
-                                                }
-                                            }
-                                        }));
-                            //("กดlike");
+                                : mode != "FB"
+                                    ? setState(() {
+                                        if (nDataList1.islike == false ||
+                                            nDataList1.islike == null ||
+                                            nDataList1.likeCount < 0) {
+                                          nDataList1.islike = true;
+                                          nDataList1.likeCount++;
+                                          Api.islike(postid, userid, token, "");
+                                        } else if (nDataList1.islike == true) {
+                                          nDataList1.islike = false;
+                                          nDataList1.likeCount--;
+                                          Api.islike(postid, userid, token, "");
+                                        }
+                                      })
+                                    : setState(() {
+                                        if (nDataList1.islike == false ||
+                                            nDataList1.islike == null ||
+                                            nDataList1.likeCount < 0) {
+                                          nDataList1.islike = true;
+                                          nDataList1.likeCount++;
+                                          Api.islike(
+                                              postid, userid, token, "FB");
+                                        } else if (nDataList1.islike == true) {
+                                          nDataList1.islike = false;
+                                          nDataList1.likeCount--;
+                                          Api.islike(
+                                              postid, userid, token, "FB");
+                                        }
+                                      });
                           },
                         ),
                         PostButton(
@@ -1101,17 +1102,8 @@ class _ProfliessState extends State<Profliess> {
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
                                   return PostDetailsSC(
-                                    posttitle: posttitle,
-                                    subtitle: subtitle,
-                                    authorposttext: postbyname,
-                                    dateTime: dateTime,
                                     gallery: gallery,
                                     postid: postid,
-                                    userimage: userimageUrl,
-                                    pageid: pageid,
-                                    pagename: pagename,
-                                    isFollow: isFollow,
-                                    pageUsername: pageUsername,
                                     onfocus: true,
                                     story: story,
                                   );
@@ -1127,8 +1119,31 @@ class _ProfliessState extends State<Profliess> {
                           ),
                           width: 0.12,
                           containerwidth: 3.5,
-                          label: '${nDataList1.shareCount}แชร์',
-                          onTap: null,
+                          label: ' แชร์',
+                          onTap: () {
+                            Clipboard.setData(new ClipboardData(
+                                    text:
+                                        "https://today.moveforwardparty.org/post/$postid"))
+                                .then((_) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                backgroundColor: MColors.primaryColor,
+                                content: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.check,
+                                      color: MColors.primaryWhite,
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                  Text('คัดลอกลิงค์',style: TextStyle(fontFamily: AppTheme.FontAnakotmaiMedium),)
+                                  ],
+                                ),
+                                duration: const Duration(milliseconds: 1000),
+                              ));
+                            });
+                          },
                         ),
                       ],
                     ),

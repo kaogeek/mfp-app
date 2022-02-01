@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
@@ -65,7 +66,7 @@ class _StroyPageScState extends State<StroyPageSc> {
   bool idedit = false;
   var jsonResponse;
   bool onref = false;
-  StreamController _postsController;
+  StreamController _commentController;
   String postid;
   String titalpost;
   DateTime createdDate;
@@ -90,9 +91,9 @@ class _StroyPageScState extends State<StroyPageSc> {
     // getStory(widget.postid);
     imagelist = widget.imagUrl;
 
-    _postsController = new StreamController();
+    _commentController = new StreamController();
     Future.delayed(Duration.zero, () async {
-      await todayController.getstory(widget.postid);
+      await todayController.getstory(widget.postid, widget.userid);
       await Api.getcommentlist(widget.postid, widget.userid, widget.token)
           .then((responseData) => ({
                 setState(() {
@@ -107,7 +108,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                       {
                         setState(() {
                           listModel.add(CommentlistModel.fromJson(i));
-                          _postsController.add(responseData);
+                          _commentController.add(responseData);
                         }),
                         // print('listModel${listModel.length}'),
                       },
@@ -416,7 +417,7 @@ class _StroyPageScState extends State<StroyPageSc> {
 
   Widget _buildCommentList() {
     return StreamBuilder(
-      stream: _postsController.stream,
+      stream: _commentController.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return ListView.builder(
           physics: ClampingScrollPhysics(),
@@ -425,117 +426,14 @@ class _StroyPageScState extends State<StroyPageSc> {
           itemCount: listModel.length,
           itemBuilder: (BuildContext context, int index) {
             var data = listModel[index];
-            _commenteditController.text = data.comment;
-            var commentid = data.id;
 
-            return new InkWell(
-              // onTap: () async {
-              //   data.user.id == widget.userid
-              //       ? showCupertinoModalPopup<void>(
-              //           context: context,
-              //           builder: (BuildContext context) => CupertinoActionSheet(
-              //                 actions: <CupertinoActionSheetAction>[
-              //                   CupertinoActionSheetAction(
-              //                     child: const Text('Edit'),
-              //                     onPressed: () {
-              //                       setState(() {
-              //                         idedit = true;
-              //                       });
-              //                       Navigator.pop(context);
-              //                     },
-              //                   ),
-              //                   CupertinoActionSheetAction(
-              //                     child: const Text('Delete',
-              //                         style: TextStyle(
-              //                           color: Colors.red,
-              //                         )),
-              //                     onPressed: () {
-              //                       Navigator.pop(context);
-              //                       showDialog(
-              //                           context: context,
-              //                           builder: (BuildContext context) =>
-              //                               new CupertinoAlertDialog(
-              //                                 title: new Text(
-              //                                   "Delete Comment",
-              //                                   style: TextStyle(
-              //                                       fontWeight:
-              //                                           FontWeight.bold),
-              //                                 ),
-              //                                 actions: [
-              //                                   CupertinoDialogAction(
-              //                                     isDefaultAction: true,
-              //                                     child: new Text("Cancel"),
-              //                                     onPressed: () =>
-              //                                         Navigator.pop(context),
-              //                                   ),
-              //                                   CupertinoDialogAction(
-              //                                       child: new Text(
-              //                                         "Delete",
-              //                                         style: TextStyle(
-              //                                             color: Colors.red),
-              //                                       ),
-              //                                       onPressed: () async {
-              //                                         Api.deletecomment(
-              //                                                 widget.postid,
-              //                                                 widget.token,
-              //                                                 commentid,
-              //                                                 widget.userid,
-              //                                                widget.mode)
-              //                                             .then((value) => ({
-              //                                                   if (value[
-              //                                                           'status'] ==
-              //                                                       1)
-              //                                                     {
-              //                                                       setState(
-              //                                                           () {
-              //                                                         onref =
-              //                                                             true;
-              //                                                       }),
-              //                                                     }
-              //                                                 }));
-              //                                         Navigator.pop(context);
-              //                                         ScaffoldMessenger.of(
-              //                                                 context)
-              //                                             .showSnackBar(
-              //                                                 SnackBar(
-              //                                           backgroundColor:
-              //                                               Colors.green,
-              //                                           content: Row(
-              //                                             children: [
-              //                                               Icon(
-              //                                                 Icons.check,
-              //                                                 color: MColors
-              //                                                     .primaryWhite,
-              //                                               ),
-              //                                               SizedBox(
-              //                                                 width: 5,
-              //                                               ),
-              //                                               Text('Success')
-              //                                             ],
-              //                                           ),
-              //                                           duration:
-              //                                               const Duration(
-              //                                                   milliseconds:
-              //                                                       2500),
-              //                                         ));
-              //                                       }),
-              //                                 ],
-              //                               ));
-              //                     },
-              //                   )
-              //                 ],
-              //                 cancelButton: CupertinoActionSheetAction(
-              //                   child: const Text('Cancel'),
-              //                   onPressed: () {
-              //                     Navigator.pop(context);
-              //                   },
-              //                 ),
-              //               ))
-              //       : Container();
-              // },
+            return GestureDetector(
+              onTap: () {
+                print('${data.comment}');
+                // print('${_commenteditController.text}');
+              },
               child: Padding(
-                padding: EdgeInsets.all(8.0),
-                // widget.data['toCommentID'] == null ? EdgeInsets.all(8.0) : EdgeInsets.fromLTRB(34.0,8.0,8.0,8.0),
+                padding: EdgeInsets.only(top: 8.0),
                 child: Stack(
                   children: <Widget>[
                     Row(
@@ -570,21 +468,26 @@ class _StroyPageScState extends State<StroyPageSc> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
-                                      padding: const EdgeInsets.all(4.0),
+                                      padding: const EdgeInsets.only(
+                                          left: 4.0, bottom: 5, top: 3),
                                       child: Text(
                                         data.user.displayName,
+                                        maxLines: 1,
                                         style: TextStyle(
                                             fontSize: 16,
+                                            overflow: TextOverflow.ellipsis,
                                             fontWeight: FontWeight.bold,
                                             color: MColors.primaryBlue),
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 4.0),
+                                      padding: const EdgeInsets.only(
+                                          left: 4.0, bottom: 5),
                                       child: Text(
                                         data.comment,
-                                        maxLines: null,
+                                        maxLines: 1,
                                         style: TextStyle(
+                                            overflow: TextOverflow.ellipsis,
                                             color: MColors.primaryBlue),
                                       ),
                                     ),
@@ -592,7 +495,6 @@ class _StroyPageScState extends State<StroyPageSc> {
                                 ),
                               ),
                               width: MediaQuery.of(context).size.width - 90,
-                              // widget.size.width- (widget.data['toCommentID'] == null ? 90 : 110),
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   color: Color(0xffDEDEDE),
@@ -607,69 +509,72 @@ class _StroyPageScState extends State<StroyPageSc> {
                               padding:
                                   const EdgeInsets.only(left: 10.0, top: 2.0),
                               child: Container(
-                                width: MediaQuery.of(context).size.width * 0.38,
+                                width: MediaQuery.of(context).size.width / 1.5,
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     GestureDetector(
-                                      //   onTap: ()async{
-                                      //          Api.islikecomment(widget.postid, widget.userid, widget.token,
-                                      //     commentid, widget.mode)
-                                      // .then((value) => ({
-                                      //       jsonResponse = jsonDecode(value.body),
-                                      //       print(
-                                      //           'message${jsonResponse['message']}'),
-                                      //       if (value.statusCode == 200)
-                                      //         {
-                                      //           if (jsonResponse['message'] ==
-                                      //               "Like Post Comment Success")
-                                      //             {
-                                      //               setState(() {
-                                      //                 data.likeCount++;
-                                      //                 data.isLike = true;
-                                      //               }),
-                                      //             }
-                                      //           else if (jsonResponse[
-                                      //                   'message'] ==
-                                      //               "UnLike Post Comment Success")
-                                      //             {
-                                      //               setState(() {
-                                      //                 data.likeCount--;
-                                      //                 data.isLike = false;
-                                      //               }),
-                                      //             }
-                                      //         }
-                                      //     }));
-                                      //   },
+                                      onTap: () async {
+                                        Api.islikecomment(
+                                                widget.postid,
+                                                widget.userid,
+                                                widget.token,
+                                                data.id,
+                                                widget.mode)
+                                            .then((value) => ({
+                                                  jsonResponse =
+                                                      jsonDecode(value.body),
+                                                  //print('message${jsonResponse['message']}'),
+                                                  if (value.statusCode == 200)
+                                                    {
+                                                      if (jsonResponse[
+                                                              'message'] ==
+                                                          "Like Post Comment Success")
+                                                        {
+                                                          setState(() {
+                                                            data.likeCount++;
+                                                            data.isLike = true;
+                                                          }),
+                                                        }
+                                                      else if (jsonResponse[
+                                                              'message'] ==
+                                                          "UnLike Post Comment Success")
+                                                        {
+                                                          setState(() {
+                                                            data.likeCount--;
+                                                            data.isLike = false;
+                                                          }),
+                                                        }
+                                                    }
+                                                }));
+                                      },
                                       child: Text(
-                                        'ถูกใจ',
+                                        '${data.likeCount} ถูกใจ',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: MColors.primaryBlue),
-                                        // style:TextStyle(fontWeight: FontWeight.bold,color:_currentMyData.myLikeCommnetList != null && _currentMyData.myLikeCommnetList.contains(widget.data['commentID']) ? Colors.blue[900] : Colors.grey[700])
+                                            color: data.isLike == false
+                                                ? MColors.primaryBlue
+                                                : MColors.primaryColor),
                                       ),
                                     ),
                                     SizedBox(
                                       width: 8,
                                     ),
-                                    GestureDetector(
-                                      child: Text(
-                                        'ตอบกลับ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: MColors.primaryBlue),
-                                        // style:TextStyle(fontWeight: FontWeight.bold,color:_currentMyData.myLikeCommnetList != null && _currentMyData.myLikeCommnetList.contains(widget.data['commentID']) ? Colors.blue[900] : Colors.grey[700])
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 8,
-                                    ),
+                                    data.user.id == widget.userid
+                                        ? SizedBox(
+                                            width: 8,
+                                          )
+                                        : Container(),
                                     Text(
                                       TimeUtils.readTimestamp(data
                                           .createdDate.millisecondsSinceEpoch),
-                                      style:
-                                          TextStyle(color: MColors.primaryBlue),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: MColors.primaryBlue,
+                                          fontFamily:
+                                              AppTheme.FontAnakotmaiLight,
+                                          fontSize: 13,
+                                          overflow: TextOverflow.ellipsis),
                                     ),
                                   ],
                                 ),

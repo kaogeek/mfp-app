@@ -78,13 +78,14 @@ class Api {
     return mode;
   }
 
-  static Future getPostList(int offset) async {
+  static Future getPostList(int offset,String userid) async {
     // //('getPostList');
     String url = "${Api.url}api/main/content/search";
     final headers = {
       // "mode": "EMAIL",
       "authority": "today-api.moveforwardparty.org",
       "content-type": "application/json",
+      "userid":userid
     };
     Map data = {
       "keyword": [""],
@@ -109,7 +110,7 @@ class Api {
   }
 
   //---------------
-  static Future<List<PostSearchModel>> getpostlisttest(int offset) async {
+  static Future<List<PostSearchModel>> getpostlisttest(int offset,String userid) async {
     // //('getPostList');
     List<PostSearchModel> postlist = [];
 
@@ -118,6 +119,7 @@ class Api {
       // "mode": "EMAIL",
       "authority": "today-api.moveforwardparty.org",
       "content-type": "application/json",
+       "userid":userid
     };
     Map data = {
       "keyword": [""],
@@ -193,12 +195,13 @@ class Api {
     return res;
   }
 
-  static Future getstory(String id) async {
+  static Future getstory(String id,String userid) async {
     var storytestreplaceAll, storytest;
     try {
       var url = Uri.parse("${Api.url}api/post/search");
       final headers = {
         "content-type": "application/json",
+        "userid":userid
       };
       Map data = {
         "limit": 10,
@@ -665,7 +668,6 @@ class Api {
 
   static Future<Http.Response> islike(
       String postid, String uid, String token, String mode) async {
-    // //('sendcomment');
     var url = "${Api.url}api/post/$postid/like";
     final headers = {
       "userid": uid,
@@ -682,28 +684,26 @@ class Api {
       //  "fileName":fileName,
       //  "size":193148}
     };
-
     var body = jsonEncode(data);
-
     final responseData = await Http.post(
       Uri.parse(url),
       headers: headers,
       body: body,
     );
-    // //('body$body');
-    // //('islike${responseData.body}');
-
+    print(responseData);
+  
     return responseData;
   }
 
   static Future<Http.Response> isfollowpage(
-      String pageid, String uid, String token) async {
+      String pageid, String uid, String token,String mode) async {
     var url = "${Api.url}api/page/$pageid/follow";
     final headers = {
       "userid": uid,
       "authorization": "Bearer $token",
       "content-type": "application/json",
-      "accept": "application/json"
+      "accept": "application/json",
+      "mode":mode,
       // "whereConditions": {"isHideStory": false},
     };
     Map data = {};
@@ -960,4 +960,46 @@ class Api {
       return jsonResponse;
     }
   }
+
+  static Future forgetpassword(String username) async {
+    //print('sendcomment');
+
+    var url = "${Api.url}api/forgot/";
+    final headers = {
+      "content-type": "application/json",
+    };
+    Map data = {
+      "username": username,
+    
+    };
+    var body = jsonEncode(data);
+
+    final responseData = await Http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: body,
+    );
+   return responseData;
+  }
+   static Future changepassword(String username,String pass,String code) async {
+    //print('sendcomment');
+
+    var url = "${Api.url}api/change_password/";
+    final headers = {
+      "content-type": "application/json",
+    };
+    Map data = {"code":code,"email":username,"password":pass};
+    var body = jsonEncode(data);
+
+    final responseData = await Http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: body,
+    );
+   return responseData;
+  }
+
+
 }
+
+
