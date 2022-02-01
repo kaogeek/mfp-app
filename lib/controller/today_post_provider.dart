@@ -43,7 +43,7 @@ class TodayPostController extends GetxController {
     super.onInit();
   }
 
-  getpost(var offset, {var pagenumber = 0}) async {
+  getpost(var offset,var userid ,{var pagenumber = 0}) async {
     //('getmergencyevents');
     try {
       if (postList.length == 0) {
@@ -51,7 +51,7 @@ class TodayPostController extends GetxController {
         firstload(true);
         postList.clear();
       }
-      var posts = await Api.getpostlisttest(offset);
+      var posts = await Api.getpostlisttest(offset,userid);
       if (posts != null) {
         postList.addAll(posts);
         update();
@@ -64,7 +64,7 @@ class TodayPostController extends GetxController {
   getislike(String postid, String userid, String token, String mode) async {
     var jsonResponse;
     var Islike;
-    var like = await Api.islike(postid, userid, token, "").then((value) => ({
+     Api.islike(postid, userid, token, "").then((value) => ({
           jsonResponse = jsonDecode(value.body),
           //('message${jsonResponse['message']}')
           if (value.statusCode == 200)
@@ -119,11 +119,11 @@ class TodayPostController extends GetxController {
     }
   }
 
-  getstory(String id) async {
+  getstory(String id,String userid) async {
     //('getstory');
     try {
       idloadingstory.value = true;
-      var responseRequest = await Api.getstory(id);
+      var responseRequest = await Api.getstory(id,userid);
       if (responseRequest.statusCode == 200) {
         final jsonResponse = jsonDecode(responseRequest.body);
         for (Map i in jsonResponse["data"]) {

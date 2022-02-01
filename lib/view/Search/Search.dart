@@ -120,12 +120,12 @@ class _SearchState extends State<Search> {
   getsearch(String quer, String userid) async {
     var pagetype;
     var pageid;
-    setState(() {
-      loading = true;
-      listSearchHastag.clear();
-      _searchResult.clear();
-      _listPageModel.clear();
-    });
+    // setState(() {
+    //   loading = true;
+    //   listSearchHastag.clear();
+    //   _searchResult.clear();
+    //   _listPageModel.clear();
+    // });
 
     var url = Uri.parse("${Api.url}api/main/search");
     final headers = {
@@ -145,6 +145,11 @@ class _SearchState extends State<Search> {
 
     setState(() {
       loading = true;
+         listSearchHastag.clear();
+      _searchResult.clear();
+      _listPageModel.clear();
+        pagetype = "";
+          pageid ="";
     });
 
     if (responseData.statusCode == 200) {
@@ -305,8 +310,9 @@ class _SearchState extends State<Search> {
                                 controller: controller,
                                 autofocus: false,
                                 maxLines: 1,
+                                
                                 decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(13),
+                                  contentPadding: EdgeInsets.all(16),
                                   prefixIcon: Icon(
                                     Icons.search,
                                     color: MColors.textDark,
@@ -464,7 +470,7 @@ class _SearchState extends State<Search> {
                             child: Container(
                             padding: EdgeInsets.only(top: 20),
                             child: Center(
-                                child: Text(isLoading ? '' : 'ไม่พบข้อมูล',
+                                child: Text(isLoading==true ? '' : 'ไม่พบข้อมูล',
                                     style: TextStyle(
                                       fontSize: 18,
                                     ))),

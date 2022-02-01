@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/CarouselsLoading.dart';
@@ -22,44 +23,15 @@ import 'package:mfp_app/view/Today/story_page.dart';
 
 class PostDetailsSC extends StatefulWidget {
   final String postid;
-  final String authorposttext;
-  final String posttitle;
-  final String subtitle;
-  final DateTime dateTime;
+
   final List gallery;
-  final int commentCount;
-  final int shareCoun;
-  final String userimage;
-  final String pageid;
-  final String pageimage;
-  final String pagename;
-  final bool isFollow;
-  final String pageUsername;
-  final bool isOfficial;
+
   final bool onfocus;
   final story;
   final String type;
 
   PostDetailsSC(
-      {Key key,
-      this.postid,
-      this.authorposttext,
-      this.posttitle,
-      this.subtitle,
-      this.dateTime,
-      this.gallery,
-      this.commentCount,
-      this.shareCoun,
-      this.userimage,
-      this.pageid,
-      this.pageimage,
-      this.pagename,
-      this.isFollow,
-      this.pageUsername,
-      this.isOfficial,
-      this.onfocus,
-      this.type,
-      this.story})
+      {Key key, this.postid, this.gallery, this.onfocus, this.type, this.story})
       : super(key: key);
 
   @override
@@ -88,7 +60,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
 
   bool postloading = true;
 
-  var commentid,textcomment;
+  var commentid, textcomment;
   @override
   void dispose() {
     _trackingScrollController.dispose();
@@ -119,7 +91,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
   void didChangeDependencies() {
     setState(() {
       Api.getcommentlist(widget.postid, userid, token);
-      Api.getstory(widget.postid);
+      Api.getstory(widget.postid, userid);
     });
 
     super.didChangeDependencies();
@@ -168,7 +140,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
           }));
       //--
       futuregetpostdetail =
-          Api.getstory(widget.postid).then((responseData) async => ({
+          Api.getstory(widget.postid, userid).then((responseData) async => ({
                 setState(() {
                   postloading = true;
                 }),
@@ -421,6 +393,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
       story,
       String postid,
       datapostdetail) {
+    print(datapostdetail.isLike);
     return InkWell(
       onTap: () {},
       child: Container(
@@ -558,7 +531,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                         children: [
                           PostButton(
                             icon: Icon(
-                              islikepost != true
+                              datapostdetail.isLike != true
                                   ? Icons.favorite_outline
                                   : Icons.favorite,
                               size: 19.0,
@@ -567,89 +540,45 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                             label: '${datapostdetail.likeCount} ถูกใจ',
                             width: 0.14,
                             containerwidth: 3.4,
-                            onTap: () async {
+                            onTap: () {
                               HapticFeedback.lightImpact();
                               var jsonResponse;
+                              print(datapostdetail.isLike);
                               token == null || token == ""
                                   ? Navigate.pushPage(context, Loginregister())
                                   : mode != "FB"
-                                      ? await Api.islike(
-                                              postid, userid, token, "")
-                                          .then((value) => ({
-                                                jsonResponse =
-                                                    jsonDecode(value.body),
-                                                // print(
-                                                //     'message${jsonResponse['message']}'),
-                                                if (value.statusCode == 200)
-                                                  {
-                                                    if (jsonResponse[
-                                                            'message'] ==
-                                                        "Like Post Success")
-                                                      {
-                                                        setState(() {
-                                                          islikepost =
-                                                              jsonResponse[
-                                                                      'data']
-                                                                  ['isLike'];
-                                                          islikepost = true;
-                                                          datapostdetail
-                                                              .likeCount++;
-                                                        }),
-                                                      }
-                                                    else if (jsonResponse[
-                                                            'message'] ==
-                                                        "UnLike Post Success")
-                                                      {
-                                                        setState(() {
-                                                          islikepost =
-                                                              jsonResponse[
-                                                                      'data']
-                                                                  ['isLike'];
-                                                          islikepost = false;
-                                                          datapostdetail
-                                                              .likeCount--;
-                                                        }),
-                                                      }
-                                                  }
-                                              }))
-                                      : await Api.islike(
-                                              postid, userid, token, mode)
-                                          .then((value) => ({
-                                                jsonResponse =
-                                                    jsonDecode(value.body),
-                                                // print(
-                                                //     'message${jsonResponse['message']}'),
-                                                if (value.statusCode == 200)
-                                                  {
-                                                    if (jsonResponse[
-                                                            'message'] ==
-                                                        "Like Post Success")
-                                                      {
-                                                        setState(() {
-                                                          islikepost =
-                                                              jsonResponse[
-                                                                      'data']
-                                                                  ['isLike'];
-                                                          datapostdetail
-                                                              .likeCount++;
-                                                        }),
-                                                      }
-                                                    else if (jsonResponse[
-                                                            'message'] ==
-                                                        "UnLike Post Success")
-                                                      {
-                                                        setState(() {
-                                                          islikepost =
-                                                              jsonResponse[
-                                                                      'data']
-                                                                  ['isLike'];
-
-                                                          datapostdetail
-                                                              .likeCount--;
-                                                        }),
-                                                      }
-                                                  }
-                                              }));
+                                      ? setState(() {
+                                          if (datapostdetail.isLike == false ||
+                                              datapostdetail.isLike == null ||
+                                              datapostdetail.likeCount < 0) {
+                                            datapostdetail.isLike = true;
+                                            datapostdetail.likeCount++;
+                                            Api.islike(
+                                                postid, userid, token, "");
+                                          } else if (datapostdetail.isLike ==
+                                              true) {
+                                            datapostdetail.isLike = false;
+                                            datapostdetail.likeCount--;
+                                            Api.islike(
+                                                postid, userid, token, "");
+                                          }
+                                        })
+                                      : setState(() {
+                                          if (datapostdetail.isLike == false ||
+                                              datapostdetail.isLike == null ||
+                                              datapostdetail.likeCount < 0) {
+                                            datapostdetail.isLike = true;
+                                            datapostdetail.likeCount++;
+                                            Api.islike(
+                                                postid, userid, token, "FB");
+                                          } else if (datapostdetail.isLike ==
+                                              true) {
+                                            datapostdetail.isLike = false;
+                                            datapostdetail.likeCount--;
+                                            Api.islike(
+                                                postid, userid, token, "FB");
+                                          }
+                                        });
                             },
                           ),
                           PostButton(
@@ -671,8 +600,31 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                             ),
                             width: 0.12,
                             containerwidth: 3.5,
-                            label: '$shareCount แชร์',
-                            onTap: null,
+                            label: ' แชร์',
+                            onTap: () {
+                              Clipboard.setData(new ClipboardData(
+                                      text:
+                                          "https://today.moveforwardparty.org/post/$postid"))
+                                  .then((_) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  backgroundColor: MColors.primaryColor,
+                                  content: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.check,
+                                        color: MColors.primaryWhite,
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text('คัดลอกลิงค์')
+                                    ],
+                                  ),
+                                  duration: const Duration(milliseconds: 1000),
+                                ));
+                              });
+                            },
                           ),
                         ],
                       ),
@@ -689,8 +641,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding:
-                                const EdgeInsets.only(left: 6.0,right: 3.0, bottom: 10),
+                            padding: const EdgeInsets.only(
+                                left: 6.0, right: 3.0, bottom: 10),
                             child: CircleAvatar(
                               radius: 25.0,
                               backgroundImage: userprofileimage != null
@@ -701,99 +653,109 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                               backgroundColor: Colors.transparent,
                             ),
                           ),
-                           isedit != true
-                           ?  Expanded(
-                            child: Padding(
-                          padding: const EdgeInsets.fromLTRB(6.0, 2.0, 25.0, 2.0),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Color(0xffDEDEDE),
-                                      ),
-                                      color: MColors.primaryWhite,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(15.0),
-                                      ),
-                                    ),
-                                    child: TextField(
-                                      controller: _commentController,
-                                      autofocus: widget.onfocus,
-                                      onChanged: (String value) {
-                                        _commenteditController.text = value;
-                                      },
-                                      maxLines: null,
-                                      minLines: null,
-                                      decoration: InputDecoration(
-                                        // contentPadding: const EdgeInsets.all(13.0),
-                                        hintText: "เขียนความคิดเห็น",
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.all(13),
-                                        suffixIcon: Row(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .spaceBetween, // added line
-                                          mainAxisSize:
-                                              MainAxisSize.min, // added line
-                                          children: <Widget>[
-                                            IconButton(
-                                              splashRadius: AppTheme.splashRadius,
-                                              icon: Icon(
-                                                Icons.send,
-                                                color: Colors.black,
-                                              ),
-                                              onPressed: () async {
-                                                await sendcomment(
-                                                    widget.postid,
-                                                    token,
-                                                    _commentController.text,
-                                                    userid,
-                                                    mode);
-                                                setState(() {
-                                                  _commentController.clear();
-                                                });
-                                              },
+                          isedit != true
+                              ? Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        6.0, 2.0, 25.0, 2.0),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Color(0xffDEDEDE),
                                             ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ): Expanded(
-                            child: Padding(
-                          padding: const EdgeInsets.fromLTRB(6.0, 2.0, 25.0, 2.0),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Color(0xffDEDEDE),
-                                      ),
-                                      color: MColors.primaryWhite,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(15.0),
-                                      ),
-                                    ),
-                                    child: TextFormField(
-                                            initialValue:_commenteditController.text,
+                                            color: MColors.primaryWhite,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0),
+                                            ),
+                                          ),
+                                          child: TextField(
+                                            controller: _commentController,
                                             autofocus: widget.onfocus,
                                             onChanged: (String value) {
-                                              textcomment=value;
-                                              _commenteditController.text = value;
+                                              _commenteditController.text =
+                                                  value;
+                                            },
+                                            maxLines: null,
+                                            minLines: null,
+                                            decoration: InputDecoration(
+                                              // contentPadding: const EdgeInsets.all(13.0),
+                                              hintText: "เขียนความคิดเห็น",
+                                              border: InputBorder.none,
+                                              contentPadding:
+                                                  EdgeInsets.all(13),
+                                              suffixIcon: Row(
+                                                mainAxisAlignment: MainAxisAlignment
+                                                    .spaceBetween, // added line
+                                                mainAxisSize: MainAxisSize
+                                                    .min, // added line
+                                                children: <Widget>[
+                                                  IconButton(
+                                                    splashRadius:
+                                                        AppTheme.splashRadius,
+                                                    icon: Icon(
+                                                      Icons.send,
+                                                      color: Colors.black,
+                                                    ),
+                                                    onPressed: () async {
+                                                      await sendcomment(
+                                                          widget.postid,
+                                                          token,
+                                                          _commentController
+                                                              .text,
+                                                          userid,
+                                                          mode);
+                                                      setState(() {
+                                                        _commentController
+                                                            .clear();
+                                                      });
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        6.0, 2.0, 25.0, 2.0),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Color(0xffDEDEDE),
+                                            ),
+                                            color: MColors.primaryWhite,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0),
+                                            ),
+                                          ),
+                                          child: TextFormField(
+                                            initialValue:
+                                                _commenteditController.text,
+                                            autofocus: widget.onfocus,
+                                            onChanged: (String value) {
+                                              textcomment = value;
+                                              _commenteditController.text =
+                                                  value;
 
                                               print(textcomment);
                                             },
                                             maxLength: null,
                                             maxLines: null,
-                                            
                                             decoration: InputDecoration(
                                               // contentPadding: const EdgeInsets.all(13.0),
                                               hintText: "เขียนความคิดเห็น",
                                               border: InputBorder.none,
-                                              contentPadding: EdgeInsets.all(13),
+                                              contentPadding:
+                                                  EdgeInsets.all(13),
 
                                               suffixIcon: Row(
                                                 mainAxisAlignment: MainAxisAlignment
@@ -824,7 +786,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                           userid,
                                                           token,
                                                           this.commentid,
-                                                          _commenteditController.text,
+                                                          _commenteditController
+                                                              .text,
                                                           mode);
                                                       setState(() {
                                                         // _commenteditController
@@ -834,7 +797,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                       });
                                                       ScaffoldMessenger.of(
                                                               context)
-                                                          .showSnackBar(SnackBar(
+                                                          .showSnackBar(
+                                                              SnackBar(
                                                         backgroundColor:
                                                             Colors.green,
                                                         content: Row(
@@ -850,8 +814,10 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                             Text('แก้ไขสำเร็จ')
                                                           ],
                                                         ),
-                                                        duration: const Duration(
-                                                            milliseconds: 2500),
+                                                        duration:
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    2500),
                                                       ));
                                                     },
                                                   ),
@@ -859,12 +825,11 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                               ),
                                             ),
                                           ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                      
+                                ),
                         ],
                       ),
               ],
@@ -889,10 +854,9 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
           itemCount: listModel.length,
           itemBuilder: (BuildContext context, int index) {
             var data = listModel[index];
-            
 
             return GestureDetector(
-              onTap: (){
+              onTap: () {
                 print('${data.comment}');
                 // print('${_commenteditController.text}');
               },
@@ -904,7 +868,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(6.0, 2.0, 10.0, 2.0),
+                          padding:
+                              const EdgeInsets.fromLTRB(6.0, 2.0, 10.0, 2.0),
                           child: Container(
                             width: 48,
                             // widget.data['toCommentID'] == null ? 48 : 40,
@@ -972,7 +937,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                               padding:
                                   const EdgeInsets.only(left: 10.0, top: 2.0),
                               child: Container(
-                                width: MediaQuery.of(context).size.width / 2,
+                                width: MediaQuery.of(context).size.width / 1.5,
                                 child: Row(
                                   children: <Widget>[
                                     GestureDetector(
@@ -1035,7 +1000,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                         ),
                                                         actions: [
                                                           CupertinoDialogAction(
-                                                            isDefaultAction: true,
+                                                            isDefaultAction:
+                                                                true,
                                                             child: new Text(
                                                                 "ยกเลิก"),
                                                             onPressed: () =>
@@ -1055,14 +1021,13 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                                         widget
                                                                             .postid,
                                                                         token,
-                                                                         data.id,
+                                                                        data.id,
                                                                         userid,
                                                                         mode)
                                                                     .then(
                                                                         (value) =>
                                                                             ({
-                                                                              if (value['status'] ==
-                                                                                  1)
+                                                                              if (value['status'] == 1)
                                                                                 {
                                                                                   setState(() {
                                                                                     onref = true;
@@ -1071,9 +1036,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                                             }));
                                                                 Navigator.pop(
                                                                     context);
-                                                                ScaffoldMessenger
-                                                                        .of(
-                                                                            context)
+                                                                ScaffoldMessenger.of(
+                                                                        context)
                                                                     .showSnackBar(
                                                                         SnackBar(
                                                                   backgroundColor:
@@ -1088,7 +1052,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                                                             .primaryWhite,
                                                                       ),
                                                                       SizedBox(
-                                                                        width: 5,
+                                                                        width:
+                                                                            5,
                                                                       ),
                                                                       Text(
                                                                           'สำเร็จ')
@@ -1123,10 +1088,10 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                             onTap: () {
                                               setState(() {
                                                 isedit = true;
-                                          textcomment = data.comment;
-                                              _commenteditController = TextEditingController(text: data.comment);
-
-
+                                                textcomment = data.comment;
+                                                _commenteditController =
+                                                    TextEditingController(
+                                                        text: data.comment);
                                               });
                                             },
                                             child: Text(
@@ -1149,7 +1114,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color: MColors.primaryBlue,
-                                          fontFamily: AppTheme.FontAnakotmaiLight,
+                                          fontFamily:
+                                              AppTheme.FontAnakotmaiLight,
                                           fontSize: 13,
                                           overflow: TextOverflow.ellipsis),
                                     ),

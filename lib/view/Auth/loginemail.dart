@@ -8,6 +8,7 @@ import 'package:mfp_app/controller/auth_provider.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/internetConnectivity.dart';
 import 'package:mfp_app/utils/router.dart';
+import 'package:mfp_app/view/Auth/forgot_password.dart';
 import 'package:mfp_app/view/Auth/register-email.dart';
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
 
@@ -130,8 +131,8 @@ class _LoginemailState extends State<Loginemail> {
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
                 image: DecorationImage(
-                              colorFilter: ColorFilter.mode(Colors.grey[500], BlendMode.modulate),
-
+                    colorFilter:
+                        ColorFilter.mode(Colors.grey[500], BlendMode.modulate),
                     image: AssetImage('images/shutterstock_553511089.png'),
                     fit: BoxFit.cover)),
             child: Padding(
@@ -220,7 +221,7 @@ class _LoginemailState extends State<Loginemail> {
                       Obx(() {
                         if (authController.iserror.value)
                           return Padding(
-                            padding: const EdgeInsets.only(left: 10,top: 15),
+                            padding: const EdgeInsets.only(left: 10, top: 15),
                             child: Text(
                               authController.msg,
                               style: TextStyle(fontSize: 16, color: Colors.red),
@@ -250,16 +251,19 @@ class _LoginemailState extends State<Loginemail> {
                           return Align(
                             alignment: Alignment.bottomRight,
                             child: TextButton(
-                              child: Text('ลืมรหัสผ่าน ?',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontFamily: AppTheme.FontAnakotmaiLight,
-                                  )),
-                              onPressed: () {
-                                //('กด');
-                              },
-                            ),
+                                child: Text('ลืมรหัสผ่าน ?',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontFamily: AppTheme.FontAnakotmaiLight,
+                                    )),
+                                onPressed: () async {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ForgotPassword()),
+                                  );
+                                }),
                           );
                       }),
 
