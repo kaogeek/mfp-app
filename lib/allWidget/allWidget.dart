@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:full_screen_image/full_screen_image.dart';
@@ -361,6 +362,83 @@ Widget getItems(img_path, img_path2, count, BuildContext context) {
     ),
   );
 }
+  showAlertDialog(BuildContext context, String text, String text1, String text2,
+      double width, double height) {
+    // set up the buttons
+
+    Dialog dialog = Dialog(
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Container(
+        width: MediaQuery.of(context).size.width / width,
+        height: MediaQuery.of(context).size.height / height,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [primaryColor, secondaryColor]),
+            borderRadius: BorderRadius.circular(15.0),
+            boxShadow: [
+              BoxShadow(
+                  offset: const Offset(12, 26),
+                  blurRadius: 50,
+                  spreadRadius: 0,
+                  color: Colors.grey.withOpacity(.1)),
+            ]),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: CircleAvatar(
+                  backgroundColor: MColors.primaryBlue.withOpacity(.05),
+                  radius: 25,
+                  child: Image.asset(
+                    "images/Group 11925.png",
+                    fit: BoxFit.fill,
+                    width: 25,
+                    height: 25,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: AutoSizeText(text1,
+                    maxLines: 5,
+                    minFontSize: 16,
+                    maxFontSize: 18,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: MColors.primaryWhite,
+                      fontSize: 16,
+                      fontFamily: AppTheme.FontAnakotmaiMedium,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: AutoSizeText(text2,
+                    maxLines: 8,
+                    minFontSize: 16,
+                    maxFontSize: 18,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: MColors.primaryWhite,
+                      fontSize: 14,
+                      fontFamily: AppTheme.FontAnakotmaiMedium,
+                    )),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return dialog;
+      },
+    );
+  }
 
 Widget primaryAppBar(
   context,
@@ -398,7 +476,16 @@ Widget primaryAppBar(
         icon: MdiIcons.bellOutline,
         iconSize: 27.0,
         color: MColors.primaryBlue,
-        onPressed: () => {},
+        onPressed: () => {
+           showAlertDialog(
+                                    context,
+                                    "พรรคก้าวไกล",
+                                    "ระบบอยู่ในระหว่างการพัฒนา",
+                                    "",
+                                    1.5,
+                                    5.5),
+
+        },
       ),
       token == null || token == ""
           ? Padding(

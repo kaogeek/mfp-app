@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mfp_app/Api/Api.dart';
+import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/allWidget/circle_button.dart';
 import 'package:mfp_app/animation/FadeAnimation.dart';
 import 'package:mfp_app/constants/colors.dart';
@@ -248,7 +249,15 @@ class _SearchState extends State<Search> {
                           icon: MdiIcons.bellOutline,
                           color: MColors.primaryBlue,
                           iconSize: 27.0,
-                          onPressed: () => {},
+                          onPressed: () => {
+                             showAlertDialog(
+                                    context,
+                                    "พรรคก้าวไกล",
+                                    "ระบบอยู่ในระหว่างการพัฒนา",
+                                    "",
+                                    1.5,
+                                    5.5),
+                          },
                         ),
                         token == null || token == ""
                             ? Padding(

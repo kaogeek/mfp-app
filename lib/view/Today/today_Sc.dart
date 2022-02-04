@@ -34,6 +34,7 @@ import 'package:mfp_app/view/Today/post_details.dart';
 import 'package:mfp_app/view/Today/show_full_image.dart';
 import 'package:mfp_app/view/Today/story_page.dart';
 import 'package:mfp_app/view/Today/webview_emergency.dart';
+import 'package:share_plus/share_plus.dart';
 
 class TodaySc extends StatefulWidget {
   final String userid;
@@ -295,6 +296,7 @@ class _TodayScState extends State<TodaySc> {
     // if (widget.taptoload == true) {
     //   _goToElement(0);
     // }
+
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -559,6 +561,8 @@ class _TodayScState extends State<TodaySc> {
                         pageName_displayName != null ? true : false),
                   ),
                 ),
+                
+                
                 // SizedBox(
                 //   width: 2,
                 // ),
@@ -665,28 +669,34 @@ class _TodayScState extends State<TodaySc> {
                         width: 0.12,
                         containerwidth: 3.5,
                         label: ' แชร์',
-                        onTap: () {
-                          Clipboard.setData(new ClipboardData(
-                                  text:
-                                      "https://today.moveforwardparty.org/post/$postid"))
-                              .then((_) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              backgroundColor: MColors.primaryColor,
-                              content: Row(
-                                children: [
-                                  Icon(
-                                    Icons.check,
-                                    color: MColors.primaryWhite,
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text('คัดลอกลิงค์',style: TextStyle(fontFamily: AppTheme.FontAnakotmaiMedium),)
-                                ],
-                              ),
-                              duration: const Duration(milliseconds: 1000),
-                            ));
-                          });
+                        onTap: ()async {
+       final box = context.findRenderObject() as RenderBox;
+
+      await Share.share("https://today.moveforwardparty.org/post/$postid",
+          subject: "https://today.moveforwardparty.org/post/$postid",
+          sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+    
+                          // Clipboard.setData(new ClipboardData(
+                          //         text:
+                          //             "https://today.moveforwardparty.org/post/$postid"))
+                          //     .then((_) {
+                          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          //     backgroundColor: MColors.primaryColor,
+                          //     content: Row(
+                          //       children: [
+                          //         Icon(
+                          //           Icons.check,
+                          //           color: MColors.primaryWhite,
+                          //         ),
+                          //         SizedBox(
+                          //           width: 5,
+                          //         ),
+                          //         Text('คัดลอกลิงค์',style: TextStyle(fontFamily: AppTheme.FontAnakotmaiMedium),)
+                          //       ],
+                          //     ),
+                          //     duration: const Duration(milliseconds: 1000),
+                          //   ));
+                          // });
                         },
                       ),
                     ],
