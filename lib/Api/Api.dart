@@ -999,6 +999,34 @@ class Api {
    return responseData;
   }
 
+  //    static Future getpage(String token,String userid,String code) async {
+  //   // //('getuserprofile');
+
+  //   final responseData =
+  //       await Http.get(Uri.parse("${Api.url}api/profile/$userid"));
+
+  //   return responseData;
+  // }
+
+    static Future getpageuser(String token,String userid) async {
+    //print('sendcomment');
+
+    var url = "${Api.url}api/useraccess/page/";
+    final headers = {
+      "content-type": "application/json",
+        "authorization": "Bearer $token",
+      "userid": userid
+    };
+
+
+    final responseData = await Http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
+   return responseData;
+  }
+
+
 
 }
 
