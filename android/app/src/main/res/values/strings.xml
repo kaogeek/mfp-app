@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">MFP</string>
-  <string name="facebook_app_id"></string>
-  <string name="fb_login_protocol_scheme"></string>
+  <string name="facebook_app_id">1439136826405744</string>
+  <string name="fb_login_protocol_scheme">fb1439136826405744</string>
 </resources>

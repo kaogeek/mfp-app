@@ -488,7 +488,7 @@ class Api {
   }
 
   static Future apisearchlist(
-      String keyword, String hashtag, int offset) async {
+      String keyword,String userid, String hashtag, int offset) async {
     List<PostSearchModel> searchpostList = [];
 
     // //('getHashtagList');
@@ -496,6 +496,7 @@ class Api {
     final headers = {
       // "mode": "EMAIL",
       "content-type": "application/json",
+      "userid":userid
     };
     Map data = {
       "keyword": [keyword],

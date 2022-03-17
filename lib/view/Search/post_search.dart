@@ -77,7 +77,7 @@ class _PostSearchState extends State<PostSearch> {
             }),
           }));
       storytestreplaceAll = widget.label.replaceAll("#", "");
-      await Api.getuserprofile(userid).then((responseData) async => ({
+      await Api.getuserprofile(userid == null ? "" : userid).then((responseData) async => ({
             if (responseData.statusCode == 200)
               {
                 datagetuserprofile = jsonDecode(responseData.body),
@@ -86,7 +86,7 @@ class _PostSearchState extends State<PostSearch> {
                 }),
               }
           }));
-      await todayController.getsearchpostList(storytestreplaceAll, "", 0,
+      await todayController.getsearchpostList(storytestreplaceAll,userid == null ? "" : userid, "", 0,
           pagenumber: 0)();
     });
   }
@@ -107,7 +107,7 @@ class _PostSearchState extends State<PostSearch> {
       try {
         //('_loadMoregetpost');
         await todayController.getsearchpostList(
-            storytestreplaceAll, "", _currentMax,
+            storytestreplaceAll,userid == null ? "" : userid, "", _currentMax,
             pagenumber: _currentMax);
       } catch (err) {}
     }
@@ -191,6 +191,7 @@ class _PostSearchState extends State<PostSearch> {
                           nDataList1.post.type,
                           nDataList1.post.coverImage,
                           nDataList1.post.story,
+
                         );
                       });
               }),
@@ -364,44 +365,55 @@ class _PostSearchState extends State<PostSearch> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        PostButton(
-                          icon: Icon(
-                            Icons.favorite_outline,
-                            color: MColors.primaryBlue,
-                            size: 19.0,
-                          ),
-                          width: 0.14,
-                          containerwidth: 3.4,
-                          label: '${nDataList1.post.likeCount} ถูกใจ',
-                          onTap: () {
-                          HapticFeedback.lightImpact();
-                          var jsonResponse;
-                          print(nDataList1.post.islike);
-                         token==null || token ==""?
-                             Navigate.pushPage(context, Loginregister())
-                             :mode != "FB"? setState(() {
-                            if (nDataList1.post.islike == false ||nDataList1.post.islike == null ||nDataList1.post.likeCount < 0) {
-                              nDataList1.post.islike = true;
-                              nDataList1.post.likeCount++;
-                              Api.islike(postid, userid, token, "");
-                            } else if (nDataList1.post.islike == true) {
-                              nDataList1.post.islike = false;
-                               nDataList1.post.likeCount--;
-                              Api.islike(postid, userid, token, "");
-                            }
-                          }):setState(() {
-                            if (nDataList1.post.islike == false ||nDataList1.post.islike == null ||nDataList1.post.likeCount < 0) {
-                              nDataList1.post.islike = true;
-                              nDataList1.post.likeCount++;
-                              Api.islike(postid, userid, token, "FB");
-                            } else if (nDataList1.post.islike == true) {
-                              nDataList1.post.islike = false;
-                               nDataList1.post.likeCount--;
-                              Api.islike(postid, userid, token, "FB");
-                            }
-                          });
-                        },
+                       PostButton(
+                        icon: Icon(
+                          nDataList1.post.islike != true
+                              ? Icons.favorite_outline
+                              : Icons.favorite,
+                          color: MColors.primaryBlue,
+                          size: 19.0,
+
+                          // size: 15.0,
                         ),
+                        width: 0.14,
+                        containerwidth: 3.4,
+                        label: '${nDataList1.post.likeCount} ถูกใจ',
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                          print(nDataList1.post.islike);
+                          token == null || token == ""
+                              ? Navigate.pushPage(context, Loginregister())
+                              : mode != "FB"
+                                  ? setState(() {
+                                      if (nDataList1.post.islike == false ||
+                                          nDataList1.post.islike == null ||
+                                          nDataList1.post.likeCount < 0) {
+                                        nDataList1.post.islike = true;
+                                        nDataList1.post.likeCount++;
+                                        Api.islike(postid, userid, token, "");
+                                      } else if (nDataList1.post.islike ==
+                                          true) {
+                                        nDataList1.post.islike = false;
+                                        nDataList1.post.likeCount--;
+                                        Api.islike(postid, userid, token, "");
+                                      }
+                                    })
+                                  : setState(() {
+                                      if (nDataList1.post.islike == false ||
+                                          nDataList1.post.islike == null ||
+                                          nDataList1.post.likeCount < 0) {
+                                        nDataList1.post.islike = true;
+                                        nDataList1.post.likeCount++;
+                                        Api.islike(postid, userid, token, "FB");
+                                      } else if (nDataList1.post.islike ==
+                                          true) {
+                                        nDataList1.post.islike = false;
+                                        nDataList1.post.likeCount--;
+                                        Api.islike(postid, userid, token, "FB");
+                                      }
+                                    });
+                        },
+                      ),
                         PostButton(
                           icon: Icon(
                             MdiIcons.commentOutline,

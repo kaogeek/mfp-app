@@ -156,10 +156,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     });
     final twitterLogin = TwitterLogin(
       /// Consumer API keys
-      apiKey: '',
+      apiKey: '81eBPMrAFW20CN0PRnughGs4T',
 
       /// Consumer API Secret keys
-      apiSecretKey: '',
+      apiSecretKey: '9iYBWJTUA9W048wzjBZ4n0R6wjWojogGhNlC2C9GcismIF6CNS',
 
       /// Registered Callback URLs in TwitterApp
       /// Android is a deeplink

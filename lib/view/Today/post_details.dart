@@ -90,8 +90,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
   @override
   void didChangeDependencies() {
     setState(() {
-      Api.getcommentlist(widget.postid, userid, token);
-      Api.getstory(widget.postid, userid);
+      Api.getcommentlist(widget.postid,  userid == null ? "" : userid, token);
+      Api.getstory(widget.postid,  userid == null ? "" : userid);
     });
 
     super.didChangeDependencies();
@@ -117,7 +117,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
         });
       }
       //---getuserprofile
-      await Api.getuserprofile(userid).then((responseData) async => ({
+      await Api.getuserprofile( userid == null ? "" : userid).then((responseData) async => ({
             setState(() {
               loading = true;
             }),
@@ -140,7 +140,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
           }));
       //--
       futuregetpostdetail =
-          Api.getstory(widget.postid, userid).then((responseData) async => ({
+          Api.getstory(widget.postid,  userid == null ? "" : userid).then((responseData) async => ({
                 setState(() {
                   postloading = true;
                 }),
@@ -168,7 +168,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
               }));
 
       //--getcommentlist
-      await Api.getcommentlist(widget.postid, userid, token)
+      await Api.getcommentlist(widget.postid,  userid == null ? "" : userid, token)
           .then((responseData) => ({
                 // setState(() {
                 //   loading = true;
@@ -190,7 +190,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                   }
               }));
       //--.
-      await Api.postsearch(userid, token, widget.postid, mode)
+      await Api.postsearch( userid == null ? "" : userid, token, widget.postid, mode)
           .then((responseData) => ({
                 if (responseData.statusCode == 200)
                   {
@@ -260,7 +260,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
     setState(() {
       listModel.clear();
     });
-    Api.getcommentlist(widget.postid, userid, token).then((responseData) => ({
+    Api.getcommentlist(widget.postid,  userid == null ? "" : userid, token).then((responseData) => ({
           // setState(() {
           //   loading = true;
           // }),
