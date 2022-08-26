@@ -18,6 +18,7 @@ import 'package:mfp_app/view/Auth/login-register.dart';
 import 'package:mfp_app/view/Today/post_details.dart';
 import 'package:mfp_app/view/Today/show_full_image.dart';
 import 'package:mfp_app/view/Today/story_page.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PostSearch extends StatefulWidget {
   final String label;
@@ -173,7 +174,7 @@ class _PostSearchState extends State<PostSearch> {
                         return postlist(
                           nDataList1.post.title,
                           nDataList1.post.detail,
-                          nDataList1.page.name ?? "",
+                          nDataList1.page,
                           nDataList1.post.createdDate,
                           nDataList1.post.gallery,
                           nDataList1.post.likeCount,
@@ -181,12 +182,11 @@ class _PostSearchState extends State<PostSearch> {
                           nDataList1.post.shareCount,
                           nDataList1.post.repostCount,
                           nDataList1.post.id,
-                          nDataList1.page.id,
-                          nDataList1.page.imageUrl,
-                          nDataList1.page.name,
+                        
+                          nDataList1.page== null
+                                    ? ""
+                                    : nDataList1.page.imageUrl,
                           false,
-                          nDataList1.page.pageUsername,
-                          nDataList1.page.isOfficial,
                           nDataList1,
                           nDataList1.post.type,
                           nDataList1.post.coverImage,
@@ -241,7 +241,7 @@ class _PostSearchState extends State<PostSearch> {
   Widget postlist(
       String posttitle,
       String subtitle,
-      String authorposttext,
+       listPage,
       DateTime dateTime,
       List gallery,
       int likeCount,
@@ -249,16 +249,17 @@ class _PostSearchState extends State<PostSearch> {
       int shareCount,
       int repostCount,
       String postid,
-      String pageid,
       String pageimage,
-      String pagename,
       bool isFollow,
-      String pageUsername,
-      bool isOfficial,
       nDataList1,
       String type,
       String coverimage,
       story) {
+         bool isstory =true;
+        if(listPage==null){
+          isstory=false;
+
+        }
     return Container(
       width: 200,
       color: MColors.containerWhite,
@@ -272,7 +273,10 @@ class _PostSearchState extends State<PostSearch> {
                   onTap: () => Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => SliderShowFullmages(
                           listImagesModel: gallery, current: 0))),
-                  child: myAlbumCard(gallery, context))
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: myAlbumCard(gallery, context),
+                  ))
               : Container(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -315,7 +319,9 @@ class _PostSearchState extends State<PostSearch> {
                                   imagUrl: gallery,
                                   type: type,
                                   createdDate: dateTime,
-                                  postby: pagename,
+                                  postby: listPage == null
+                                ? nDataList1.user.displayName.toString()
+                                : nDataList1.page.name.toString(),
                                   imagepage: pageimage,
                                   likeCount: likeCount,
                                   commentCount: commentCount,
@@ -325,7 +331,7 @@ class _PostSearchState extends State<PostSearch> {
                                   userid: userid,
                                 ));
                           },
-                          child: textreadstory('อ่านสตอรี่...')),
+                          child: textreadstory('อ่านสตอรี่...',context)),
                     )
                   : Container(),
               Row(
@@ -336,21 +342,18 @@ class _PostSearchState extends State<PostSearch> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: authorpost(
-                          authorposttext,
+                          listPage == null
+                                ? nDataList1.user.displayName.toString()
+                                : nDataList1.page.name.toString(),
                           context,
-                          dateTime,
-                          pageid,
-                          pageimage,
-                          pagename,
-                          pageUsername,
-                          userid,
-                          true),
+                          listPage==null?"":nDataList1.page.id,
+                          isstory),
                     ),
                   ),
                   SizedBox(
                     width: 2,
                   ),
-                  texttimetimestamp(dateTime),
+                  texttimetimestamp(dateTime,context),
                 ],
               ),
               Padding(
@@ -380,11 +383,48 @@ class _PostSearchState extends State<PostSearch> {
                         label: '${nDataList1.post.likeCount} ถูกใจ',
                         onTap: () {
                           HapticFeedback.lightImpact();
-                          print(nDataList1.post.islike);
-                          token == null || token == ""
-                              ? Navigate.pushPage(context, Loginregister())
-                              : mode != "FB"
-                                  ? setState(() {
+                                    switch (mode) {
+                                case "FB":
+                                  print('FB');
+                                  if (nDataList1.post.islike == false ||
+                                      nDataList1.post.islike == null ||
+                                      nDataList1.post.likeCount < 0) {
+                                    setState(() {
+                                      nDataList1.post.islike = true;
+                                      nDataList1.post.likeCount++;
+                                    });
+                                    Api.islike(postid, userid, token, "FB");
+                                  } else if (nDataList1.post.islike == true) {
+                                    setState(() {
+                                      nDataList1.post.islike = false;
+                                      nDataList1.post.likeCount--;
+                                    });
+                                    Api.islike(postid, userid, token, "FB");
+                                  }
+                                  break;
+                                case "TWITTER":
+                                  print('TWITTER');
+                                  if (nDataList1.post.islike == false ||
+                                      nDataList1.post.islike == null ||
+                                      nDataList1.post.likeCount < 0) {
+                                    setState(() {
+                                      nDataList1.post.islike = true;
+                                      nDataList1.post.likeCount++;
+                                    });
+                                    Api.islike(postid, userid, token, "TW");
+                                  } else if (nDataList1.post.islike == true) {
+                                    setState(() {
+                                      nDataList1.post.islike = false;
+                                      nDataList1.post.likeCount--;
+                                    });
+                                    Api.islike(postid, userid, token, "TW");
+                                  }
+                                  break;
+                                default:
+                                  if (token == null || token == "") {
+                                    Navigate.pushPage(context, Loginregister());
+                                  } else {
+                                    setState(() {
                                       if (nDataList1.post.islike == false ||
                                           nDataList1.post.islike == null ||
                                           nDataList1.post.likeCount < 0) {
@@ -396,22 +436,11 @@ class _PostSearchState extends State<PostSearch> {
                                         nDataList1.post.islike = false;
                                         nDataList1.post.likeCount--;
                                         Api.islike(postid, userid, token, "");
-                                      }
-                                    })
-                                  : setState(() {
-                                      if (nDataList1.post.islike == false ||
-                                          nDataList1.post.islike == null ||
-                                          nDataList1.post.likeCount < 0) {
-                                        nDataList1.post.islike = true;
-                                        nDataList1.post.likeCount++;
-                                        Api.islike(postid, userid, token, "FB");
-                                      } else if (nDataList1.post.islike ==
-                                          true) {
-                                        nDataList1.post.islike = false;
-                                        nDataList1.post.likeCount--;
-                                        Api.islike(postid, userid, token, "FB");
                                       }
                                     });
+                                  }
+                                  break;
+                              }
                         },
                       ),
                         PostButton(
@@ -447,30 +476,21 @@ class _PostSearchState extends State<PostSearch> {
                             color: MColors.primaryBlue,
                             size: 19.0,
                           ),
-                          width: 0.12,
-                          containerwidth: 3.5,
+                          width: 0.15,
+                            containerwidth: 3.7,
                           label: ' แชร์',
-                          onTap:  () {
-                          Clipboard.setData(new ClipboardData(text: "https://today.moveforwardparty.org/post/$postid"))
-                              .then((_) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              backgroundColor: MColors.primaryColor,
-                              content: Row(
-                                children: [
-                                  Icon(
-                                    Icons.check,
-                                    color: MColors.primaryWhite,
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text('คัดลอกลิงค์',style: TextStyle(fontFamily: AppTheme.FontAnakotmaiMedium),)
-                                ],
-                              ),
-                              duration: const Duration(milliseconds: 1000),
-                            ));
-                          });
-                        },
+                          onTap: ()async {
+                                  final box =
+                                  context.findRenderObject() as RenderBox;
+
+                              await Share.share(
+                                  "https://today.moveforwardparty.org/post/$postid",
+                                  subject:
+                                      "https://today.moveforwardparty.org/post/$postid",
+                                  sharePositionOrigin:
+                                      box.localToGlobal(Offset.zero) &
+                                          box.size);
+                            },
                         ),
                       ],
                     ),

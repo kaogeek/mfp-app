@@ -355,7 +355,7 @@ class _SearchState extends State<Search> {
                                       return htlable.contains(
                                           controller.text.toLowerCase());
                                     }).toList();
-                                    await getsearch(text.toLowerCase(), userid);
+                                     getsearch(text.toLowerCase(), userid);
                                   });
                                 },
                               ),
@@ -431,9 +431,7 @@ class _SearchState extends State<Search> {
                                 itemCount: listSearchHastag.length,
                                 itemBuilder: (context, i) {
                                   var data = listSearchHastag[i];
-                                  return FadeAnimation(
-                                      (1.5 + i / 5),
-                                      InkWell(
+                                  return  InkWell(
                                         onTap: () {
                                           if (data.type == "HASHTAG") {
                                             Navigator.push(
@@ -470,7 +468,8 @@ class _SearchState extends State<Search> {
                                           ),
                                           margin: const EdgeInsets.all(2.0),
                                         ),
-                                      ));
+                                      );
+                                     
                                 },
                               );
                             }),

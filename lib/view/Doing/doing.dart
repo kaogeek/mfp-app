@@ -9,21 +9,25 @@ import 'package:mfp_app/allWidget/CarouselsLoading.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/pagemodel.dart';
+import 'package:mfp_app/utils/app.style.config.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/view/Profile/profile.dart';
 import 'package:mfp_app/view/Search/search.dart';
 import 'package:mfp_app/view/Today/webview_emergency.dart';
 
 class DoingSC extends StatefulWidget {
-  // DoingSC({Key? key}) : super(key: key);
+  bool taptoload;
+  DoingSC({Key key,  this.taptoload}) : super(key: key);
 
   @override
   _DoingSCState createState() => _DoingSCState();
 }
 
 class _DoingSCState extends State<DoingSC> {
-  final TrackingScrollController _trackingScrollController =
-      TrackingScrollController();
+  
+
+        ScrollController _scrollController = ScrollController();
+
 
   var token;
 
@@ -36,6 +40,7 @@ class _DoingSCState extends State<DoingSC> {
   var image;
 
   bool pageObjloading;
+  bool isloading =false;
 
   var jsonResponse;
   List<PageObjective> pageobjslist = [];
@@ -64,7 +69,7 @@ class _DoingSCState extends State<DoingSC> {
             userid = value;
           }),
         }));
-    _trackingScrollController.addListener(_loadMore);
+    _scrollController.addListener(_loadMore);
 
     Future.delayed(Duration.zero, () async {
       //--
@@ -135,16 +140,19 @@ class _DoingSCState extends State<DoingSC> {
 
   @override
   void dispose() {
-    _trackingScrollController.dispose();
-    super.dispose();
+    _scrollController.dispose();
+_scrollController.dispose();
+        super.dispose();
   }
 
   void _loadMore() async {
-    if (_trackingScrollController.offset >=
-            _trackingScrollController.position.maxScrollExtent &&
-        !_trackingScrollController.position.outOfRange) {
+    if (_scrollController.offset >=
+            _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
       setState(() {
         _currentMax = _currentMax + 5;
+        isloading=true;
+        
       });
 
       try {
@@ -155,7 +163,7 @@ class _DoingSCState extends State<DoingSC> {
               if (responseData.statusCode == 200)
                 {
                   jsonResponse = jsonDecode(responseData.body),
-                  // print('jsonResponse$jsonResponse'),
+                  print('jsonResponse$jsonResponse'),
 
                   for (Map i in jsonResponse["data"])
                     {
@@ -171,13 +179,28 @@ class _DoingSCState extends State<DoingSC> {
                     },
                   setState(() {
                     pageObjloading = false;
+                    isloading=false;
                   }),
                 }
               else if (responseData.statusCode == 400)
                 {}
             }));
       } catch (err) {}
+    }else{
+       setState(() {
+                    isloading=false;
+                  });
     }
+  }
+   void _goToElement(int index) {
+    _scrollController.animateTo(
+        (100.0 *
+            index), // 100 is the height of container and index of 6th element is 5
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut);
+    setState(() {
+      widget.taptoload = false;
+    });
   }
 
   @override
@@ -185,13 +208,17 @@ class _DoingSCState extends State<DoingSC> {
     var hight = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     Size size = MediaQuery.of(context).size;
+    print(isloading);
+     if (widget.taptoload == true) {
+      _goToElement(0);
+    }
 
     return Container(
       color: Colors.white,
       child: SafeArea(
         child: Scaffold(
           body: CustomScrollView(
-            controller: _trackingScrollController,
+            controller: _scrollController,
             physics: AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
@@ -255,7 +282,7 @@ class _DoingSCState extends State<DoingSC> {
                     return FutureBuilder(
                       future: Future.wait([getpageObj]),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (!snapshot.hasData) {
+                        if(!snapshot.hasData){
                           return CarouselLoading();
                         }
                         return GridView.builder(
@@ -283,9 +310,9 @@ class _DoingSCState extends State<DoingSC> {
                                 }));
                               },
                               child: Container(
-                                margin: EdgeInsets.all(5),
-                                height: MediaQuery.of(context).size.height / 15,
-                                width: MediaQuery.of(context).size.width / 15,
+                                margin: AppStyle(context).getEdgeInsetsFromRatio(all: 1),
+                                // height: AppStyle(context).getHeight(percent: 5),
+                                // width: AppStyle(context).getWidth(percent: 5),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     color: Colors.grey[100],
@@ -344,8 +371,7 @@ class _DoingSCState extends State<DoingSC> {
                 child: Container(
                   color: Colors.white,
                   child: Padding(
-                    padding:
-                        const EdgeInsets.only(top: 20, left: 20, bottom: 10),
+                    padding:AppStyle(context).getEdgeInsetsFromRatio(left: 4,top: 2,bottom: 1),
                     child: Text(
                       'สิ่งที่ทำที่เคยทำมา',
                       maxLines: 2,
@@ -373,6 +399,10 @@ class _DoingSCState extends State<DoingSC> {
                         itemCount: pagedoingobjslist.length,
                         itemBuilder: (BuildContext context, int index) {
                           var data = pagedoingobjslist[index];
+                          if (index ==
+                            pagedoingobjslist.length - 1) {
+                          isloading = false;
+                        }
                           return InkWell(
                             onTap: () {
                               Navigator.of(context).push(CupertinoPageRoute(
@@ -396,9 +426,8 @@ class _DoingSCState extends State<DoingSC> {
                                         right: 15,
                                         bottom: 2,
                                         top: 10),
-                                    width: MediaQuery.of(context).size.width,
-                                    height: MediaQuery.of(context).size.height /
-                                        7.3,
+                                    width:AppStyle(context).getWidth100(),
+                                    height:AppStyle(context).getHeight(percent: 14),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(8),
                                         color: Colors.grey[100],
@@ -475,6 +504,14 @@ class _DoingSCState extends State<DoingSC> {
                   },
                 ),
               ),
+               isloading==true   ? SliverToBoxAdapter(
+                            child: Center(
+              child: CircularProgressIndicator(
+                color: MColors.primaryColor,
+              ),
+            ))
+                        :SliverToBoxAdapter(child: SizedBox.shrink()),
+
               SliverToBoxAdapter(
                 child: Text(msg),
               ),

@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         themeMode: ThemeMode.light, // Change it as you want
         title: 'MFP Today',
         theme: ThemeData(
-        textTheme: AppTheme.textTheme,
+        // textTheme: AppTheme.textTheme,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         primaryColor: Colors.white,
         primaryColorBrightness: Brightness.light,
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         primaryColorDark: Colors.black,
         canvasColor: Colors.white,
         ),
-         darkTheme: ThemeData(
+        darkTheme: ThemeData(
         primaryColor: Colors.black,
         primaryColorBrightness: Brightness.dark,
         primaryColorLight: Colors.black,

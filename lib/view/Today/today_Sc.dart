@@ -21,6 +21,8 @@ import 'package:mfp_app/allWidget/CarouselsLoading.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/allWidget/fontsize.dart';
 import 'package:mfp_app/allWidget/PostButton.dart';
+import 'package:mfp_app/utils/app.size.config.dart';
+import 'package:mfp_app/utils/app.style.config.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/internetConnectivity.dart';
 import 'package:mfp_app/utils/router.dart';
@@ -46,8 +48,7 @@ class TodaySc extends StatefulWidget {
 }
 
 class _TodayScState extends State<TodaySc> {
-  final TrackingScrollController _trackingScrollController =
-      TrackingScrollController();
+  
   ScrollController _scrollController = ScrollController();
   int _currentMax = 0;
   final EmergencyController emergencyController =
@@ -108,8 +109,7 @@ class _TodayScState extends State<TodaySc> {
       //--userid
       userid = await Api.getmyuid();
       // print('userid$userid');
-      print(
-          '''
+      print('''
          Logged in!
          userid: $userid
         token: $token
@@ -126,6 +126,7 @@ class _TodayScState extends State<TodaySc> {
                       setState(() {
                         mode = value;
                       }),
+                      print('model$mode'),
                     }));
                 Api.getmyuid().then((value) => ({
                       setState(() {
@@ -286,16 +287,15 @@ class _TodayScState extends State<TodaySc> {
 
   @override
   void dispose() {
-    _trackingScrollController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // if (widget.taptoload == true) {
-    //   _goToElement(0);
-    // }
+    if (widget.taptoload == true) {
+      _goToElement(0);
+    }
 
     return Container(
       color: Colors.white,
@@ -364,7 +364,7 @@ class _TodayScState extends State<TodaySc> {
                     height: MediaQuery.of(context).size.height / 16.0,
                     color: MColors.primaryGrey,
                     child: Center(
-                      child: titletimeline("ไทม์ไลน์"),
+                      child: titletimeline("ไทม์ไลน์",context),
                     ),
                   ),
                 ),
@@ -473,139 +473,185 @@ class _TodayScState extends State<TodaySc> {
       String type,
       story,
       datauser) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // topImage(gallery[0].signUrl.toString()),
-        gallery.length != 0
-            ? InkWell(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => SliderShowFullmages(
-                        listImagesModel: gallery, current: _current))),
-                child: myAlbumCard(gallery, context))
-            : Container(),
-        // Image.network(gallery[0].signUrl),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10, top: 5),
-              child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return PostDetailsSC(
-                            postid: postid,
-                            onfocus: false,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  child: texttitlepost(posttitle, context)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: subtexttitlepost(subtitle, context),
-            ),
-            story != null
-                ? Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: InkWell(
-                        onTap: () async {
-                          Navigate.pushPage(
-                              context,
-                              StroyPageSc(
-                                postid: postid,
-                                titalpost: posttitle,
-                                imagUrl: gallery,
-                                type: type,
-                                createdDate: dateTime,
-                                postby: pagename,
-                                imagepage: pageimage,
-                                likeCount: likeCount,
-                                commentCount: commentCount,
-                                shareCount: shareCount,
-                                repostCount: repostCount,
-                                token: token,
-                                userid: userid,
-                                mode: mode,
-                              ));
-                        },
-                        child: textreadstory('อ่านสตอรี่...')),
-                  )
-                : Container(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                // fixtextauthor(),
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: authorpost(
-                        pageName_displayName == null
-                            ? nDataList1.user.displayName.toString()
-                            : nDataList1.page.name.toString(),
-                        context,
-                        dateTime,
-                        nDataList1.page == null ? "" : nDataList1.page.id,
-                        pageimage,
-                        pagename,
-                        pageUsername,
-                        id,
-                        pageName_displayName != null ? true : false),
-                  ),
-                ),
-                
-                
-                // SizedBox(
-                //   width: 2,
-                // ),
-                texttimetimestamp(dateTime),
-              ],
-            ),
-            // Padding(
-            //   padding: const EdgeInsets.only(left: 10, right: 10),
-            //   child: Divider(),
-            // ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Divider(
-                    thickness: 1.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      PostButton(
-                        icon: Icon(
-                          nDataList1.post.islike != true
-                              ? Icons.favorite_outline
-                              : Icons.favorite,
-                          color: MColors.primaryBlue,
-                          size: 19.0,
+        final appStyle = AppStyle(context);
+        bool isstory =true;
+        if(pageName_displayName==null){
+          isstory=false;
 
-                          // size: 15.0,
-                        ),
-                        width: 0.14,
-                        containerwidth: 3.4,
-                        label: '${nDataList1.post.likeCount} ถูกใจ',
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-                          var jsonResponse;
-                          print(nDataList1.post.islike);
-                          token == null || token == ""
-                              ? Navigate.pushPage(context, Loginregister())
-                              : mode != "FB"
-                                  ? setState(() {
+        }
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 2, right: 2, bottom: 2, top: 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // topImage(gallery[0].signUrl.toString()),
+            gallery.length != 0
+                ? InkWell(
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SliderShowFullmages(
+                            listImagesModel: gallery, current: _current))),
+                    child: myAlbumCard(gallery, context))
+                : Container(),
+            // Image.network(gallery[0].signUrl),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, top: 5),
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return PostDetailsSC(
+                                postid: postid,
+                                pagename: pageName_displayName == null
+                                ? nDataList1.user.displayName.toString()
+                                : nDataList1.page.name.toString(),
+                                onfocus: false,
+                                story: story,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: texttitlepost(posttitle, context)),
+                ),
+                Padding(
+                  padding: appStyle.getEdgeInsetsFromRatio(left: 3,top: 1),
+                  child: subtexttitlepost(subtitle, context),
+                ),
+                story != null
+                    ? Padding(
+                        padding: appStyle.getEdgeInsetsFromRatio(left: 3,top: 1.5,bottom: 1),
+                        child: InkWell(
+                            onTap: () async {
+                              Navigate.pushPage(
+                                  context,
+                                  StroyPageSc(
+                                    postid: postid,
+                                    titalpost: posttitle,
+                                    imagUrl: gallery,
+                                    type: type,
+                                    createdDate: dateTime,
+                                    postby: pagename,
+                                    imagepage: pageimage,
+                                    likeCount: likeCount,
+                                    commentCount: commentCount,
+                                    shareCount: shareCount,
+                                    repostCount: repostCount,
+                                    token: token,
+                                    userid: userid,
+                                    mode: mode,
+                                  ));
+                            },
+                            child: textreadstory('อ่านสตอรี่...',context)),
+                      )
+                    : Container(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // fixtextauthor(),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10.0,top: 3),
+                        child: authorpost(
+                            pageName_displayName == null
+                                ? nDataList1.user.displayName.toString()
+                                : nDataList1.page.name.toString(),
+                            context,
+                            nDataList1.page == null ? "" : nDataList1.page.id,
+                            isstory),
+                      ),
+                    ),
+
+                    // SizedBox(
+                    //   width: 2,
+                    // ),
+                    texttimetimestamp(dateTime,context),
+                  ],
+                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 10, right: 10),
+                //   child: Divider(),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Divider(
+                        thickness: 1.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          PostButton(
+                            icon: Icon(
+                              nDataList1.post.islike != true
+                                  ? Icons.favorite_outline
+                                  : Icons.favorite,
+                              color: MColors.primaryBlue,
+                              size: 19.0,
+
+                              // size: 15.0,
+                            ),
+                            width: 0.14,
+                            containerwidth: 3.4,
+                            label: '${nDataList1.post.likeCount} ถูกใจ',
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              var jsonResponse;
+                              print(nDataList1.post.islike);
+                              switch (mode) {
+                                case "FB":
+                                  print('FB');
+                                  if (nDataList1.post.islike == false ||
+                                      nDataList1.post.islike == null ||
+                                      nDataList1.post.likeCount < 0) {
+                                    setState(() {
+                                      nDataList1.post.islike = true;
+                                      nDataList1.post.likeCount++;
+                                    });
+                                    Api.islike(postid, userid, token, "FB");
+                                  } else if (nDataList1.post.islike == true) {
+                                    setState(() {
+                                      nDataList1.post.islike = false;
+                                      nDataList1.post.likeCount--;
+                                    });
+                                    Api.islike(postid, userid, token, "FB");
+                                  }
+                                  break;
+                                case "TWITTER":
+                                  print('TWITTER');
+                                  if (nDataList1.post.islike == false ||
+                                      nDataList1.post.islike == null ||
+                                      nDataList1.post.likeCount < 0) {
+                                    setState(() {
+                                      nDataList1.post.islike = true;
+                                      nDataList1.post.likeCount++;
+                                    });
+                                    Api.islike(postid, userid, token, "TW");
+                                  } else if (nDataList1.post.islike == true) {
+                                    setState(() {
+                                      nDataList1.post.islike = false;
+                                      nDataList1.post.likeCount--;
+                                    });
+                                    Api.islike(postid, userid, token, "TW");
+                                  }
+                                  break;
+                                default:
+                                  if (token == null || token == "") {
+                                    Navigate.pushPage(context, Loginregister());
+                                  } else {
+                                    setState(() {
                                       if (nDataList1.post.islike == false ||
                                           nDataList1.post.islike == null ||
                                           nDataList1.post.likeCount < 0) {
@@ -617,103 +663,80 @@ class _TodayScState extends State<TodaySc> {
                                         nDataList1.post.islike = false;
                                         nDataList1.post.likeCount--;
                                         Api.islike(postid, userid, token, "");
-                                      }
-                                    })
-                                  : setState(() {
-                                      if (nDataList1.post.islike == false ||
-                                          nDataList1.post.islike == null ||
-                                          nDataList1.post.likeCount < 0) {
-                                        nDataList1.post.islike = true;
-                                        nDataList1.post.likeCount++;
-                                        Api.islike(postid, userid, token, "FB");
-                                      } else if (nDataList1.post.islike ==
-                                          true) {
-                                        nDataList1.post.islike = false;
-                                        nDataList1.post.likeCount--;
-                                        Api.islike(postid, userid, token, "FB");
                                       }
                                     });
-                        },
-                      ),
-                      PostButton(
-                        icon: Icon(
-                          MdiIcons.commentOutline,
-                          color: MColors.primaryBlue,
-                          size: 19.0,
-                        ),
-                        label: '$commentCount ความคิดเห็น',
-                        width: 0.24,
-                        containerwidth: 2.9,
-                        onTap: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) {
-                                return PostDetailsSC(
-                                  gallery: gallery,
-                                  postid: postid,
-                                  onfocus: true,
-                                  story: story,
-                                );
-                              },
+                                  }
+                                  break;
+                              }
+                            },
+                          ),
+                          PostButton(
+                            icon: Icon(
+                              MdiIcons.commentOutline,
+                              color: MColors.primaryBlue,
+                              size: 19.0,
                             ),
-                          );
-                        },
-                      ),
-                      PostButton(
-                        icon: Icon(
-                          Icons.share,
-                          color: MColors.primaryBlue,
-                          size: 19.0,
-                        ),
-                        width: 0.12,
-                        containerwidth: 3.5,
-                        label: ' แชร์',
-                        onTap: ()async {
-       final box = context.findRenderObject() as RenderBox;
+                            label: '$commentCount ความคิดเห็น',
+                            width: 0.24,
+                            containerwidth: 2.9,
+                            onTap: () async {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return PostDetailsSC(
+                                      gallery: gallery,
+                                      postid: postid,
+                                      onfocus: true,
+                                      story: story,
+                                      pagename: pageName_displayName == null
+                                ? nDataList1.user.displayName.toString()
+                                : nDataList1.page.name.toString(),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                          PostButton(
+                            icon: Icon(
+                              Icons.share,
+                              color: MColors.primaryBlue,
+                              size: 19.0,
+                            ),
+                            width: 0.15,
+                            containerwidth: 3.7,
+                            label: ' แชร์',
+                            onTap: () async {
+                              final box =
+                                  context.findRenderObject() as RenderBox;
 
-      await Share.share("https://today.moveforwardparty.org/post/$postid",
-          subject: "https://today.moveforwardparty.org/post/$postid",
-          sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-    
-                          // Clipboard.setData(new ClipboardData(
-                          //         text:
-                          //             "https://today.moveforwardparty.org/post/$postid"))
-                          //     .then((_) {
-                          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          //     backgroundColor: MColors.primaryColor,
-                          //     content: Row(
-                          //       children: [
-                          //         Icon(
-                          //           Icons.check,
-                          //           color: MColors.primaryWhite,
-                          //         ),
-                          //         SizedBox(
-                          //           width: 5,
-                          //         ),
-                          //         Text('คัดลอกลิงค์',style: TextStyle(fontFamily: AppTheme.FontAnakotmaiMedium),)
-                          //       ],
-                          //     ),
-                          //     duration: const Duration(milliseconds: 1000),
-                          //   ));
-                          // });
-                        },
+                              await Share.share(
+                                  "https://today.moveforwardparty.org/post/$postid",
+                                  subject:
+                                      "https://today.moveforwardparty.org/post/$postid",
+                                  sharePositionOrigin:
+                                      box.localToGlobal(Offset.zero) &
+                                          box.size);
+                            },
+                          ),
+                        ],
+                      ),
+                      //  Divider(),
+                      const SizedBox(
+                        height: 7,
                       ),
                     ],
                   ),
-                  //  Divider(),
-                  const SizedBox(
-                    height: 7,
-                  ),
-                ],
-              ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              width: 5,
             ),
           ],
         ),
-        const SizedBox(
-          width: 5,
-        ),
-      ],
+      ),
     );
   }
 
@@ -938,6 +961,8 @@ class _TodayScState extends State<TodaySc> {
   }
 
   Widget carouselslider(List<EmergencyEventsContent> emc, context, userimage) {
+        final appStyle =AppStyle(context);
+
     return CarouselSlider(
       carouselController: _controller,
       options: CarouselOptions(
@@ -946,7 +971,7 @@ class _TodayScState extends State<TodaySc> {
             _current = index;
           });
         },
-        height: MediaQuery.of(context).size.height / 2.0,
+        height: appStyle.getHeight(percent: 48.5),
         // aspectRatio: 16 / 9,
         enableInfiniteScroll: true,
         initialPage: 0,

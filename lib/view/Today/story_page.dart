@@ -8,6 +8,7 @@ import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/controller/today_post_provider.dart';
 import 'package:mfp_app/model/commentlistmodel.dart';
+import 'package:mfp_app/utils/app.style.config.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/timeutils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -145,6 +146,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                     style: TextStyle(
                         color: MColors.textDark,
                         fontWeight: FontWeight.bold,
+                        fontFamily: AppTheme.FontAnakotmaiBold,
                         fontSize: 18),
                   ),
             automaticallyImplyLeading: false,
@@ -167,7 +169,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                   children: [
                     Stack(
                       children: [
-                        Image.network(
+                   imagelist.isNotEmpty?     Image.network(
                           "https://today-api.moveforwardparty.org/api${imagelist[0].imageUrl}/image",
                           errorBuilder: (BuildContext context, Object exception,
                               StackTrace stackTrace) {
@@ -182,7 +184,13 @@ class _StroyPageScState extends State<StroyPageSc> {
                           fit: BoxFit.cover,
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height / 3.0,
-                        ),
+                        ):Container(
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                    MediaQuery.of(context).size.height / 3.0,
+                                    color:Colors.grey,
+                                // child: Image.asset('images/placeholder.jpg')
+                                ),
                         Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height / 3.0,
@@ -209,7 +217,8 @@ class _StroyPageScState extends State<StroyPageSc> {
                                                   style: TextStyle(
                                                       fontFamily: AppTheme
                                                           .FontAnakotmaiBold,
-                                                      color: MColors.textDark,
+                                                      color:
+                                                          MColors.primaryWhite,
                                                       fontSize: AppTheme
                                                           .TitleTextSize),
                                                 ),
@@ -220,6 +229,132 @@ class _StroyPageScState extends State<StroyPageSc> {
                                                 color: MColors.primaryWhite,
                                                 height: 10,
                                                 thickness: 2.0),
+                                          ),
+                                          Container(
+                                            alignment: Alignment.bottomCenter,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                15.0,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Spacer(),
+                                                Text(
+                                                  widget.commentCount
+                                                      .toString(),
+                                                  //'${nDataList.post.commentCount}',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18),
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      8.0,
+                                                  child: Text('ความคิดเห็น',
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontFamily: AppTheme
+                                                              .FontAnakotmaiBold,
+                                                          color: MColors
+                                                              .primaryWhite,
+                                                          fontSize: 16)),
+                                                ),
+                                                Spacer(),
+                                                Text(
+                                                  widget.repostCount.toString(),
+                                                  //'${nDataList.post.repostCount}',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18),
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      8.0,
+                                                  child: Text('บอกต่อ',
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontFamily: AppTheme
+                                                              .FontAnakotmaiBold,
+                                                          color: MColors
+                                                              .primaryWhite,
+                                                          fontSize: 16)),
+                                                ),
+                                                Spacer(),
+                                                Text(
+                                                  widget.likeCount.toString(),
+                                                  //'${nDataList.post.likeCount}',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 20),
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      8.0,
+                                                  child: Text('ถูกใจ',
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontFamily: AppTheme
+                                                              .FontAnakotmaiBold,
+                                                          color: MColors
+                                                              .primaryWhite,
+                                                          fontSize: 16)),
+                                                ),
+                                                Spacer(),
+                                                Text(
+                                                  widget.shareCount.toString(),
+                                                  //'${nDataList.post.shareCount}',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18),
+                                                ),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      8.0,
+                                                  child: Text('แชร์',
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontFamily: AppTheme
+                                                              .FontAnakotmaiBold,
+                                                          color: MColors
+                                                              .primaryWhite,
+                                                          fontSize: 16)),
+                                                ),
+                                                Spacer(),
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -232,89 +367,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                         ),
                       ],
                     ),
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      color: Colors.grey[800],
-                      height: MediaQuery.of(context).size.height / 20.0,
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Spacer(),
-                          Text(
-                            widget.commentCount.toString(),
-                            //'${nDataList.post.commentCount}',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                          IconButton(
-                            splashRadius: AppTheme.splashRadius,
-                            icon: Icon(
-                              Icons.comment,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              //print('กด');
-                            },
-                          ),
-                          Spacer(),
-                          Text(
-                            widget.repostCount.toString(),
-                            //'${nDataList.post.repostCount}',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                          IconButton(
-                            splashRadius: AppTheme.splashRadius,
-                            icon: Icon(
-                              Icons.favorite,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              //print('กด');
-                            },
-                          ),
-                          Spacer(),
-                          Text(
-                            widget.likeCount.toString(),
-                            //'${nDataList.post.likeCount}',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                          ),
-                          IconButton(
-                            splashRadius: AppTheme.splashRadius,
-                            icon: Icon(
-                              Icons.favorite_border,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              //print('กด');
-                            },
-                          ),
-                          Spacer(),
-                          Text(
-                            widget.shareCount.toString(),
-                            //'${nDataList.post.shareCount}',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                          IconButton(
-                            splashRadius: AppTheme.splashRadius,
-                            icon: Icon(
-                              Icons.share_outlined,
-                              color: Colors.white,
-                            ),
-                            onPressed: null,
-                          ),
-                          Spacer(),
-                        ],
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        'มีการเติมเต็ม 0 รายการ',
-                        style: TextStyle(
-                            fontFamily: AppTheme.FontAnakotmaiLight,
-                            color: MColors.textDark,
-                            fontSize: AppTheme.BodyTextSize),
-                      ),
-                    ),
+
                     Divider(
                       color: Colors.grey[200],
                       height: 3,
@@ -325,23 +378,22 @@ class _StroyPageScState extends State<StroyPageSc> {
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height / 8.0,
                       color: Colors.grey[100],
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 1.0, right: 10.0, top: 5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 5.0),
-                              child: CircleAvatar(
-                                  radius: 30.0,
-                                  backgroundImage: NetworkImage(
-                                      "https://today-api.moveforwardparty.org/api${widget.imagepage}/image")),
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 45.0,
-                            ),
-                            Column(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 5.0),
+                            child: CircleAvatar(
+                                radius: 30.0,
+                                backgroundImage: NetworkImage(
+                                    "https://today-api.moveforwardparty.org/api${widget.imagepage}/image")),
+                          ),
+                          // SizedBox(
+                          //   width: MediaQuery.of(context).size.width / 45.0,
+                          // ),
+                          Padding(
+                            padding: AppStyle(context).getEdgeInsetsFromRatio(all: 2),
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -358,8 +410,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 2.0,
+                                   
                                     child: Text(
                                       'เผยแพร่โดย:${widget.postby}',
                                       textAlign: TextAlign.left,
@@ -375,8 +426,8 @@ class _StroyPageScState extends State<StroyPageSc> {
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
 
@@ -394,7 +445,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                                   data:
                                       """ ${todayController.storytestreplaceAll} """,
                                   defaultTextStyle: TextStyle(
-                                      fontFamily: AppTheme.FontAnakotmaiLight,
+                                      fontFamily: AppTheme.FontSarabunLight,
                                       color: MColors.textDark),
                                   // padding: EdgeInsets.all(8.0),
                                   onLinkTap: (url) async {
@@ -404,7 +455,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                                 );
                       }),
                     ),
-                    _buildCommentList()
+                  listModel.isNotEmpty?  _buildCommentList():Container(),
                     // Text('data'),
                   ],
                 ),
@@ -427,7 +478,7 @@ class _StroyPageScState extends State<StroyPageSc> {
           itemBuilder: (BuildContext context, int index) {
             var data = listModel[index];
 
-            return GestureDetector(
+            return listModel.isNotEmpty? GestureDetector(
               onTap: () {
                 print('${data.comment}');
                 // print('${_commenteditController.text}');
@@ -587,7 +638,7 @@ class _StroyPageScState extends State<StroyPageSc> {
                   ],
                 ),
               ),
-            );
+            ):Container();
           },
         );
       },

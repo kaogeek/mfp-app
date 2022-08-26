@@ -5,6 +5,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:full_screen_image/full_screen_image.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
@@ -12,10 +14,12 @@ import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/view/Profile/profile.dart';
 import 'package:mfp_app/view/Search/search.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ShopSC extends StatefulWidget {
-  // ShopSC({Key? key}) : super(key: key);
+  // DoingSC({Key? key}) : super(key: key);
+   bool taptoload;
+
+   ShopSC({Key key, this.taptoload}) : super(key: key);
 
   @override
   _ShopSCState createState() => _ShopSCState();
@@ -111,9 +115,21 @@ class _ShopSCState extends State<ShopSC> {
       ),
     );
   }
-
+  void _goToElement(int index) {
+    _trackingScrollController.animateTo(
+        (100.0 *
+            index), // 100 is the height of container and index of 6th element is 5
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut);
+    setState(() {
+      widget.taptoload = false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
+     if (widget.taptoload == true) {
+      _goToElement(0);
+    }
     return Container(
       color: Colors.white,
       child: SafeArea(

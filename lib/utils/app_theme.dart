@@ -24,6 +24,8 @@ class AppTheme {
   static const String FontAnakotmaiLight = "Anakotmai-Light";
   static const String FontAnakotmaiBold = "Anakotmai-Bold";
   static const String FontAnakotmaiMedium = "Anakotmai-Medium";
+    static const String FontSarabunLight = "Sarabun-Light";
+
 
   static const LargeTextSize = 20.0;
   static const MediumTextSize = 20.0;

@@ -1,12 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:full_screen_image/full_screen_image.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:mfp_app/allWidget/PostButton.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/gallery.dart';
 import 'package:mfp_app/allWidget/circle_button.dart';
+import 'package:mfp_app/utils/app.style.config.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/internetConnectivity.dart';
 import 'package:mfp_app/utils/router.dart';
@@ -20,7 +21,7 @@ Widget myAlbumCard(List<Gallery> list, BuildContext context) {
     return Container(
       //  color: Colors.yellow,
       height: MediaQuery.of(context).size.height / 2.6,
-      width: double.infinity,
+      // width: double.infinity,
       child: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -280,21 +281,19 @@ Widget getItems(img_path, img_path2, count, BuildContext context) {
     width: double.infinity,
     child: Row(
       children: <Widget>[
-        ClipRRect(
-          child: Image.network(
-            img_path,
-            errorBuilder: (BuildContext context, Object exception,
-                StackTrace stackTrace) {
-              return Container(
-                  height: MediaQuery.of(context).size.height / 5.2,
-                  width: MediaQuery.of(context).size.width / 2.0,
-                  child: Image.asset('images/placeholder.jpg'));
-            },
-            height: MediaQuery.of(context).size.height / 5.2,
-            width: MediaQuery.of(context).size.width / 2.0,
-            fit: BoxFit.cover,
-            filterQuality: FilterQuality.low,
-          ),
+        Image.network(
+          img_path,
+          errorBuilder:
+              (BuildContext context, Object exception, StackTrace stackTrace) {
+            return Container(
+                height: MediaQuery.of(context).size.height / 5.2,
+                width: MediaQuery.of(context).size.width / 2.1,
+                child: Image.asset('images/placeholder.jpg'));
+          },
+          height: MediaQuery.of(context).size.height / 5.2,
+          width: AppStyle(context).getWidth(percent: 49),
+          fit: BoxFit.cover,
+          filterQuality: FilterQuality.low,
         ),
         (count > 0)
             ? Stack(
@@ -309,12 +308,12 @@ Widget getItems(img_path, img_path2, count, BuildContext context) {
                               return Container(
                                   height:
                                       MediaQuery.of(context).size.height / 5.2,
-                                  width:
-                                      MediaQuery.of(context).size.width / 2.0,
+                                                             width: AppStyle(context).getWidth(percent: 47.5),
+
                                   child: Image.asset('images/placeholder.jpg'));
                             },
                             height: MediaQuery.of(context).size.height / 5.2,
-                            width: MediaQuery.of(context).size.width / 2.0,
+                            width: AppStyle(context).getWidth(percent: 47.5),
                             fit: BoxFit.cover,
                             filterQuality: FilterQuality.low,
                           )
@@ -324,7 +323,7 @@ Widget getItems(img_path, img_path2, count, BuildContext context) {
                       ? Positioned(
                           child: Container(
                             height: MediaQuery.of(context).size.height / 5.2,
-                            width: MediaQuery.of(context).size.width / 2.0,
+                            width: AppStyle(context).getWidth(percent: 47.5),
                             decoration: BoxDecoration(color: Colors.black38),
                             child: Center(
                               child: Text(
@@ -348,11 +347,11 @@ Widget getItems(img_path, img_path2, count, BuildContext context) {
                             StackTrace stackTrace) {
                           return Container(
                               height: MediaQuery.of(context).size.height / 5.2,
-                              width: MediaQuery.of(context).size.width / 2.0,
+                            width: AppStyle(context).getWidth(percent: 47.5),
                               child: Image.asset('images/placeholder.jpg'));
                         },
                         height: MediaQuery.of(context).size.height / 5.2,
-                        width: MediaQuery.of(context).size.width / 2.0,
+                            width: AppStyle(context).getWidth(percent: 47.5),
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.low,
                       )
@@ -362,83 +361,84 @@ Widget getItems(img_path, img_path2, count, BuildContext context) {
     ),
   );
 }
-  showAlertDialog(BuildContext context, String text, String text1, String text2,
-      double width, double height) {
-    // set up the buttons
 
-    Dialog dialog = Dialog(
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Container(
-        width: MediaQuery.of(context).size.width / width,
-        height: MediaQuery.of(context).size.height / height,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [primaryColor, secondaryColor]),
-            borderRadius: BorderRadius.circular(15.0),
-            boxShadow: [
-              BoxShadow(
-                  offset: const Offset(12, 26),
-                  blurRadius: 50,
-                  spreadRadius: 0,
-                  color: Colors.grey.withOpacity(.1)),
-            ]),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: CircleAvatar(
-                  backgroundColor: MColors.primaryBlue.withOpacity(.05),
-                  radius: 25,
-                  child: Image.asset(
-                    "images/Group 11925.png",
-                    fit: BoxFit.fill,
-                    width: 25,
-                    height: 25,
-                  ),
+showAlertDialog(BuildContext context, String text, String text1, String text2,
+    double width, double height) {
+  // set up the buttons
+
+  Dialog dialog = Dialog(
+    elevation: 1,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+    child: Container(
+      width: MediaQuery.of(context).size.width / width,
+      height: MediaQuery.of(context).size.height / height,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [primaryColor, secondaryColor]),
+          borderRadius: BorderRadius.circular(15.0),
+          boxShadow: [
+            BoxShadow(
+                offset: const Offset(12, 26),
+                blurRadius: 50,
+                spreadRadius: 0,
+                color: Colors.grey.withOpacity(.1)),
+          ]),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: CircleAvatar(
+                backgroundColor: MColors.primaryBlue.withOpacity(.05),
+                radius: 25,
+                child: Image.asset(
+                  "images/Group 11925.png",
+                  fit: BoxFit.fill,
+                  width: 25,
+                  height: 25,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                child: AutoSizeText(text1,
-                    maxLines: 5,
-                    minFontSize: 16,
-                    maxFontSize: 18,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: MColors.primaryWhite,
-                      fontSize: 16,
-                      fontFamily: AppTheme.FontAnakotmaiMedium,
-                    )),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                child: AutoSizeText(text2,
-                    maxLines: 8,
-                    minFontSize: 16,
-                    maxFontSize: 18,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: MColors.primaryWhite,
-                      fontSize: 14,
-                      fontFamily: AppTheme.FontAnakotmaiMedium,
-                    )),
-              ),
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              child: AutoSizeText(text1,
+                  maxLines: 5,
+                  minFontSize: 16,
+                  maxFontSize: 18,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: MColors.primaryWhite,
+                    fontSize: 16,
+                    fontFamily: AppTheme.FontAnakotmaiMedium,
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              child: AutoSizeText(text2,
+                  maxLines: 8,
+                  minFontSize: 16,
+                  maxFontSize: 18,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: MColors.primaryWhite,
+                    fontSize: 14,
+                    fontFamily: AppTheme.FontAnakotmaiMedium,
+                  )),
+            ),
+          ],
         ),
       ),
-    );
+    ),
+  );
 
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return dialog;
-      },
-    );
-  }
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return dialog;
+    },
+  );
+}
 
 Widget primaryAppBar(
   context,
@@ -477,14 +477,8 @@ Widget primaryAppBar(
         iconSize: 27.0,
         color: MColors.primaryBlue,
         onPressed: () => {
-           showAlertDialog(
-                                    context,
-                                    "พรรคก้าวไกล",
-                                    "ระบบอยู่ในระหว่างการพัฒนา",
-                                    "",
-                                    1.5,
-                                    5.5),
-
+          showAlertDialog(context, "พรรคก้าวไกล", "ระบบอยู่ในระหว่างการพัฒนา",
+              "", 1.5, 5.5),
         },
       ),
       token == null || token == ""
@@ -559,115 +553,60 @@ Widget AppBardetail(
       leading: icon);
 }
 
-Widget UIlikecommentshear(context, int like, int comment, int share) {
-  return Column(
-    children: [
-      Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(4.0),
-            decoration: BoxDecoration(
-              color: MColors.primaryBlue,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.favorite_outline,
-              size: 10.0,
-              color: Colors.white,
-            ),
+Widget primaryAppBarProfile(context, var pageprofileimage, var title) {
+  return SliverAppBar(
+    brightness: Brightness.light,
+    backgroundColor: Colors.white,
+    titleSpacing: 0.0,
+    title: Row(
+      children: [
+        IconButton(
+          splashRadius: AppTheme.splashRadius,
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: MColors.primaryColor,
           ),
-          const SizedBox(width: 4.0),
-          Expanded(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 5, bottom: 5),
+          child: CircleAvatar(
+            radius: 25.0,
+            backgroundImage: (pageprofileimage == null)
+                ? NetworkImage('https://via.placeholder.com/150')
+                : CachedNetworkImageProvider(
+                    "https://today-api.moveforwardparty.org/api$pageprofileimage/image"),
+            backgroundColor: Colors.transparent,
+          ),
+        ),
+        SizedBox(
+          height: 2,
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 5),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.7,
             child: Text(
-              '$like ถูกใจ',
+              title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: Colors.grey[600],
+                color: Colors.black,
+                fontSize: 16.0,
+                fontFamily: AppTheme.FontAnakotmaiMedium,
+                fontWeight: FontWeight.bold,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
-          Text(
-            '$comment ความคิดเห็น',
-            style: TextStyle(
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(width: 8.0),
-          Text(
-            '$share  แชร์',
-            style: TextStyle(
-              color: Colors.grey[600],
-            ),
-          )
-        ],
-      ),
-      const Divider(),
-      Row(
-        children: [
-          PostButton(
-            icon: Icon(
-              Icons.favorite_outline,
-              color: MColors.primaryBlue,
-              size: 20.0,
-            ),
-            label: 'ถูกใจ',
-            onTap: () => {},
-          ),
-          PostButton(
-            icon: Icon(
-              MdiIcons.commentOutline,
-              color: MColors.primaryBlue,
-              size: 20.0,
-            ),
-            label: 'ความคิดเห็น',
-            onTap: () => {},
-          ),
-          PostButton(
-            icon: Icon(
-              Icons.share,
-              color: MColors.primaryBlue,
-              size: 25.0,
-            ),
-            label: 'แชร์',
-            onTap: () => {},
-          )
-        ],
-      ),
-      SizedBox(
-        height: 5,
-      ),
-    ],
-  );
-  
-}
-
-void showNoInternetSnack(
-  GlobalKey<ScaffoldState> _scaffoldKey,
-) {
-  _scaffoldKey.currentState.showSnackBar(
-    SnackBar(
-      behavior: SnackBarBehavior.floating,
-      duration: Duration(milliseconds: 10000),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      content: Row(
-        children: <Widget>[
-          Expanded(
-            child: Text(
-              "No internet connection! Please connect to the internet to continue.",
-              style: TextStyle(color: MColors.primaryColor, fontSize: 14),
-            ),
-          ),
-          InkWell(
-            onTap: () => checkInternetConnectivity(),
-            child: Icon(
-              Icons.error_outline,
-              color: Colors.amber,
-            ),
-          )
-        ],
-      ),
+        ),
+      ],
     ),
+    automaticallyImplyLeading: false,
+    centerTitle: false,
+    floating: true,
   );
 }
 

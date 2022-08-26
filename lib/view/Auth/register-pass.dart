@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/utils/app.style.config.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/view/Auth/register_pic.dart';
 import 'package:page_transition/page_transition.dart';
@@ -45,7 +46,7 @@ class _RegisterpasswordState extends State<Registerpassword> {
       obscureText: true,
       decoration: InputDecoration(
         hintText: 'รหัสผ่าน',
-        contentPadding: EdgeInsets.all(13),
+        contentPadding: AppStyle(context).getEdgeInsetsFromRatio(all: 2.5),
         border: InputBorder.none,
         labelStyle: TextStyle(
           fontFamily: AppTheme.FontAnakotmaiLight,
@@ -54,7 +55,7 @@ class _RegisterpasswordState extends State<Registerpassword> {
             TextStyle(fontFamily: AppTheme.FontAnakotmaiLight, fontSize: 14),
         suffixIcon: InkWell(
             child: Padding(
-                padding: const EdgeInsets.all(13),
+                padding: AppStyle(context).getEdgeInsetsFromRatio(all: 1),
                 child: isvis == false
                     ? null
                     : Icon(
@@ -84,7 +85,7 @@ class _RegisterpasswordState extends State<Registerpassword> {
       style: TextStyle(fontSize: 14, fontFamily: AppTheme.FontAnakotmaiLight),
       decoration: InputDecoration(
         hintText: 'ใส่รหัสผ่านอีกครั้ง',
-        contentPadding: EdgeInsets.all(13),
+        contentPadding: AppStyle(context).getEdgeInsetsFromRatio(all: 2.5),
         labelStyle: TextStyle(
           fontFamily: AppTheme.FontAnakotmaiLight,
         ),
@@ -96,7 +97,7 @@ class _RegisterpasswordState extends State<Registerpassword> {
         suffixIcon: InkWell(
             // onTap: _togglePasswordView,
             child: Padding(
-          padding: const EdgeInsets.all(13),
+                padding: AppStyle(context).getEdgeInsetsFromRatio(all: 1),
           child: isvis == false
               ? null
               : Icon(

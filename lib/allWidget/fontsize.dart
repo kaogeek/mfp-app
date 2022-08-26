@@ -1,77 +1,89 @@
 import 'package:flutter/material.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/utils/app.style.config.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/utils/timeutils.dart';
 import 'package:mfp_app/view/Profile/Profliess.dart';
 
-Widget titleK1(String string) => Text(
+
+Widget titletimeline(String string,BuildContext context) => Text(
       string,
       style: TextStyle(
-        fontSize: 30,
-        fontWeight: FontWeight.bold,
-        color: MColors.textDark,
-      ),
-    );
-Widget titletimeline(String string) => Text(
-      string,
-      style: TextStyle(
-        fontSize: 19,
+        fontSize: AppStyle(context).getWidth(percent: 5.5),
         fontWeight: FontWeight.bold,
         color: MColors.textDark,
       ),
     );
 Widget texttitlepost(String string, context) => Text(
       string,
-      style: Theme.of(context).textTheme.headline1,
+      style: TextStyle(
+    // h4 -> display1 // post titel
+    fontFamily:AppTheme. FontAnakotmaiBold,
+    fontSize:AppStyle(context).getWidth(percent: 6),
+    color: MColors.primaryBlue,
+  ),
     );
 Widget texttitle(String string, context) => Text(
       string,
-      style: Theme.of(context).textTheme.headline4,
+      style: TextStyle(
+    // h4 -> display1
+    fontFamily:AppTheme.FontAnakotmaiLight,
+    fontSize: AppStyle(context).getWidth(percent: 5.5),
+
+    color: MColors.primaryBlue,
+  ),
     );
 Widget subtexttitlepost(String string, context) => Text(
       '$string',
-      style: Theme.of(context).textTheme.bodyText1,
+      style: TextStyle(
+    // h4 -> display1
+    fontFamily:AppTheme.FontSarabunLight,
+    fontSize: AppStyle(context).getWidth(percent: 4.5),
+
+    color: MColors.primaryBlue),
     );
 Widget texttitleVideorecommend(String string, context) => Text(
       string,
-      style: Theme.of(context).textTheme.headline4,
+      style: TextStyle(   
+        //  fontFamily: AppTheme.FontAnakotmaiLight,
+    fontSize:AppStyle(context).getWidth(percent: 4.5),
+    // fontWeight: FontWeight.w400,
+    color: MColors.textDark,),
     );
 Widget textsubVideorecommend(String string, context) => Text(
       string,
       style: Theme.of(context).textTheme.headline5,
     );
-Widget fixtextauthor() => Padding(
+Widget fixtextauthor(BuildContext context) => Padding(
       padding: const EdgeInsets.all(10.0),
       child: Text(
         'ผู้เขียน:',
         style: TextStyle(
-          fontFamily: 'Anakotmai-Light',
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
+          fontFamily: AppTheme.FontAnakotmaiBold,
+          fontSize: AppStyle(context).getWidth(percent: 4.0),
+          // fontWeight: FontWeight.w500,
           color: MColors.textDark,
         ),
       ),
     );
-Widget texttimetimestamp(DateTime dateTime) => Text(
+Widget texttimetimestamp(DateTime dateTime,BuildContext context )=> Text(
       TimeUtils.readTimestamp(dateTime.millisecondsSinceEpoch),
       maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+
       style: TextStyle(
         fontFamily: AppTheme.FontAnakotmaiLight,
-        fontSize: 15,
-        fontWeight: FontWeight.w400,
+        fontSize: AppStyle(context).getWidth(percent: 4.0),
+        fontWeight: FontWeight.w300,
         color: MColors.textGrey,
+        overflow: TextOverflow.ellipsis
       ),
     );
 Widget authorpost(
   String string,
   context,
-  DateTime dateTime,
   String id,
-  String imageUrl,
-  String name,
-  String pageUsername,
-  String userid,
   bool isenable,
 ) =>
     InkWell(
@@ -87,8 +99,9 @@ Widget authorpost(
         maxLines: 1,
         style: TextStyle(
           color: MColors.primaryColor,
-          fontFamily: AppTheme.FontAnakotmaiLight,
-          fontSize: 15,
+          fontWeight: FontWeight.w300,
+          fontFamily: AppTheme.FontAnakotmaiBold,
+          fontSize: AppStyle(context).getWidth(percent: 4.0),
           overflow: TextOverflow.ellipsis,
         ),
       ),
@@ -102,11 +115,12 @@ Widget texthashtags(String string) => Text(
         color: MColors.primaryWhite,
       ),
     );
-Widget textreadstory(String string) => Text(
+Widget textreadstory(String string,BuildContext context) => Text(
       string,
       style: TextStyle(
         fontFamily: AppTheme.FontAnakotmaiLight,
-        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        fontSize: AppStyle(context).getWidth(percent: 4.5),
         color: MColors.primaryColor,
       ),
     );

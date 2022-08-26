@@ -4,7 +4,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/custom_tab_bar.dart';
 import 'package:mfp_app/view/Doing/doing.dart';
-import 'package:mfp_app/view/Menu/menu.dart';
+import 'package:mfp_app/view/Menu/Menu.dart';
 import 'package:mfp_app/view/Shop/shop.dart';
 import 'package:mfp_app/view/Today/today_Sc.dart';
 import 'dart:io' show Platform;
@@ -36,9 +36,9 @@ class _NavScreenState extends State<NavScreen> {
         userid: userid,
         taptoload: taptoload,
       ),
-      DoingSC(),
-      ShopSC(),
-      MenuSC(),
+      DoingSC(taptoload:taptoload),
+      ShopSC(taptoload:taptoload),
+      MenuView(taptoload1:taptoload),
     ];
   }
 
@@ -86,6 +86,21 @@ class _NavScreenState extends State<NavScreen> {
                 _selectedIndex = index;
               });
               if (_selectedIndex == 0) {
+                setState(() {
+                  taptoload = true;
+                });
+              }
+              if (_selectedIndex == 1) {
+                setState(() {
+                  taptoload = true;
+                });
+              }
+              if (_selectedIndex == 2) {
+                setState(() {
+                  taptoload = true;
+                });
+              }
+              if (_selectedIndex == 3) {
                 setState(() {
                   taptoload = true;
                 });
