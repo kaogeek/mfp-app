@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:mfp_app/utils/app.style.config.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CarouselLoading extends StatelessWidget {
@@ -6,6 +8,7 @@ class CarouselLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var appStyle =AppStyle(context);
     return Column(
       children: [
         Shimmer.fromColors(
@@ -19,7 +22,7 @@ class CarouselLoading extends StatelessWidget {
             ),
             child: Container(
               width: double.infinity,
-              height: 400,
+              height: appStyle.getHeight(percent:45),
               color: Colors.grey,
             ),
           ),

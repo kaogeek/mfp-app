@@ -25,11 +25,15 @@ class Generalinformation extends StatefulWidget {
   final String firstname;
   final String lastname;
   final DateTime birthdate;
-  final String fbid;
+   String fbid;
   final String mode;
-  final String fbtoken;
-  final DateTime fbexpires;
-  final bool isfb;
+   String fbtoken;
+   DateTime fbexpires;
+   bool isfb;
+   String twitterOauthToken;
+  int twitterUserId;
+  String twitterTokenSecret;
+   String twitterscreenName;
 
   Generalinformation(
       {Key key,
@@ -45,7 +49,7 @@ class Generalinformation extends StatefulWidget {
       this.mode,
       this.fbtoken,
       this.fbexpires,
-      this.isfb})
+      this.isfb, this.twitterUserId, this.twitterOauthToken, this.twitterTokenSecret, this.twitterscreenName})
       : super(key: key);
 
   @override
@@ -93,6 +97,8 @@ class _GeneralinformationState extends State<Generalinformation> {
   final f = new DateFormat('yyyy-MM-dd');
 
   bool isregisterfb = false;
+  bool isregistertw = false;
+
   void _validateInputs() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
@@ -292,6 +298,135 @@ class _GeneralinformationState extends State<Generalinformation> {
       });
     }
   }
+  Future<http.Response> twRegister(
+    String email,
+    String password,
+    String displayName,
+    String username,
+    String firstName,
+    String lastName,
+    String uniqueId,
+    DateTime birthdate,
+    int gender,
+    String customGender,
+    String imageb64,
+    String twitterUserId,
+    String twitterOauthToken,
+    String twitterTokenSecret,
+  ) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      isclick = true;
+    });
+    try {
+      var url =
+          Uri.parse("https://today-api.moveforwardparty.org/api/register");
+      final headers = {
+        "mode": "TWITTER",
+        "content-type": "application/json",
+      };
+      Map data = {
+        "username": username,
+        "displayName": displayName,
+        "firstName": firstName,
+        "lastName": lastName,
+        "email": email,
+        "password": password,
+        "uniqueId": uniqueId,
+        "birthdate": birthdate.toIso8601String(),
+        "gender": gender,
+        "customGender": customGender,
+        "asset": {
+          "mimeType": "image/jpeg",
+          "data": imageb64,
+        },
+        "twitterUserId": twitterUserId,
+        'twitterOauthToken': twitterOauthToken,
+        'twitterTokenSecret': twitterTokenSecret,
+      };
+      //encode Map to JSON
+      var body = jsonEncode(data);
+
+      var responsepostRequest =
+          await http.post(url, headers: headers, body: body);
+
+      final jsonResponse = jsonDecode(responsepostRequest.body);
+      msg = jsonResponse['message'];
+
+      if (responsepostRequest.statusCode == 200) {
+        mybody = jsonResponse["data"];
+
+        if (jsonResponse['status'] == 1) {
+          setState(() {
+            isregistertw = true;
+          });
+        }
+      }
+      if (jsonResponse.statusCode == 400) {
+        if (jsonResponse['status'] == 0) {
+          setState(() {
+            isregistertw = false;
+          });
+        }
+      }
+
+      return responsepostRequest;
+    } catch (e) {
+      setState(() {
+        isclick = false;
+      });
+    }
+  }
+   Future<http.Response> singinTW() async {
+  SharedPreferences sharedPreferences =
+              await SharedPreferences.getInstance();
+         
+       final authToken=    sharedPreferences.getString("twitterOauthToken");
+       final authTokenSecret=    sharedPreferences.getString("twitterOauthTokenSecret");
+       final twitterUserId=    sharedPreferences.getString("twitterUserId");
+
+          var url = Uri.parse("${Api.url}api/login");
+          Map data = {
+            "twitterOauthToken": authToken,
+            "twitterOauthTokenSecret": authTokenSecret,
+            "twitterUserId": twitterUserId
+          };
+          final headers = {
+            "mode": "TWITTER",
+            "content-type": "application/json",
+          };
+          var body = jsonEncode(data);
+
+          var res = await http.post(url, headers: headers, body: body);
+          final jsonResponse = jsonDecode(res.body);
+
+          if (res.statusCode == 200) {
+            if (jsonResponse['status'] == 1) {
+              msg = jsonResponse['message'];
+              if (jsonResponse != null) {
+                print('msg$msg');
+                sharedPreferences.setString(
+                    "token", '${jsonResponse["data"]["token"]}');
+                sharedPreferences.setString(
+                    "myuid", '${jsonResponse["data"]["user"]["id"]}');
+                sharedPreferences.setString(
+                    "imageURL", '${jsonResponse["data"]["user"]["imageURL"]}');
+                sharedPreferences.setString("mode", 'TWITTER');
+
+                mytoken = jsonResponse["data"]["token"];
+               
+                Navigator.of(context).pushAndRemoveUntil(
+                    CupertinoPageRoute(
+                        builder: (BuildContext context) => NavScreen()),
+                    (Route<dynamic> route) => false);
+              } else {
+                setState(() {
+                  // _isloading = false;
+                });
+              }
+            }
+  }
+   }
 
   Future<http.Response> checkuniqueId(
     String uniqueId,
@@ -425,13 +560,13 @@ class _GeneralinformationState extends State<Generalinformation> {
       ),
       keyboardType: TextInputType.text,
       autocorrect: false,
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'กรุณาใส่ยูสเซอร์เนม';
-        }
+      // validator: (value) {
+      //   if (value.isEmpty) {
+      //     return 'กรุณาใส่ยูสเซอร์เนม';
+      //   }
 
-        return null;
-      },
+      //   return null;
+      // },
       onChanged: (value) async {
         await checkuniqueId(value);
 
@@ -971,6 +1106,28 @@ class _GeneralinformationState extends State<Generalinformation> {
                                                         .toString()),
                                                   );
                                                 }
+                                                if(widget.mode=="TWITTER"){
+                                                   await twRegister(
+                                                    _email.text,
+                                                    "",
+                                                    widget.twitterscreenName,
+                                                    _email.text,
+                                                    _firstname.text,
+                                                    _lastname.text,
+                                                    _uniqueid.text,
+                                                    DateTime.parse(
+                                                        _birthday.text),
+                                                    gendertypeint,
+                                                    gendertypeint == 3
+                                                        ? _customGender.text
+                                                        : "",
+                                                    widget.img64,
+                                                    widget.twitterUserId.toString(),
+                                                    widget.twitterOauthToken,
+                                                    widget.twitterTokenSecret,
+                                                  );
+
+                                                }
                                                 if (widget.mode == "EMAIL") {
                                                   if (_birthday.text != "") {
                                                     await Register(
@@ -1016,6 +1173,11 @@ class _GeneralinformationState extends State<Generalinformation> {
                                                           (Route<dynamic>
                                                                   route) =>
                                                               false);
+                                                }
+                                                 if (isregistertw == true)  {
+                                                             singinTW();
+
+                                                   
                                                 }
 
                                                 //  showAlertDialog(context);

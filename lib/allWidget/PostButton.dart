@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/utils/app.style.config.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 
 class PostButton extends StatelessWidget {
@@ -44,8 +46,8 @@ class PostButton extends StatelessWidget {
                   width: MediaQuery.of(context).size.width * width,
                   child: Text(label,
                       style: TextStyle(
-                        fontFamily: AppTheme.FontAnakotmaiLight,
-                        fontSize: 14,
+                        fontFamily: AppTheme.FontAnakotmaiBold,
+                        fontSize: AppStyle(context).getWidth(percent: 3.6),
                         color: MColors.primaryBlue,
                         overflow: TextOverflow.ellipsis,
                       ),

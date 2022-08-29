@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,6 +6,7 @@ import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/allWidget/sizeconfig.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/controller/auth_provider.dart';
+import 'package:mfp_app/utils/app.style.config.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/internetConnectivity.dart';
 import 'package:mfp_app/utils/router.dart';
@@ -123,6 +125,7 @@ class _LoginemailState extends State<Loginemail> {
     return Container(
       color: MColors.primaryWhite,
       child: Scaffold(
+        resizeToAvoidBottomInset:true,
           body: Form(
         key: authController.loginFormKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -170,9 +173,9 @@ class _LoginemailState extends State<Loginemail> {
                           ],
                         ),
                       ),
-                      if (!isKeyboard)
+                      // if (!isKeyboard)
                         SizedBox(
-                          height: SizeConfig.screenHeight / 3.8,
+                          height: AppStyle(context).getHeight(percent: 22),
                         ),
 
                       Container(

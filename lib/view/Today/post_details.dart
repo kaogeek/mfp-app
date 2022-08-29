@@ -14,24 +14,27 @@ import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/commentlistmodel.dart';
 import 'package:mfp_app/model/post_details_model.dart';
 import 'package:http/http.dart' as Http;
+import 'package:mfp_app/utils/app.style.config.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/utils/timeutils.dart';
 import 'package:mfp_app/view/Auth/login-register.dart';
 import 'package:mfp_app/view/Today/show_full_image.dart';
 import 'package:mfp_app/view/Today/story_page.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PostDetailsSC extends StatefulWidget {
   final String postid;
 
   final List gallery;
+  final String pagename;
 
   final bool onfocus;
   final story;
   final String type;
 
   PostDetailsSC(
-      {Key key, this.postid, this.gallery, this.onfocus, this.type, this.story})
+      {Key key, this.postid, this.gallery, this.onfocus, this.type, this.story, this.pagename})
       : super(key: key);
 
   @override
@@ -84,19 +87,22 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
   StreamController _postdetailController;
   var pagename = "";
   var pageid = "";
+  var nopage = "";
+  bool isNoPageName = false;
 
   Future futuregetpostdetail;
 
   @override
   void didChangeDependencies() {
     setState(() {
-      Api.getcommentlist(widget.postid, userid, token);
-      Api.getstory(widget.postid, userid);
+      Api.getcommentlist(widget.postid, userid == null ? "" : userid, token);
+      Api.getstory(widget.postid, userid == null ? "" : userid);
     });
 
     super.didChangeDependencies();
   }
-
+var tempPageName="";
+List tempList =[];
   @override
   void initState() {
     ////(widget.postid);
@@ -117,58 +123,96 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
         });
       }
       //---getuserprofile
-      await Api.getuserprofile(userid).then((responseData) async => ({
-            setState(() {
-              loading = true;
-            }),
-            if (responseData.statusCode == 200)
-              {
-                datagetuserprofile = jsonDecode(responseData.body),
+      await Api.getuserprofile(userid == null ? "" : userid)
+          .then((responseData) async => ({
                 setState(() {
-                  userprofileimage = datagetuserprofile["data"]["imageURL"];
-                }),
-                setState(() {
-                  loading = false;
-                }),
-              }
-            else
-              {
-                setState(() {
-                  loading = false;
-                }),
-              }
-          }));
-      //--
-      futuregetpostdetail =
-          Api.getstory(widget.postid, userid).then((responseData) async => ({
-                setState(() {
-                  postloading = true;
+                  loading = true;
                 }),
                 if (responseData.statusCode == 200)
                   {
-                    jsonResponse = jsonDecode(responseData.body),
-                    // //('jsonResponse$jsonResponse'),
-                    for (Map i in jsonResponse["data"])
-                      {
-                        setState(() {
-                          pagename = i['page'][0]['name'];
-                          pageid = i['page'][0]['pageId'];
-                        }),
-                        postdetailslist.add(PostDetailsModel.fromJson(i)),
-                        _postdetailController.add(responseData),
-                      },
-                    // //("Response  :$storytestreplaceAll"),
-                    // //('titalpost$titalpost'),
+                    datagetuserprofile = jsonDecode(responseData.body),
                     setState(() {
-                      postloading = false;
+                      userprofileimage = datagetuserprofile["data"]["imageURL"];
+                    }),
+                    setState(() {
+                      loading = false;
                     }),
                   }
-                else if (responseData.statusCode == 400)
-                  {}
+                else
+                  {
+                    setState(() {
+                      loading = false;
+                    }),
+                  }
               }));
+      //--
+      futuregetpostdetail =
+          Api.getstory(widget.postid, userid == null ? "" : userid)
+              .then((responseData) async => ({
+                    setState(() {
+                      postloading = true;
+                    }),
+                    if (responseData.statusCode == 200)
+                      {
+                        jsonResponse = jsonDecode(responseData.body),
+                        // //('jsonResponse$jsonResponse'),
+                         
+                        for (Map i in jsonResponse["data"])
+                          {
+                        
+                              // pagename = i['page'][0]['name'] == null
+                              //     ? ""
+                              //     : i['page'][0]['name'],
+                              // pageid = i['page'][0]['pageId'],
+                              setState(() {
+                                       postdetailslist.add(PostDetailsModel.fromJson(i));
+                            _postdetailController.add(responseData);
+                                                          postloading = false;
+
+                            }),
+
+                           
+                          
+                             
+                           
+                  
+                             
+                          },
+                               
+                              if( jsonResponse["data"][0]["page"]==null){
+                                
+                                setState(() {
+                                                        tempPageName ="ไม่พบเพจ";
+
+                            }),
+                           
+
+                              }else{
+                                setState(() {
+                        tempPageName = jsonResponse["data"][0]["page"][0]["name"] ==0 ?"":jsonResponse["data"][0]["page"][0]["name"];
+                               print('tempPageName$tempPageName');
+                              postloading = false;
+                            }),
+                           
+
+                              }
+                          
+                      
+               
+
+                       
+                      }
+                    else if (responseData.statusCode == 400)
+                      {
+                        setState(() {
+                          postloading = false;
+                        }),
+                      }
+                  }));
 
       //--getcommentlist
-      await Api.getcommentlist(widget.postid, userid, token)
+      await Api.getcommentlist(
+              widget.postid, userid == null ? "" : userid, token)
           .then((responseData) => ({
                 // setState(() {
                 //   loading = true;
@@ -190,7 +234,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                   }
               }));
       //--.
-      await Api.postsearch(userid, token, widget.postid, mode)
+      await Api.postsearch(
+              userid == null ? "" : userid, token, widget.postid, mode)
           .then((responseData) => ({
                 if (responseData.statusCode == 200)
                   {
@@ -198,7 +243,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     // //('checkislike$datapostsearch'),
                     for (Map i in dataht["data"])
                       {
-                        // //('islike${i["isLike"]}'),
+                        // //('isLike${i["isLike"]}'),
                         if (i["isLike"] == false)
                           {
                             setState(() {
@@ -223,6 +268,9 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
   Future sendcomment(String postid, String mytoken, String mag, String myuid,
       String mode) async {
     // //('sendcomment');
+    if (mode == "TWITTER") {
+      mode = "TW";
+    }
 
     var url = Uri.parse("${Api.url}api/post/$postid/comment");
     final headers = {
@@ -260,29 +308,30 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
     setState(() {
       listModel.clear();
     });
-    Api.getcommentlist(widget.postid, userid, token).then((responseData) => ({
-          // setState(() {
-          //   loading = true;
-          // }),
-          // //('getHashtagData'),
-          if (responseData.statusCode == 200)
-            {
-              dataht = jsonDecode(responseData.body),
-              // //("comlist${dataht["data"]}"),
-              for (Map i in dataht["data"])
+    Api.getcommentlist(widget.postid, userid == null ? "" : userid, token)
+        .then((responseData) => ({
+              // setState(() {
+              //   loading = true;
+              // }),
+              // //('getHashtagData'),
+              if (responseData.statusCode == 200)
                 {
+                  dataht = jsonDecode(responseData.body),
+                  // //("comlist${dataht["data"]}"),
+                  for (Map i in dataht["data"])
+                    {
+                      setState(() {
+                        listModel.add(CommentlistModel.fromJson(i));
+                        _commerntController.add(responseData);
+                      }),
+                      // //('listModel${listModel.length}'),
+                    },
                   setState(() {
-                    listModel.add(CommentlistModel.fromJson(i));
-                    _commerntController.add(responseData);
+                    // loading = false;
+                    onref = false;
                   }),
-                  // //('listModel${listModel.length}'),
-                },
-              setState(() {
-                // loading = false;
-                onref = false;
-              }),
-            }
-        }));
+                }
+            }));
   }
 
   @override
@@ -290,6 +339,8 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
     if (onref == true) {
       _handleRefresh();
     }
+                                               var appStyle=   AppStyle(context);
+
 
     return loading == true
         ? Container(
@@ -309,7 +360,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     AppBardetail(
                       context,
                       "โพสต์ของ",
-                      pagename == "" ? "" : pagename,
+                      widget.pagename == null ? tempPageName : widget.pagename,
                       IconButton(
                         splashRadius: AppTheme.splashRadius,
                         icon: Icon(
@@ -326,50 +377,60 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     postloading == true
                         ? SliverToBoxAdapter(child: CarouselLoading())
                         : SliverToBoxAdapter(
-                            child: StreamBuilder(
-                              stream: _postdetailController.stream,
-                              // future: Future.wait([
-                              //   futuregetpostdetail
-                              // ]),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot snapshot) {
-                                // if (snapshot.connectionState ==
-                                //     ConnectionState.waiting) {
-                                //   return CarouselLoading();
-                                // }
-                                // if (snapshot.connectionState ==
-                                //     ConnectionState.done) {
-                                //   return Text('ไม่พบเพจ');
-                                // }
-                                return Builder(builder: (BuildContext context) {
-                                  return ListView.builder(
-                                    physics: ClampingScrollPhysics(),
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: postdetailslist.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      final datapostdetail =
-                                          postdetailslist[index];
-                                      var likenumber = datapostdetail.likeCount;
-                                      return PostList(
-                                          datapostdetail.title,
-                                          datapostdetail.detail,
-                                          datapostdetail.page,
-                                          datapostdetail.createdDate,
-                                          datapostdetail.gallery,
-                                          likenumber,
-                                          datapostdetail.commentCount,
-                                          datapostdetail.shareCount,
-                                          datapostdetail.story,
-                                          datapostdetail.id,
-                                          datapostdetail);
-                                    },
-                                  );
-                                });
-                              },
-                            ),
-                          ),
+                                child: StreamBuilder(
+                                  stream: _postdetailController.stream,
+                                  // future: Future.wait([
+                                  //   futuregetpostdetail
+                                  // ]),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot snapshot) {
+                                    // if (snapshot.connectionState ==
+                                    //     ConnectionState.waiting) {
+                                    //   return CarouselLoading();
+                                    // }
+                                    // if (snapshot.connectionState ==
+                                    //     ConnectionState.done) {
+                                    //   return Text('ไม่พบเพจ');
+                                    // }
+                                    return Builder(
+                                        builder: (BuildContext context) {
+                                      return ListView.builder(
+                                        physics: ClampingScrollPhysics(),
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: postdetailslist.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          final datapostdetail =
+                                              postdetailslist[index];
+                                          var likenumber =
+                                              datapostdetail.likeCount;
+                                              print('จำนวน${datapostdetail.page.length}');
+                                              List tempPage =[];
+                                              
+                                              
+                                              if(datapostdetail.page.length!=0){
+                                           return PostList(
+                                              datapostdetail.title,
+                                              datapostdetail.detail,
+                                              datapostdetail.page,
+                                              datapostdetail.createdDate,
+                                              datapostdetail.gallery,
+                                              likenumber,
+                                              datapostdetail.commentCount,
+                                              datapostdetail.shareCount,
+                                              datapostdetail.story,
+                                              datapostdetail.id,
+                                              datapostdetail);
+                                              }else{
+                                                return Container(child: Center(child: Text('ไม่พบเพจ',style: TextStyle(fontSize:appStyle.getWidth(percent: 5.0,),fontFamily: AppTheme.FontAnakotmaiBold))));
+                                              }
+                                        },
+                                      );
+                                    });
+                                  },
+                                ),
+                              ),
                     SliverToBoxAdapter(
                       child: Container(
                           color: Colors.grey[200], child: _buildCommentList()),
@@ -394,6 +455,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
       String postid,
       datapostdetail) {
     print(datapostdetail.isLike);
+  
     return InkWell(
       onTap: () {},
       child: Container(
@@ -449,7 +511,10 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     onTap: () => Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => SliderShowFullmages(
                             listImagesModel: gallery, current: 0))),
-                    child: searchAlbumCard(gallery, context))
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 4.5),
+                      child: searchAlbumCard(gallery, context),
+                    ))
                 : SizedBox.shrink(),
             // Image.network(gallery[0].signUrl),
             Column(
@@ -490,7 +555,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                                     mode: mode,
                                   ));
                             },
-                            child: textreadstory('อ่านสตอรี่...')),
+                            child: textreadstory('อ่านสตอรี่...', context)),
                       )
                     : Container(),
                 Row(
@@ -502,11 +567,6 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                         child: authorpost(
                             page[0].name,
                             context,
-                            dateTime,
-                            page[0].id,
-                            page[0].imageUrl,
-                            page[0].name,
-                            "pageUsername",
                             userid,
                             true),
                       ),
@@ -514,7 +574,7 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                     //     SizedBox(
                     //   width: 2,
                     // ),
-                    Container(child: texttimetimestamp(dateTime)),
+                    Container(child: texttimetimestamp(dateTime, context)),
                   ],
                 ),
                 Padding(
@@ -543,42 +603,99 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                             onTap: () {
                               HapticFeedback.lightImpact();
                               var jsonResponse;
-                              print(datapostdetail.isLike);
-                              token == null || token == ""
-                                  ? Navigate.pushPage(context, Loginregister())
-                                  : mode != "FB"
-                                      ? setState(() {
-                                          if (datapostdetail.isLike == false ||
-                                              datapostdetail.isLike == null ||
-                                              datapostdetail.likeCount < 0) {
-                                            datapostdetail.isLike = true;
-                                            datapostdetail.likeCount++;
-                                            Api.islike(
-                                                postid, userid, token, "");
-                                          } else if (datapostdetail.isLike ==
-                                              true) {
-                                            datapostdetail.isLike = false;
-                                            datapostdetail.likeCount--;
-                                            Api.islike(
-                                                postid, userid, token, "");
-                                          }
-                                        })
-                                      : setState(() {
-                                          if (datapostdetail.isLike == false ||
-                                              datapostdetail.isLike == null ||
-                                              datapostdetail.likeCount < 0) {
-                                            datapostdetail.isLike = true;
-                                            datapostdetail.likeCount++;
-                                            Api.islike(
-                                                postid, userid, token, "FB");
-                                          } else if (datapostdetail.isLike ==
-                                              true) {
-                                            datapostdetail.isLike = false;
-                                            datapostdetail.likeCount--;
-                                            Api.islike(
-                                                postid, userid, token, "FB");
-                                          }
-                                        });
+                              switch (mode) {
+                                case "FB":
+                                  print('FB');
+                                  if (datapostdetail.isLike == false ||
+                                      datapostdetail.isLike == null ||
+                                      datapostdetail.likeCount < 0) {
+                                    setState(() {
+                                      datapostdetail.isLike = true;
+                                      datapostdetail.likeCount++;
+                                    });
+                                    Api.islike(postid, userid, token, "FB");
+                                  } else if (datapostdetail.isLike == true) {
+                                    setState(() {
+                                      datapostdetail.isLike = false;
+                                      datapostdetail.likeCount--;
+                                    });
+                                    Api.islike(postid, userid, token, "FB");
+                                  }
+                                  break;
+                                case "TWITTER":
+                                  print('TWITTER');
+                                  if (datapostdetail?.isLike == false ||
+                                      datapostdetail?.isLike == null ||
+                                      datapostdetail.likeCount < 0) {
+                                    setState(() {
+                                      datapostdetail.isLike = true;
+                                      datapostdetail.likeCount++;
+                                    });
+                                    Api.islike(postid, userid, token, "TW");
+                                  } else if (datapostdetail.isLike == true) {
+                                    setState(() {
+                                      datapostdetail.isLike = false;
+                                      datapostdetail.likeCount--;
+                                    });
+                                    Api.islike(postid, userid, token, "TW");
+                                  }
+                                  break;
+                                default:
+                                  if (token == null || token == "") {
+                                    Navigate.pushPage(context, Loginregister());
+                                  } else {
+                                    setState(() {
+                                      if (datapostdetail.isLike == false ||
+                                          datapostdetail.isLike == null ||
+                                          datapostdetail.likeCount < 0) {
+                                        datapostdetail.isLike = true;
+                                        datapostdetail.likeCount++;
+                                        Api.islike(postid, userid, token, "");
+                                      } else if (datapostdetail.isLike ==
+                                          true) {
+                                        datapostdetail.isLike = false;
+                                        datapostdetail.likeCount--;
+                                        Api.islike(postid, userid, token, "");
+                                      }
+                                    });
+                                  }
+                                  break;
+                              }
+                              // token == null || token == ""
+                              //     ? Navigate.pushPage(context, Loginregister())
+                              //     : mode != "FB"
+                              //         ? setState(() {
+                              //             if (datapostdetail.isLike == false ||
+                              //                 datapostdetail.isLike == null ||
+                              //                 datapostdetail.likeCount < 0) {
+                              //               datapostdetail.isLike = true;
+                              //               datapostdetail.likeCount++;
+                              //               Api.isLike(
+                              //                   postid, userid, token, "");
+                              //             } else if (datapostdetail.isLike ==
+                              //                 true) {
+                              //               datapostdetail.isLike = false;
+                              //               datapostdetail.likeCount--;
+                              //               Api.isLike(
+                              //                   postid, userid, token, "");
+                              //             }
+                              //           })
+                              //         : setState(() {
+                              //             if (datapostdetail.isLike == false ||
+                              //                 datapostdetail.isLike == null ||
+                              //                 datapostdetail.likeCount < 0) {
+                              //               datapostdetail.isLike = true;
+                              //               datapostdetail.likeCount++;
+                              //               Api.isLike(
+                              //                   postid, userid, token, "FB");
+                              //             } else if (datapostdetail.isLike ==
+                              //                 true) {
+                              //               datapostdetail.isLike = false;
+                              //               datapostdetail.likeCount--;
+                              //               Api.isLike(
+                              //                   postid, userid, token, "FB");
+                              //             }
+                              //           });
                             },
                           ),
                           PostButton(
@@ -598,32 +715,20 @@ class _PostDetailsSCState extends State<PostDetailsSC> {
                               color: MColors.primaryBlue,
                               size: 19.0,
                             ),
-                            width: 0.12,
-                            containerwidth: 3.5,
+                            width: 0.15,
+                            containerwidth: 3.7,
                             label: ' แชร์',
-                            onTap: () {
-                              Clipboard.setData(new ClipboardData(
-                                      text:
-                                          "https://today.moveforwardparty.org/post/$postid"))
-                                  .then((_) {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                  backgroundColor: MColors.primaryColor,
-                                  content: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.check,
-                                        color: MColors.primaryWhite,
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text('คัดลอกลิงค์')
-                                    ],
-                                  ),
-                                  duration: const Duration(milliseconds: 1000),
-                                ));
-                              });
+                            onTap: () async {
+                              final box =
+                                  context.findRenderObject() as RenderBox;
+
+                              await Share.share(
+                                  "https://today.moveforwardparty.org/post/$postid",
+                                  subject:
+                                      "https://today.moveforwardparty.org/post/$postid",
+                                  sharePositionOrigin:
+                                      box.localToGlobal(Offset.zero) &
+                                          box.size);
                             },
                           ),
                         ],

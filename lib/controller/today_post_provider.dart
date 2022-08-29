@@ -83,7 +83,7 @@ class TodayPostController extends GetxController {
         }));
   }
 
-  getsearchpostList(var label, var keyword, var offset,
+  getsearchpostList(var label, var userid, var keyword, var offset,
       {var pagenumber = 0}) async {
     //print('getsearchpostList');
     try {
@@ -93,7 +93,7 @@ class TodayPostController extends GetxController {
         serarchpostList.clear();
       }
 
-      var searchposts = await Api.apisearchlist(label, keyword, offset);
+      var searchposts = await Api.apisearchlist(label,userid, keyword, offset);
       if (searchposts != null) {
         serarchpostList.addAll(searchposts);
         print('length${serarchpostList.length}');

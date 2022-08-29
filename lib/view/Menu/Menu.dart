@@ -10,12 +10,19 @@ import 'package:mfp_app/view/Menu/webview.dart';
 import 'package:mfp_app/view/Profile/profile.dart';
 import 'package:mfp_app/view/Search/search.dart';
 
-class MenuSC extends StatefulWidget {
+class MenuView extends StatefulWidget {
+ bool taptoload1;
+
+   MenuView({Key key, this.taptoload1}) : super(key: key);
+  //  MenuSC({Key, bool taptoload1 ke, bool taptoload1y, this.taptoload1});
+
+
+
   @override
-  _MenuSCState createState() => _MenuSCState();
+  _MenuViewState createState() => _MenuViewState();
 }
 
-class _MenuSCState extends State<MenuSC> {
+class _MenuViewState extends State<MenuView> {
   final TrackingScrollController _trackingScrollController =
       TrackingScrollController();
 
@@ -61,6 +68,17 @@ class _MenuSCState extends State<MenuSC> {
           }));
     });
   }
+   void _goToElement(int index) {
+    _trackingScrollController.animateTo(
+        (100.0 *
+            index), // 100 is the height of container and index of 6th element is 5
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut);
+    setState(() {
+      widget.taptoload1 = false;
+    });
+  }
+
 
   @override
   void dispose() {
@@ -148,6 +166,9 @@ class _MenuSCState extends State<MenuSC> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.taptoload1 == true) {
+      _goToElement(0);
+    }
     return Container(
       color: Colors.white,
       child: SafeArea(

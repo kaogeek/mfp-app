@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+// import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:get/get.dart';
 import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/sizeconfig.dart';
@@ -13,6 +15,7 @@ import 'package:mfp_app/view/Auth/loginemail.dart';
 import 'package:mfp_app/view/Auth/register_ginfo.dart';
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:twitter_login/entity/user.dart';
 import 'package:twitter_login/twitter_login.dart';
 
 class Login extends StatefulWidget {
@@ -32,6 +35,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   String _message = 'Log in/out by pressing the buttons below.';
 
   var profileData;
+  var profileTwitterData;
 
   var msg = "";
 
@@ -44,6 +48,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   bool isfacebookLoggedIn = false;
 
   bool isTwitterLoggedIn = false;
+
+  User twitterSessionData;
 
   String prettyPrint(Map json) {
     JsonEncoder encoder = new JsonEncoder.withIndent('  ');
@@ -150,68 +156,132 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     }
   }
 
-  void initiateFacebookTwitter() async {
-    setState(() {
-      isTwitterLoggedIn = true;
-    });
-    final twitterLogin = TwitterLogin(
-      /// Consumer API keys
-      apiKey: '',
+  Future initiateTwitterLogin() async {
+    try {
+      final twitterLogin = TwitterLogin(
+        apiKey: '81eBPMrAFW20CN0PRnughGs4T',
+        apiSecretKey: '9iYBWJTUA9W048wzjBZ4n0R6wjWojogGhNlC2C9GcismIF6CNS',
+        redirectURI: 'mfp-app://',
+      );
+      final authResult = await twitterLogin.login();
+      var session = authResult.user;
+      twitterSessionData = authResult.user;
+      profileTwitterData = authResult.user;
+      print('''
+           Logged inTw!
+           name: ${session?.name}
+                      id: ${session?.id}
+                 thumbnailImage: ${session?.thumbnailImage}
 
-      /// Consumer API Secret keys
-      apiSecretKey: '',
 
-      /// Registered Callback URLs in TwitterApp
-      /// Android is a deeplink
-      /// iOS is a URLScheme
-      redirectURI: 'https://today.moveforwardparty.org/login',
-    );
+          screenName: ${session?.screenName}
+           authToken: ${authResult?.authToken}
+           authTokenSecret: ${authResult?.authTokenSecret}
+           ''');
+      switch (authResult.status) {
+        case TwitterLoginStatus.loggedIn:
+          setState(() {
+            isTwitterLoggedIn = true;
+          });
+          SharedPreferences sharedPreferences =
+              await SharedPreferences.getInstance();
+          final imgBase64Str = await networkImageToBase64(
+            session.thumbnailImage,
+          );
+          print('imgBase64Str$imgBase64Str');
+           sharedPreferences.setString("twitterOauthToken", '${authResult?.authToken}');
+           sharedPreferences.setString("twitterOauthTokenSecret", '${authResult?.authTokenSecret}');
+           sharedPreferences.setString("twitterUserId", '${session?.id}');
 
-    /// Forces the user to enter their credentials
-    /// to ensure the correct users account is authorized.
-    /// If you want to implement Twitter account switching, set [force_login] to true
-    /// login(forceLogin: true);
-    final authResult = await twitterLogin.login();
-    var session = authResult.user;
-    // print('''
-    //      Logged inTw!
+          var url = Uri.parse("${Api.url}api/login");
+          Map data = {
+            "twitterOauthToken": authResult?.authToken,
+            "twitterOauthTokenSecret": authResult?.authTokenSecret,
+            "twitterUserId": session?.id
+          };
+          final headers = {
+            "mode": "TWITTER",
+            "content-type": "application/json",
+          };
+          var body = jsonEncode(data);
 
-    //      name: ${session.name}
-    //     email: ${session.email}
-    //      authToken: ${authResult.authToken}
+          var res = await http.post(url, headers: headers, body: body);
+          final jsonResponse = jsonDecode(res.body);
+          log(jsonResponse.toString());
 
-    //      ''');
+          if (res.statusCode == 200) {
+            if (jsonResponse['status'] == 1) {
+              // print(jsonResponse['message']);
+              msg = jsonResponse['message'];
+              if (jsonResponse != null) {
+                sharedPreferences.setString(
+                    "token", '${jsonResponse["data"]["token"]}');
+                sharedPreferences.setString(
+                    "myuid", '${jsonResponse["data"]["user"]["id"]}');
+                sharedPreferences.setString(
+                    "imageURL", '${jsonResponse["data"]["user"]["imageURL"]}');
+                sharedPreferences.setString("mode", 'TWITTER');
 
-    switch (authResult.status) {
-      case TwitterLoginStatus.loggedIn:
-        // print('''
-        //  Logged inTw!
+                sharedPreferences?.setBool("isLoggedIn", true);
+                mytoken = jsonResponse["data"]["token"];
+                userid = jsonResponse["data"]["user"]["id"];
+                // print("myuid$userid");
+                if (mytoken != null) {
+                  isTwitterLoggedIn = true;
+                } else if (mytoken == null) {
+                  iserror = true;
+                  isTwitterLoggedIn = false;
+                }
+                Navigator.of(context).pushAndRemoveUntil(
+                    CupertinoPageRoute(
+                        builder: (BuildContext context) => NavScreen()),
+                    (Route<dynamic> route) => false);
+              } else {
+                setState(() {
+                  // _isloading = false;
+                });
+              }
+            }
+          }
+          if (res.statusCode == 400) {
+            if (jsonResponse['status'] == 0) {
+              // print(jsonResponse['message']);
+              Navigator.of(context).pushAndRemoveUntil(
+                  CupertinoPageRoute(
+                      builder: (BuildContext context) => Generalinformation(
+                          email: session.email,
+                          password: "",
+                          img64: imgBase64Str,
+                          firstname: "",
+                          lastname: "",
+                          name: session.screenName,
+                          twitterOauthToken: authResult.authToken,
+                          twitterTokenSecret: authResult.authTokenSecret,
+                          mode: 'TWITTER',
+                          twitterUserId: session?.id,
+                          twitterscreenName: session.screenName)),
+                  (Route<dynamic> route) => false);
+            }
+          }
+          print('====== Login success ======');
+          break;
+        case TwitterLoginStatus.cancelledByUser:
+          setState(() {
+            isTwitterLoggedIn = false;
+          });
+          print('====== Login cancel ======');
+          break;
+        case TwitterLoginStatus.error:
+          setState(() {
+            isTwitterLoggedIn = false;
+          });
+          print('====== Login error ======');
 
-        //  name: ${session.name}
-        // email: ${session.email}
-        //  authToken: ${authResult.authToken}
-
-        //  ''');
-
-        // success
-        // print('====== Login success ======');
-        break;
-      case TwitterLoginStatus.cancelledByUser:
-        setState(() {
-          isTwitterLoggedIn = false;
-        });
-        // cancel
-        // print('====== Login cancel ======');
-        break;
-      case TwitterLoginStatus.error:
-        setState(() {
-          isTwitterLoggedIn = false;
-        });
-        break;
-      // case null:
-      //   // error
-      //   print('====== Login error ======');
-      //   break;
+          break;
+      }
+    } on Exception catch (e) {
+      print('Exception$e');
+      // TODO
     }
   }
 
@@ -451,12 +521,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     Color(0xFF1877F2),
                     Colors.white,
                     isfacebookLoggedIn != true
-                        ? () async {
-                            initiateFacebookLogin();
-                            setState(() {
-                              isfacebookLoggedIn = true;
-                            });
-                          }
+                        ? isTwitterLoggedIn != true
+                            ? () async {
+                                initiateFacebookLogin();
+                                setState(() {
+                                  isfacebookLoggedIn = true;
+                                });
+                              }
+                            : null
                         : null,
                     isfacebookLoggedIn == false
                         ? Container()
@@ -469,8 +541,22 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     'images/twitter.png',
                     Color(0xFF1DA1F3),
                     Colors.white,
-                    isfacebookLoggedIn != true ? () {} : null,
-                    Container(),
+                    // isfacebookLoggedIn != true ? () {} : null,
+                    isfacebookLoggedIn != true
+                        ? isTwitterLoggedIn != true
+                            ? () async {
+                                setState(() {
+                                  isTwitterLoggedIn = true;
+                                });
+                                await initiateTwitterLogin();
+                              }
+                            : null
+                        : null,
+                    isTwitterLoggedIn == false
+                        ? Container()
+                        : CircularProgressIndicator(
+                            color: MColors.primaryColor,
+                          ),
                     //  isTwitterLoggedIn!=true   ?   isfacebookLoggedIn==false  ?()  async {
                     //                             initiateFacebookTwitter();
                     //        setState(() {

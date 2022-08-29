@@ -8,6 +8,8 @@ import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/allWidget.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/model/user_page_model.dart';
+import 'package:mfp_app/utils/app.size.config.dart';
+import 'package:mfp_app/utils/app.style.config.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/utils/router.dart';
 import 'package:mfp_app/view/NavigationBar/nav_screen.dart';
@@ -68,22 +70,19 @@ class _ProfileScState extends State<ProfileSc> {
       mode = await Api.getmodelogin();
 
       userid = await Api.getmyuid();
-      Api.getpageuser(
-              token,
-              userid)
-          .then((responseData) => ({
-                if (responseData.statusCode == 200)
+      Api.getpageuser(token, userid).then((responseData) => ({
+            if (responseData.statusCode == 200)
+              {
+                datapageuser = jsonDecode(responseData.body),
+                print(datapageuser),
+                for (Map i in datapageuser["data"])
                   {
-                    datapageuser = jsonDecode(responseData.body),
-                    print(datapageuser),
-                    for (Map i in datapageuser["data"])
-                      {
-                        setState(() {
-                          userpageList.add(UserPageModel.fromJson(i));
-                        }),
-                      }
+                    setState(() {
+                      userpageList.add(UserPageModel.fromJson(i));
+                    }),
                   }
-              }));
+              }
+          }));
 
       await Api.getuserprofile("${widget.userid}").then((responseData) => ({
             if (responseData.statusCode == 200)
@@ -214,27 +213,27 @@ class _ProfileScState extends State<ProfileSc> {
                     )),
                     SliverToBoxAdapter(
                       child: Container(
-                          height: MediaQuery.of(context).size.height / 10,
+                          height: AppStyle(context).getHeight(percent: 13.5),
                           width: MediaQuery.of(context).size.width,
+                          padding:
+                              AppStyle(context).getEdgeInsetsFromRatio(all: 2),
                           color: Colors.white,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                // mainAxisAlignment: MainAxisAlignment.,
+                                // crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(top: 2.0, left: 25.0),
-                                    child: CircleAvatar(
-                                      radius: 35.0,
-                                      backgroundImage: image == ""
-                                          ? NetworkImage(
-                                              'https://via.placeholder.com/150')
-                                          : NetworkImage(
-                                              'https://today-api.moveforwardparty.org/api$image/image'),
-                                      backgroundColor: Colors.transparent,
-                                    ),
+                                  CircleAvatar(
+                                    radius: 35.0,
+                                    backgroundImage: image == ""
+                                        ? NetworkImage(
+                                            'https://via.placeholder.com/150')
+                                        : NetworkImage(
+                                            'https://today-api.moveforwardparty.org/api$image/image'),
+                                    backgroundColor: Colors.transparent,
                                   ),
                                   const SizedBox(
                                     width: 15.0,
@@ -291,9 +290,9 @@ class _ProfileScState extends State<ProfileSc> {
                     SliverToBoxAdapter(
                       child: Center(
                         child: Container(
-                          height: 150,
+                          height: AppStyle(context).getHeight(percent: 22.0),
                           width: MediaQuery.of(context).size.width,
-                          color: Colors.white,
+                          // color: Colors.yellow,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,178 +312,207 @@ class _ProfileScState extends State<ProfileSc> {
                                   ),
                                 ),
                               ),
-                            userpageList.length==0?Container(
-                              margin: EdgeInsets.all(30),
-                              child: Center(child: Text('ไม่มีเพจที่ดูแล',style: TextStyle(fontSize: 20,fontFamily: AppTheme.FontAnakotmaiMedium),)),) :  Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    children: [],
-                                  ),
-                                  // Container(
-                                  //   child: Column(
-                                  //     // mainAxisAlignment:
-                                  //     //     MainAxisAlignment.center,
-                                  //     // crossAxisAlignment:
-                                  //     //     CrossAxisAlignment.center,
-                                  //     children: [
-                                  //       Padding(
-                                  //         padding: const EdgeInsets.only(
-                                  //             left: 10, right: 5),
-                                  //         child: Stack(
-                                  //           children: [
-                                  //             FDottedLine(
-                                  //               color: Colors.grey[300],
-                                  //               height: 70.0,
-                                  //               width: 70.0,
-                                  //               strokeWidth: 2.0,
-                                  //               dottedLength: 8.0,
-                                  //               space: 2.0,
+                              userpageList.length != 0
+                                  ? Container(
+                                      margin: EdgeInsets.all(30),
+                                      child: Center(
+                                          child: Text(
+                                        'ไม่มีเพจที่ดูแล',
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontFamily:
+                                                AppTheme.FontAnakotmaiMedium),
+                                      )),
+                                    )
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          children: [],
+                                        ),
+                                        // Container(
+                                        //   child: Column(
+                                        //     // mainAxisAlignment:
+                                        //     //     MainAxisAlignment.center,
+                                        //     // crossAxisAlignment:
+                                        //     //     CrossAxisAlignment.center,
+                                        //     children: [
+                                        //       Padding(
+                                        //         padding: const EdgeInsets.only(
+                                        //             left: 10, right: 5),
+                                        //         child: Stack(
+                                        //           children: [
+                                        //             FDottedLine(
+                                        //               color: Colors.grey[300],
+                                        //               height: 70.0,
+                                        //               width: 70.0,
+                                        //               strokeWidth: 2.0,
+                                        //               dottedLength: 8.0,
+                                        //               space: 2.0,
 
-                                  //               /// Set corner
-                                  //               corner:
-                                  //                   FDottedLineCorner.all(50),
-                                  //               child: Container(
-                                  //                   width: 75,
-                                  //                   height: 75,
-                                  //                   decoration: BoxDecoration(
-                                  //                       shape: BoxShape.circle),
-                                  //                   child: Icon(
-                                  //                     Icons.add,
-                                  //                     size: 30,
-                                  //                     color: Colors.grey[400],
-                                  //                   )),
-                                  //             ),
-                                  //           ],
-                                  //         ),
-                                  //       ),
-                                  //       Padding(
-                                  //         padding: const EdgeInsets.all(10.0),
-                                  //         child: Text(
-                                  //           'สร้างเพจ',
-                                  //           style: TextStyle(
-                                  //             color: Colors.black54,
-                                  //             fontSize: AppTheme.SmallTextSize,
-                                  //             fontFamily:
-                                  //                 AppTheme.FontAnakotmaiLight,
-                                  //           ),
-                                  //         ),
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 2),
-                                    child: Container(
-                                      height: 120,
-                                      width:MediaQuery.of(context).size.width / 1,
-                                      child: ListView.builder(
-                                          physics:
-                                              AlwaysScrollableScrollPhysics(),
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: userpageList.length,
-                                          itemBuilder: (
-                                            BuildContext context,
-                                            int index,
-                                          ) {
-                                            final nDataList = userpageList[index];
-                                            return GestureDetector(
-                                              onTap: () {
-                                                Navigate.pushPage(
-                                                    context,
-                                                    Profliess(
-                                                      id: nDataList.page.id,
-                                                    ));
-                                              },
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    width: 75,
-                                                    height: 75,
-                                                    decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color: Colors.white),
-                                                    child: ClipOval(
-                                                      child: nDataList.page
-                                                                      .imageUrl ==
-                                                                  null ||
-                                                              nDataList.page
-                                                                      .imageUrl ==
-                                                                  ""
-                                                          ? new Image.network(
-                                                              "https://www.pngfind.com/pngs/m/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.png",
-                                                              width: 75,
-                                                              height: 75,
-                                                              fit: BoxFit.cover,
-                                                            )
-                                                          : Image.network(
-                                                              "https://today-api.moveforwardparty.org/api${nDataList.page.imageUrl}/image",
-                                                              width: 75,
-                                                              height: 75,
-                                                              fit: BoxFit.cover,
-                                                              loadingBuilder:
-                                                                  (BuildContext
-                                                                          context,
-                                                                      Widget
-                                                                          child,
-                                                                      ImageChunkEvent
-                                                                          loadingProgress) {
-                                                                if (loadingProgress ==
-                                                                    null)
-                                                                  return child;
-                                                                return Center(
-                                                                  child:
-                                                                      CircularProgressIndicator(
-                                                                    color: MColors
-                                                                        .primaryColor,
-                                                                    value: loadingProgress
-                                                                                .expectedTotalBytes !=
-                                                                            null
-                                                                        ? loadingProgress
-                                                                                .cumulativeBytesLoaded /
-                                                                            loadingProgress
-                                                                                .expectedTotalBytes
-                                                                        : null,
+                                        //               /// Set corner
+                                        //               corner:
+                                        //                   FDottedLineCorner.all(50),
+                                        //               child: Container(
+                                        //                   width: 75,
+                                        //                   height: 75,
+                                        //                   decoration: BoxDecoration(
+                                        //                       shape: BoxShape.circle),
+                                        //                   child: Icon(
+                                        //                     Icons.add,
+                                        //                     size: 30,
+                                        //                     color: Colors.grey[400],
+                                        //                   )),
+                                        //             ),
+                                        //           ],
+                                        //         ),
+                                        //       ),
+                                        //       Padding(
+                                        //         padding: const EdgeInsets.all(10.0),
+                                        //         child: Text(
+                                        //           'สร้างเพจ',
+                                        //           style: TextStyle(
+                                        //             color: Colors.black54,
+                                        //             fontSize: AppTheme.SmallTextSize,
+                                        //             fontFamily:
+                                        //                 AppTheme.FontAnakotmaiLight,
+                                        //           ),
+                                        //         ),
+                                        //       ),
+                                        //     ],
+                                        //   ),
+                                        // ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 2),
+                                          child: Container(
+                                            height: AppStyle(context)
+                                                .getHeight(percent: 15.7),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                1,
+                                            // color: Colors.black,
+                                            child: ListView.builder(
+                                                physics:
+                                                    AlwaysScrollableScrollPhysics(),
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: userpageList.length,
+                                                itemBuilder: (
+                                                  BuildContext context,
+                                                  int index,
+                                                ) {
+                                                  final nDataList =
+                                                      userpageList[index];
+                                                  return GestureDetector(
+                                                    onTap: () {
+                                                      Navigate.pushPage(
+                                                          context,
+                                                          Profliess(
+                                                            id: nDataList
+                                                                .page.id,
+                                                          ));
+                                                    },
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Container(
+                                                          width: 75,
+                                                          height: 75,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  color: Colors
+                                                                      .white),
+                                                          child: ClipOval(
+                                                            child: nDataList.page
+                                                                            .imageUrl ==
+                                                                        null ||
+                                                                    nDataList
+                                                                            .page
+                                                                            .imageUrl ==
+                                                                        ""
+                                                                ? new Image
+                                                                    .network(
+                                                                    "https://www.pngfind.com/pngs/m/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.png",
+                                                                    width: 75,
+                                                                    height: 75,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  )
+                                                                : Image.network(
+                                                                    "https://today-api.moveforwardparty.org/api${nDataList.page.imageUrl}/image",
+                                                                    width: 75,
+                                                                    height: 75,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    loadingBuilder: (BuildContext
+                                                                            context,
+                                                                        Widget
+                                                                            child,
+                                                                        ImageChunkEvent
+                                                                            loadingProgress) {
+                                                                      if (loadingProgress ==
+                                                                          null)
+                                                                        return child;
+                                                                      return Center(
+                                                                        child:
+                                                                            CircularProgressIndicator(
+                                                                          color:
+                                                                              MColors.primaryColor,
+                                                                          value: loadingProgress.expectedTotalBytes != null
+                                                                              ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                                                                              : null,
+                                                                        ),
+                                                                      );
+                                                                    },
                                                                   ),
-                                                                );
-                                                              },
-                                                            ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.all(
-                                                        10.0),
-                                                    child: Container(
-                                                      alignment: Alignment.center,
-                                                      width: 90,
-                                                      child: Text(
-                                                        nDataList.page.name,
-                                                        maxLines: 1,
-                                                        style: TextStyle(
-                                                          color: Colors.black54,
-                                                          fontSize: AppTheme
-                                                              .SmallTextSize,
-                                                          fontFamily: AppTheme
-                                                              .FontAnakotmaiLight,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
+                                                          ),
                                                         ),
-                                                      ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(10.0),
+                                                          child: Container(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            width: 90,
+                                                            child: Text(
+                                                              nDataList
+                                                                  .page.name,
+                                                              maxLines: 1,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .black54,
+                                                                fontSize: AppTheme
+                                                                    .SmallTextSize,
+                                                                fontFamily: AppTheme
+                                                                    .FontAnakotmaiLight,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          }),
+                                                  );
+                                                }),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
-                              ),
                             ],
                           ),
                         ),
@@ -497,13 +525,8 @@ class _ProfileScState extends State<ProfileSc> {
 
                     SliverToBoxAdapter(
                       child: GestureDetector(
-                         onTap: () => showAlertDialog(
-                                    context,
-                                    "พรรคก้าวไกล",
-                                    "ระบบอยู่ในระหว่างการพัฒนา",
-                                    "",
-                                    1.5,
-                                    5.5),
+                        onTap: () => showAlertDialog(context, "พรรคก้าวไกล",
+                            "ระบบอยู่ในระหว่างการพัฒนา", "", 1.5, 5.5),
                         child: Container(
                           height: 60.0,
                           color: Colors.white,
@@ -561,13 +584,8 @@ class _ProfileScState extends State<ProfileSc> {
                     )),
                     SliverToBoxAdapter(
                       child: GestureDetector(
-                         onTap: () => showAlertDialog(
-                                    context,
-                                    "พรรคก้าวไกล",
-                                    "ระบบอยู่ในระหว่างการพัฒนา",
-                                    "",
-                                    1.5,
-                                    5.5),
+                        onTap: () => showAlertDialog(context, "พรรคก้าวไกล",
+                            "ระบบอยู่ในระหว่างการพัฒนา", "", 1.5, 5.5),
                         child: Container(
                           height: 60.0,
                           color: Colors.white,
@@ -607,13 +625,8 @@ class _ProfileScState extends State<ProfileSc> {
                     )),
                     SliverToBoxAdapter(
                       child: GestureDetector(
-                         onTap: () => showAlertDialog(
-                                    context,
-                                    "พรรคก้าวไกล",
-                                    "ระบบอยู่ในระหว่างการพัฒนา",
-                                    "",
-                                    1.5,
-                                    5.5),
+                        onTap: () => showAlertDialog(context, "พรรคก้าวไกล",
+                            "ระบบอยู่ในระหว่างการพัฒนา", "", 1.5, 5.5),
                         child: Container(
                           height: 60.0,
                           color: Colors.white,
@@ -653,13 +666,8 @@ class _ProfileScState extends State<ProfileSc> {
                     )),
                     SliverToBoxAdapter(
                       child: GestureDetector(
-                         onTap: () => showAlertDialog(
-                                    context,
-                                    "พรรคก้าวไกล",
-                                    "ระบบอยู่ในระหว่างการพัฒนา",
-                                    "",
-                                    1.5,
-                                    5.5),
+                        onTap: () => showAlertDialog(context, "พรรคก้าวไกล",
+                            "ระบบอยู่ในระหว่างการพัฒนา", "", 1.5, 5.5),
                         child: Container(
                           height: 60.0,
                           color: Colors.white,
@@ -699,13 +707,8 @@ class _ProfileScState extends State<ProfileSc> {
                     )),
                     SliverToBoxAdapter(
                       child: GestureDetector(
-                        onTap: () => showAlertDialog(
-                                    context,
-                                    "พรรคก้าวไกล",
-                                    "ระบบอยู่ในระหว่างการพัฒนา",
-                                    "",
-                                    1.5,
-                                    5.5),
+                        onTap: () => showAlertDialog(context, "พรรคก้าวไกล",
+                            "ระบบอยู่ในระหว่างการพัฒนา", "", 1.5, 5.5),
                         child: Container(
                           height: 60.0,
                           color: Colors.white,

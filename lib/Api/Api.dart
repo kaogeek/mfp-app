@@ -198,10 +198,10 @@ class Api {
   static Future getstory(String id,String userid) async {
     var storytestreplaceAll, storytest;
     try {
-      var url = Uri.parse("${Api.url}api/post/search");
+      var url = Uri.parse("${Api.url}api/post/search?isHideStory=false");
       final headers = {
         "content-type": "application/json",
-        "userid":userid
+        "userid":userid==null?"":userid
       };
       Map data = {
         "limit": 10,
@@ -488,7 +488,7 @@ class Api {
   }
 
   static Future apisearchlist(
-      String keyword, String hashtag, int offset) async {
+      String keyword,String userid, String hashtag, int offset) async {
     List<PostSearchModel> searchpostList = [];
 
     // //('getHashtagList');
@@ -496,6 +496,7 @@ class Api {
     final headers = {
       // "mode": "EMAIL",
       "content-type": "application/json",
+      "userid":userid
     };
     Map data = {
       "keyword": [keyword],
@@ -669,6 +670,7 @@ class Api {
   static Future<Http.Response> islike(
       String postid, String uid, String token, String mode) async {
     var url = "${Api.url}api/post/$postid/like";
+    print('url$url');
     final headers = {
       "userid": uid,
       "mode": mode,
@@ -685,13 +687,13 @@ class Api {
       //  "size":193148}
     };
     var body = jsonEncode(data);
+    print("headers$headers");
     final responseData = await Http.post(
       Uri.parse(url),
       headers: headers,
       body: body,
     );
-    print(responseData);
-  
+  print(jsonDecode(responseData.body));
     return responseData;
   }
 
@@ -938,7 +940,9 @@ class Api {
   static Future deletecomment(String postid, String mytoken, String commentid,
       String myuid, String mode) async {
     //print('sendcomment');
-
+    if(mode=="TWITTER"){
+      mode="TW";
+    }
     var url = "${Api.url}api/post/$postid/comment/$commentid";
     final headers = {
       "userid": myuid,

@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:mfp_app/constants/colors.dart';
+import 'package:mfp_app/utils/app.style.config.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/view/Auth/register-pass.dart';
 import 'package:page_transition/page_transition.dart';
@@ -45,12 +47,12 @@ class _RegisterState extends State<Register> {
         hintText: 'Email',
         hintStyle:
             TextStyle(fontSize: 14, fontFamily: AppTheme.FontAnakotmaiLight),
-        contentPadding: EdgeInsets.all(13),
+        contentPadding: AppStyle(context).getEdgeInsetsFromRatio(all: 2.5),
         border: InputBorder.none,
         suffixIcon: InkWell(
             // onTap: _togglePasswordView,
             child: Padding(
-                padding: const EdgeInsets.only(top: 13),
+                padding: AppStyle(context).getEdgeInsetsFromRatio(all: 1),
                 child: isvis == false
                     ? null
                     : Icon(
