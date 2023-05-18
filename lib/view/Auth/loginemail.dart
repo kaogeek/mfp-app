@@ -283,14 +283,13 @@ class _LoginemailState extends State<Loginemail> {
                                       Expanded(
                                         child: ElevatedButton(
                                           style: TextButton.styleFrom(
-                                            padding: EdgeInsets.only(
+                                            foregroundColor: MColors.primaryColor, padding: EdgeInsets.only(
                                                 top: 15, bottom: 15),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(30.0),
                                                 side: BorderSide(
                                                     color: Colors.red)),
-                                            primary: MColors.primaryColor,
                                           ),
                                           onPressed: null,
                                           child: Center(
@@ -368,26 +367,20 @@ class _LoginemailState extends State<Loginemail> {
                               child: Row(
                                 children: <Widget>[
                                   Expanded(
-                                    child: RaisedButton(
-                                      padding:
-                                          EdgeInsets.only(top: 15, bottom: 15),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
-                                          side: BorderSide(
-                                              color: MColors.primaryColor)),
-                                      child: Text(
-                                        'เข้าสู่ระบบ',
-                                        style: TextStyle(
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: MColors.primaryColor.withOpacity(0.5),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(30.0),
+                                          side: BorderSide(color: MColors.primaryColor),
+                                        ),
+                                        textStyle: TextStyle(
                                           fontSize: 20,
-                                          fontFamily:
-                                              AppTheme.FontAnakotmaiLight,
+                                          fontFamily: AppTheme.FontAnakotmaiLight,
                                         ),
                                       ),
-                                      textColor: Colors.white,
-                                      color:
-                                          MColors.primaryColor.withOpacity(0.5),
                                       onPressed: () {},
+                                      child: Text('เข้าสู่ระบบ'),
                                     ),
                                   )
                                 ],

@@ -25,6 +25,7 @@ import 'package:mfp_app/view/Today/show_full_image.dart';
 import 'package:mfp_app/view/Today/story_page.dart';
 import 'package:mfp_app/view/Today/webview_emergency.dart';
 
+
 class Profliess extends StatefulWidget {
   final String id;
   const Profliess({
@@ -356,8 +357,7 @@ class _ProfliessState extends State<Profliess> {
                       child: Column(
                         children: <Widget>[
                           Stack(
-                            overflow: Overflow.visible,
-                            alignment: Alignment.center,
+                            clipBehavior: Clip.none, alignment: Alignment.center,
                             children: <Widget>[
                               pagecoverURL == null
                                   ? Container()
@@ -604,7 +604,7 @@ class _ProfliessState extends State<Profliess> {
                               return SizedBox(
                                 height: MediaQuery.of(context).size.height / 4,
                                 child: Scrollbar(
-                                  isAlwaysShown: true,
+                                  thumbVisibility: true,
                                   controller: _scrollHolController,
                                   child: new ListView.builder(
                                       controller: _scrollHolController,
@@ -722,7 +722,7 @@ class _ProfliessState extends State<Profliess> {
                                 return Builder(
                                   builder: (BuildContext context) {
                                     return Scrollbar(
-                                      isAlwaysShown: true,
+                                      thumbVisibility: true,
                                       child: ListView.builder(
                                           physics:
                                               NeverScrollableScrollPhysics(),

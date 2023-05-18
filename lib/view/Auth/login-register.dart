@@ -99,11 +99,21 @@ class _LoginregisterState extends State<Loginregister>
       child: Row(
         children: <Widget>[
           Expanded(
-            child: RaisedButton(
-              padding: EdgeInsets.only(top: 15, bottom: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: colors,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
               ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => widget),
+                );
+                //print("กด");
+                //("กด");
+              },
               child: Text(
                 text,
                 style: TextStyle(
@@ -113,17 +123,8 @@ class _LoginregisterState extends State<Loginregister>
                   color: MColors.primaryWhite,
                 ),
               ),
-              textColor: Colors.white,
-              color: colors,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => widget),
-                );
-                //print("กด");
-                //("กด");
-              },
             ),
+
           )
         ],
       ),

@@ -1018,21 +1018,18 @@ class _GeneralinformationState extends State<Generalinformation> {
                             child: Row(
                               children: <Widget>[
                                 Expanded(
-                                  child: RaisedButton(
-                                      padding:
-                                          EdgeInsets.only(top: 15, bottom: 15),
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: MColors.primaryColor.withOpacity(0.5),
                                       shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
-                                          side: BorderSide(color: Colors.red)),
-                                      child: Text(
-                                        'ถัดไป',
-                                        style: TextStyle(fontSize: 20),
+                                        borderRadius: BorderRadius.circular(30.0),
+                                        side: BorderSide(color: Colors.red),
                                       ),
-                                      textColor: Colors.white,
-                                      color:
-                                          MColors.primaryColor.withOpacity(0.5),
-                                      onPressed: () {}),
+                                      textStyle: TextStyle(fontSize: 20),
+                                    ),
+                                    child: Text('ถัดไป'),
+                                  ),
                                 )
                               ],
                             ),
@@ -1043,14 +1040,14 @@ class _GeneralinformationState extends State<Generalinformation> {
                                 child: Row(
                                   children: <Widget>[
                                     Expanded(
-                                      child: RaisedButton(
-                                        padding: EdgeInsets.only(
-                                            top: 15, bottom: 15),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                            side:
-                                                BorderSide(color: Colors.red)),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.only(top: 15, bottom: 15),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(30.0),
+                                            side: BorderSide(color: Colors.red),
+                                          ),
+                                        ),
                                         child: CircularProgressIndicator(
                                           color: MColors.primaryColor,
                                         ),
@@ -1065,20 +1062,19 @@ class _GeneralinformationState extends State<Generalinformation> {
                                 child: Row(
                                   children: <Widget>[
                                     Expanded(
-                                      child: RaisedButton(
-                                        padding: EdgeInsets.only(
-                                            top: 15, bottom: 15),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                            side:
-                                                BorderSide(color: Colors.red)),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: MColors.primaryColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(30.0),
+                                            side: BorderSide(color: Colors.red),
+                                          ),
+                                          textStyle: TextStyle(fontSize: 20),
+                                        ),
                                         child: Text(
                                           'ถัดไป',
                                           style: TextStyle(fontSize: 20),
                                         ),
-                                        textColor: Colors.white,
-                                        color: MColors.primaryColor,
                                         onPressed: ischeckuniqueid == false
                                             ? null
                                             : () async {

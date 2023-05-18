@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:full_screen_image/full_screen_image.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mfp_app/constants/colors.dart';
@@ -276,13 +277,13 @@ Widget topImagePagesearch(String image) {
   );
 }
 
-Widget getItems(img_path, img_path2, count, BuildContext context) {
+Widget getItems(imgPath, imgPath2, count, BuildContext context) {
   return Container(
     width: double.infinity,
     child: Row(
       children: <Widget>[
         Image.network(
-          img_path,
+          imgPath,
           errorBuilder:
               (BuildContext context, Object exception, StackTrace stackTrace) {
             return Container(
@@ -297,12 +298,11 @@ Widget getItems(img_path, img_path2, count, BuildContext context) {
         ),
         (count > 0)
             ? Stack(
-                overflow: Overflow.visible,
                 children: <Widget>[
                   ClipRRect(
-                    child: img_path2 != null
+                    child: imgPath2 != null
                         ? Image.network(
-                            img_path2,
+                            imgPath2,
                             errorBuilder: (BuildContext context,
                                 Object exception, StackTrace stackTrace) {
                               return Container(
@@ -340,9 +340,9 @@ Widget getItems(img_path, img_path2, count, BuildContext context) {
                 ],
               )
             : ClipRRect(
-                child: img_path2 != null
+                child: imgPath2 != null
                     ? Image.network(
-                        img_path2,
+                        imgPath2,
                         errorBuilder: (BuildContext context, Object exception,
                             StackTrace stackTrace) {
                           return Container(
@@ -449,7 +449,6 @@ Widget primaryAppBar(
   Widget widgetprofile,
 ) {
   return SliverAppBar(
-    brightness: Brightness.light,
     backgroundColor: Colors.white,
     title: InkWell(
       onTap: null,
@@ -524,14 +523,13 @@ Widget primaryAppBar(
                 ),
               ),
             )
-    ],
+    ], systemOverlayStyle: SystemUiOverlayStyle.dark,
   );
 }
 
 Widget AppBardetail(
     context, String lable, String authorposttext, IconButton icon) {
   return SliverAppBar(
-      brightness: Brightness.light,
       backgroundColor: Colors.white,
       titleSpacing: 0.0,
       title: Text('$lable $authorposttext',
@@ -550,12 +548,11 @@ Widget AppBardetail(
       // ),
       centerTitle: false,
       floating: true,
-      leading: icon);
+      leading: icon, systemOverlayStyle: SystemUiOverlayStyle.dark);
 }
 
 Widget primaryAppBarProfile(context, var pageprofileimage, var title) {
   return SliverAppBar(
-    brightness: Brightness.light,
     backgroundColor: Colors.white,
     titleSpacing: 0.0,
     title: Row(
@@ -606,7 +603,7 @@ Widget primaryAppBarProfile(context, var pageprofileimage, var title) {
     ),
     automaticallyImplyLeading: false,
     centerTitle: false,
-    floating: true,
+    floating: true, systemOverlayStyle: SystemUiOverlayStyle.dark,
   );
 }
 
@@ -636,17 +633,14 @@ Widget nonet(BuildContext context) {
           ),
           Container(
             width: MediaQuery.of(context).size.width * 0.4,
-            child: RaisedButton(
-              padding: EdgeInsets.only(top: 15, bottom: 15),
-              shape: RoundedRectangleBorder(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: MColors.primaryColor,
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
-                  side: BorderSide(color: Colors.red)),
-              child: Text(
-                'ลองอีกครั้ง',
-                style: TextStyle(fontSize: 18),
+                  side: BorderSide(color: Colors.red),
+                ),
               ),
-              textColor: Colors.white,
-              color: MColors.primaryColor,
               onPressed: () async {
                 await checkInternetConnectivity().then((value) {
                   value == true
@@ -665,8 +659,7 @@ Widget nonet(BuildContext context) {
                               ),
                               Text(
                                 'ลองอีกครั้ง',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.black),
+                                style: TextStyle(fontSize: 16, color: Colors.black),
                               ),
                             ],
                           ),
@@ -675,6 +668,10 @@ Widget nonet(BuildContext context) {
                         ));
                 });
               },
+              child: Text(
+                'ลองอีกครั้ง',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
           ),
           // Align(

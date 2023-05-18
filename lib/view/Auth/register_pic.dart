@@ -206,20 +206,18 @@ class _PicProfileState extends State<PicProfile> {
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      child: RaisedButton(
-                        padding: EdgeInsets.only(top: 15, bottom: 15),
-                        shape: RoundedRectangleBorder(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: MColors.primaryColor,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
-                            side: BorderSide(color: Colors.red)),
-                        child: Text(
-                          'ถ่ายภาพ',
-                          style: TextStyle(
+                            side: BorderSide(color: Colors.red),
+                          ),
+                          textStyle: TextStyle(
                             fontSize: 20,
                             fontFamily: AppTheme.FontAnakotmaiLight,
                           ),
                         ),
-                        textColor: Colors.white,
-                        color: MColors.primaryColor,
                         onPressed: () {
                           _imgFromCamera();
                           // Navigator.of(context).pop();
@@ -229,6 +227,7 @@ class _PicProfileState extends State<PicProfile> {
                           // );
                           //('กด');
                         },
+                        child: Text('ถ่ายภาพ'),
                       ),
                     )
                   ],
@@ -244,20 +243,18 @@ class _PicProfileState extends State<PicProfile> {
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      child: RaisedButton(
-                        padding: EdgeInsets.only(top: 15, bottom: 15),
-                        shape: RoundedRectangleBorder(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: MColors.primaryColor,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
-                            side: BorderSide(color: Colors.red)),
-                        child: Text(
-                          'เลือกรูปภาพ',
-                          style: TextStyle(
+                            side: BorderSide(color: Colors.red),
+                          ),
+                          textStyle: TextStyle(
                             fontSize: 20,
                             fontFamily: AppTheme.FontAnakotmaiLight,
                           ),
                         ),
-                        textColor: Colors.white,
-                        color: MColors.primaryColor,
                         onPressed: () {
                           getImage();
                           // Navigator.push(
@@ -266,6 +263,7 @@ class _PicProfileState extends State<PicProfile> {
                           // );
                           //('กด');
                         },
+                        child: Text('เลือกรูปภาพ'),
                       ),
                     )
                   ],
@@ -281,11 +279,14 @@ class _PicProfileState extends State<PicProfile> {
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      child: RaisedButton(
-                        padding: EdgeInsets.only(top: 15, bottom: 15),
-                        shape: RoundedRectangleBorder(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white, padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: MColors.primaryColor.withOpacity(0.1),
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
-                            side: BorderSide(color: Colors.red)),
+                            side: BorderSide(color: Colors.red),
+                          ),
+                        ),
                         child: Text(
                           'ถัดไป',
                           style: TextStyle(
@@ -293,8 +294,6 @@ class _PicProfileState extends State<PicProfile> {
                             fontFamily: AppTheme.FontAnakotmaiLight,
                           ),
                         ),
-                        textColor: Colors.white,
-                        color: MColors.primaryColor.withOpacity(0.1),
                         onPressed: () {
                           if (_image == null) {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -317,20 +316,19 @@ class _PicProfileState extends State<PicProfile> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Generalinformation(
-                                        email: widget.email,
-                                        password: widget.password,
-                                        img64: img64,
-                                        fileimg: _image,
-                                        mode: "EMAIL",
-                                        isfb: true,
-                                      )),
+                                builder: (context) => Generalinformation(
+                                  email: widget.email,
+                                  password: widget.password,
+                                  img64: img64,
+                                  fileimg: _image,
+                                  mode: "EMAIL",
+                                  isfb: true,
+                                ),
+                              ),
                             );
                           }
-
-                          //('กด');
                         },
-                      ),
+                      )
                     )
                   ],
                 ),

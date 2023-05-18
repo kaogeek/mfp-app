@@ -48,7 +48,6 @@ class TodaySc extends StatefulWidget {
 }
 
 class _TodayScState extends State<TodaySc> {
-  
   ScrollController _scrollController = ScrollController();
   int _currentMax = 0;
   final EmergencyController emergencyController =
@@ -364,7 +363,7 @@ class _TodayScState extends State<TodaySc> {
                     height: MediaQuery.of(context).size.height / 16.0,
                     color: MColors.primaryGrey,
                     child: Center(
-                      child: titletimeline("ไทม์ไลน์",context),
+                      child: titletimeline("ไทม์ไลน์", context),
                     ),
                   ),
                 ),
@@ -457,7 +456,7 @@ class _TodayScState extends State<TodaySc> {
   Widget postlist(
       String posttitle,
       String subtitle,
-      pageName_displayName,
+      pagenameDisplayname,
       DateTime dateTime,
       List<Gallery> gallery,
       int likeCount,
@@ -473,12 +472,11 @@ class _TodayScState extends State<TodaySc> {
       String type,
       story,
       datauser) {
-        final appStyle = AppStyle(context);
-        bool isstory =true;
-        if(pageName_displayName==null){
-          isstory=false;
-
-        }
+    final appStyle = AppStyle(context);
+    bool isstory = true;
+    if (pagenameDisplayname == null) {
+      isstory = false;
+    }
     return Card(
       child: Padding(
         padding: const EdgeInsets.only(left: 2, right: 2, bottom: 2, top: 2),
@@ -510,9 +508,9 @@ class _TodayScState extends State<TodaySc> {
                             builder: (BuildContext context) {
                               return PostDetailsSC(
                                 postid: postid,
-                                pagename: pageName_displayName == null
-                                ? nDataList1.user.displayName.toString()
-                                : nDataList1.page.name.toString(),
+                                pagename: pagenameDisplayname == null
+                                    ? nDataList1.user.displayName.toString()
+                                    : nDataList1.page.name.toString(),
                                 onfocus: false,
                                 story: story,
                               );
@@ -523,12 +521,13 @@ class _TodayScState extends State<TodaySc> {
                       child: texttitlepost(posttitle, context)),
                 ),
                 Padding(
-                  padding: appStyle.getEdgeInsetsFromRatio(left: 3,top: 1),
+                  padding: appStyle.getEdgeInsetsFromRatio(left: 3, top: 1),
                   child: subtexttitlepost(subtitle, context),
                 ),
                 story != null
                     ? Padding(
-                        padding: appStyle.getEdgeInsetsFromRatio(left: 3,top: 1.5,bottom: 1),
+                        padding: appStyle.getEdgeInsetsFromRatio(
+                            left: 3, top: 1.5, bottom: 1),
                         child: InkWell(
                             onTap: () async {
                               Navigate.pushPage(
@@ -550,7 +549,7 @@ class _TodayScState extends State<TodaySc> {
                                     mode: mode,
                                   ));
                             },
-                            child: textreadstory('อ่านสตอรี่...',context)),
+                            child: textreadstory('อ่านสตอรี่...', context)),
                       )
                     : Container(),
                 Row(
@@ -560,9 +559,9 @@ class _TodayScState extends State<TodaySc> {
                     // fixtextauthor(),
                     Flexible(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 10.0,top: 3),
+                        padding: const EdgeInsets.only(left: 10.0, top: 3),
                         child: authorpost(
-                            pageName_displayName == null
+                            pagenameDisplayname == null
                                 ? nDataList1.user.displayName.toString()
                                 : nDataList1.page.name.toString(),
                             context,
@@ -574,7 +573,7 @@ class _TodayScState extends State<TodaySc> {
                     // SizedBox(
                     //   width: 2,
                     // ),
-                    texttimetimestamp(dateTime,context),
+                    texttimetimestamp(dateTime, context),
                   ],
                 ),
                 // Padding(
@@ -689,9 +688,10 @@ class _TodayScState extends State<TodaySc> {
                                       postid: postid,
                                       onfocus: true,
                                       story: story,
-                                      pagename: pageName_displayName == null
-                                ? nDataList1.user.displayName.toString()
-                                : nDataList1.page.name.toString(),
+                                      pagename: pagenameDisplayname == null
+                                          ? nDataList1.user.displayName
+                                              .toString()
+                                          : nDataList1.page.name.toString(),
                                     );
                                   },
                                 ),
@@ -858,11 +858,13 @@ class _TodayScState extends State<TodaySc> {
                             margin: EdgeInsets.all(10),
                             height: 50.0,
                             width: 95,
-                            child: RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(25)),
-                                side: BorderSide(color: MColors.primaryColor),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(25)),
+                                  side: BorderSide(color: MColors.primaryColor),
+                                ), backgroundColor: Colors.white,
                               ),
                               onPressed: () async {
                                 var jsonResponse;
@@ -871,11 +873,9 @@ class _TodayScState extends State<TodaySc> {
                                         context, Loginregister())
                                     : await Api.sendfollowPage(
                                             data.id, token, userid)
-                                        .then((value) => ({
+                                        .then((value) => {
                                               jsonResponse =
                                                   jsonDecode(value.body),
-                                              // print(
-                                              //     'message${jsonResponse['message']}'),
                                               if (value.statusCode == 200)
                                                 {
                                                   if (jsonResponse['message'] ==
@@ -884,7 +884,7 @@ class _TodayScState extends State<TodaySc> {
                                                       ScaffoldMessenger.of(
                                                               context)
                                                           .showSnackBar(
-                                                              new SnackBar(
+                                                              SnackBar(
                                                         content: Text(
                                                             jsonResponse[
                                                                 'message']),
@@ -909,7 +909,7 @@ class _TodayScState extends State<TodaySc> {
                                                       ScaffoldMessenger.of(
                                                               context)
                                                           .showSnackBar(
-                                                              new SnackBar(
+                                                              SnackBar(
                                                         content: Text(
                                                             jsonResponse[
                                                                 'message']),
@@ -928,13 +928,13 @@ class _TodayScState extends State<TodaySc> {
                                                       )),
                                                     }
                                                 }
-                                            }));
+                                            });
                               },
-                              color: Colors.white,
-                              child: Text("ติดตาม",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: MColors.primaryColor)),
+                              child: Text(
+                                "ติดตาม",
+                                style: TextStyle(
+                                    fontSize: 15, color: MColors.primaryColor),
+                              ),
                             ),
                           ),
                         ),
@@ -961,7 +961,7 @@ class _TodayScState extends State<TodaySc> {
   }
 
   Widget carouselslider(List<EmergencyEventsContent> emc, context, userimage) {
-        final appStyle =AppStyle(context);
+    final appStyle = AppStyle(context);
 
     return CarouselSlider(
       carouselController: _controller,

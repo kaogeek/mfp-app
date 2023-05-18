@@ -310,18 +310,18 @@ class _RegisterpasswordState extends State<Registerpassword> {
                         child: Row(
                           children: <Widget>[
                             Expanded(
-                              child: RaisedButton(
-                                  padding: EdgeInsets.only(top: 15, bottom: 15),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: MColors.primaryColor.withOpacity(0.5),
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      side: BorderSide(color: Colors.red)),
-                                  child: Text(
-                                    'ถัดไป',
-                                    style: TextStyle(fontSize: 20),
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    side: BorderSide(color: Colors.red),
                                   ),
-                                  textColor: Colors.white,
-                                  color: MColors.primaryColor.withOpacity(0.5),
-                                  onPressed: () {}),
+                                  textStyle: TextStyle(fontSize: 20),
+                                ),
+                                onPressed: () {},
+                                child: Text('ถัดไป'),
+                              ),
                             )
                           ],
                         ),
@@ -331,25 +331,22 @@ class _RegisterpasswordState extends State<Registerpassword> {
                         child: Row(
                           children: <Widget>[
                             Expanded(
-                              child: RaisedButton(
-                                padding: EdgeInsets.only(top: 15, bottom: 15),
-                                shape: RoundedRectangleBorder(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: MColors.primaryColor,
+                                  shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30.0),
-                                    side: BorderSide(color: Colors.red)),
-                                child: Text(
-                                  'ถัดไป',
-                                  style: TextStyle(fontSize: 20),
+                                    side: BorderSide(color: Colors.red),
+                                  ),
+                                  textStyle: TextStyle(fontSize: 20),
                                 ),
-                                textColor: Colors.white,
-                                color: MColors.primaryColor,
                                 onPressed: () {
                                   if (_key.currentState.validate()) {
                                     _validateInputs();
-                                    isregister == true
-                                        ? nextpage()
-                                        : _validateInputs();
+                                    isregister == true ? nextpage() : _validateInputs();
                                   }
                                 },
+                                child: Text('ถัดไป'),
                               ),
                             )
                           ],
