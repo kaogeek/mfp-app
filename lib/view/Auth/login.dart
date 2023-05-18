@@ -9,7 +9,6 @@ import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/allWidget/sizeconfig.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
-import 'package:mfp_app/utils/router.dart';
 import 'package:http/http.dart' as http;
 import 'package:mfp_app/view/Auth/loginemail.dart';
 import 'package:mfp_app/view/Auth/register_ginfo.dart';
@@ -600,10 +599,15 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     return Row(
       children: <Widget>[
         Expanded(
-          child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: textColor, shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ), backgroundColor: color,
+              padding: EdgeInsets.zero,
+              textStyle: TextStyle(fontSize: 17, fontFamily: AppTheme.FontAnakotmaiLight),
             ),
+            onPressed: onPressed,
             child: Row(
               children: [
                 Container(
@@ -623,19 +627,12 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     text,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontFamily: AppTheme.FontAnakotmaiLight,
-                    ),
                   ),
                 ),
                 Spacer(),
                 widget,
               ],
             ),
-            textColor: textColor,
-            color: color,
-            onPressed: onPressed,
           ),
         ),
         SizedBox(

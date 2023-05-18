@@ -152,13 +152,12 @@ class _ForgotPasswordBuildState extends State<ForgotPasswordBuild> {
                               Expanded(
                                 child: ElevatedButton(
                                   style: TextButton.styleFrom(
-                                    padding:
+                                    foregroundColor: MColors.primaryColor, padding:
                                         EdgeInsets.only(top: 15, bottom: 15),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(30.0),
                                         side: BorderSide(color: Colors.red)),
-                                    primary: MColors.primaryColor,
                                   ),
                                   onPressed: null,
                                   child: Center(
@@ -176,24 +175,22 @@ class _ForgotPasswordBuildState extends State<ForgotPasswordBuild> {
                           child: Row(
                             children: <Widget>[
                               Expanded(
-                                child: RaisedButton(
-                                  padding: EdgeInsets.only(top: 15, bottom: 15),
-                                  shape: RoundedRectangleBorder(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: MColors.primaryColor,
+                                    shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30.0),
-                                      side: BorderSide(color: Colors.red)),
-                                  child: Text(
-                                    'เสร็จ',
-                                    style: TextStyle(
+                                      side: BorderSide(color: Colors.red),
+                                    ),
+                                    textStyle: TextStyle(
                                       fontSize: AppTheme.BodyTextSize20,
                                       fontFamily: AppTheme.FontAnakotmaiLight,
                                     ),
                                   ),
-                                  textColor: Colors.white,
-                                  color: MColors.primaryColor,
                                   onPressed: () async {
-                                    Navigate.pushPageReplacement(
-                                        context, NavScreen());
+                                    Navigate.pushPageReplacement(context, NavScreen());
                                   },
+                                  child: Text('เสร็จ'),
                                 ),
                               )
                             ],

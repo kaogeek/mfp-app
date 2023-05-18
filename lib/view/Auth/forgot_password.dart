@@ -5,7 +5,6 @@ import 'package:mfp_app/Api/Api.dart';
 import 'package:mfp_app/constants/colors.dart';
 import 'package:mfp_app/utils/app_theme.dart';
 import 'package:mfp_app/view/Auth/forgot_password_next.dart';
-import 'package:mfp_app/view/Auth/register-pass.dart';
 import 'package:page_transition/page_transition.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -222,22 +221,22 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         child: Row(
                           children: <Widget>[
                             Expanded(
-                              child: RaisedButton(
-                                  padding: EdgeInsets.only(top: 15, bottom: 15),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: MColors.primaryColor.withOpacity(0.5),
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      side: BorderSide(color: Colors.red)),
-                                  child: Text(
-                                    'ถัดไป',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontFamily:
-                                            AppTheme.FontAnakotmaiLight),
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    side: BorderSide(color: Colors.red),
                                   ),
-                                  textColor: Colors.white,
-                                  color: MColors.primaryColor.withOpacity(0.5),
-                                  onPressed: () {}),
-                            )
+                                  textStyle: TextStyle(
+                                    fontSize: 20,
+                                    fontFamily: AppTheme.FontAnakotmaiLight,
+                                  ),
+                                ),
+                                onPressed: () {},
+                                child: Text('ถัดไป'),
+                              ),
+                            ),
                           ],
                         ),
                       )
@@ -246,25 +245,22 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         child: Row(
                           children: <Widget>[
                             Expanded(
-                              child: RaisedButton(
-                                padding: EdgeInsets.only(top: 15, bottom: 15),
-                                shape: RoundedRectangleBorder(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.only(top: 15, bottom: 15), backgroundColor: MColors.primaryColor,
+                                  shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30.0),
-                                    side: BorderSide(color: Colors.red)),
-                                child: Text(
-                                  'ถัดไป',
-                                  style: TextStyle(fontSize: 20),
+                                    side: BorderSide(color: Colors.red),
+                                  ),
+                                  textStyle: TextStyle(fontSize: 20),
                                 ),
-                                textColor: Colors.white,
-                                color: MColors.primaryColor,
                                 onPressed: () {
                                   if (_key.currentState.validate()) {
                                     _validateInputs();
-                                    isregister == true
-                                        ? nextpage()
-                                        : _validateInputs();
+                                    isregister == true ? nextpage() : _validateInputs();
                                   }
                                 },
+                                child: Text('ถัดไป'),
                               ),
                             )
                           ],
